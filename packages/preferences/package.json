@@ -1,0 +1,18 @@
+{
+  "name": "@stall/preferences",
+  "version": "1.0.0",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@stall-core/preferences": "workspace:*",
+    "@stall-core/typings": "workspace:*"
+  }
+}

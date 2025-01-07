@@ -1,0 +1,35 @@
+{
+  "name": "@stall/docs",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "vitepress build",
+    "dev": "vitepress dev",
+    "docs:preview": "vitepress preview"
+  },
+  "imports": {
+    "#/*": {
+      "node": "./src/_env/node/*",
+      "default": "./src/_env/*"
+    }
+  },
+  "dependencies": {
+    "@stall-core/shadcn-ui": "workspace:*",
+    "@stall/common-ui": "workspace:*",
+    "@stall/locales": "workspace:*",
+    "@stall/plugins": "workspace:*",
+    "@stall/styles": "workspace:*",
+    "ant-design-vue": "catalog:",
+    "lucide-vue-next": "catalog:",
+    "medium-zoom": "catalog:",
+    "radix-vue": "catalog:",
+    "vitepress-plugin-group-icons": "catalog:"
+  },
+  "devDependencies": {
+    "@nolebase/vitepress-plugin-git-changelog": "catalog:",
+    "@stall/vite-config": "workspace:*",
+    "@vite-pwa/vitepress": "catalog:",
+    "vitepress": "catalog:",
+    "vue": "catalog:"
+  }
+}

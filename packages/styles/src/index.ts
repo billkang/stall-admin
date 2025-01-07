@@ -1,0 +1,1 @@
+import '@stall-core/design';

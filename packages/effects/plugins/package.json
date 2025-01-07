@@ -1,0 +1,34 @@
+{
+  "name": "@stall/plugins",
+  "version": "1.0.0",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    "./echarts": {
+      "types": "./src/echarts/index.ts",
+      "default": "./src/echarts/index.ts"
+    },
+    "./vxe-table": {
+      "types": "./src/vxe-table/index.ts",
+      "default": "./src/vxe-table/index.ts"
+    }
+  },
+  "dependencies": {
+    "@stall-core/form-ui": "workspace:*",
+    "@stall-core/shadcn-ui": "workspace:*",
+    "@stall-core/shared": "workspace:*",
+    "@stall/hooks": "workspace:*",
+    "@stall/icons": "workspace:*",
+    "@stall/locales": "workspace:*",
+    "@stall/preferences": "workspace:*",
+    "@stall/types": "workspace:*",
+    "@stall/utils": "workspace:*",
+    "@vueuse/core": "catalog:",
+    "echarts": "catalog:",
+    "vue": "catalog:",
+    "vxe-pc-ui": "catalog:",
+    "vxe-table": "catalog:"
+  }
+}

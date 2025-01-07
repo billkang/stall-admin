@@ -1,0 +1,164 @@
+{
+  "folders": [
+    {
+      "name": "@stall/backend-mock",
+      "path": "apps/backend-mock",
+    },
+    {
+      "name": "@stall/web-antd",
+      "path": "apps/web",
+    },
+    {
+      "name": "@stall/docs",
+      "path": "docs",
+    },
+    {
+      "name": "@stall/commitlint-config",
+      "path": "internal/lint-configs/commitlint-config",
+    },
+    {
+      "name": "@stall/eslint-config",
+      "path": "internal/lint-configs/eslint-config",
+    },
+    {
+      "name": "@stall/prettier-config",
+      "path": "internal/lint-configs/prettier-config",
+    },
+    {
+      "name": "@stall/stylelint-config",
+      "path": "internal/lint-configs/stylelint-config",
+    },
+    {
+      "name": "@stall/node-utils",
+      "path": "internal/node-utils",
+    },
+    {
+      "name": "@stall/tailwind-config",
+      "path": "internal/tailwind-config",
+    },
+    {
+      "name": "@stall/tsconfig",
+      "path": "internal/tsconfig",
+    },
+    {
+      "name": "@stall/vite-config",
+      "path": "internal/vite-config",
+    },
+    {
+      "name": "@stall-core/design",
+      "path": "packages/@core/base/design",
+    },
+    {
+      "name": "@stall-core/icons",
+      "path": "packages/@core/base/icons",
+    },
+    {
+      "name": "@stall-core/shared",
+      "path": "packages/@core/base/shared",
+    },
+    {
+      "name": "@stall-core/typings",
+      "path": "packages/@core/base/typings",
+    },
+    {
+      "name": "@stall-core/composables",
+      "path": "packages/@core/composables",
+    },
+    {
+      "name": "@stall-core/preferences",
+      "path": "packages/@core/preferences",
+    },
+    {
+      "name": "@stall-core/form-ui",
+      "path": "packages/@core/ui-kit/form-ui",
+    },
+    {
+      "name": "@stall-core/layout-ui",
+      "path": "packages/@core/ui-kit/layout-ui",
+    },
+    {
+      "name": "@stall-core/menu-ui",
+      "path": "packages/@core/ui-kit/menu-ui",
+    },
+    {
+      "name": "@stall-core/popup-ui",
+      "path": "packages/@core/ui-kit/popup-ui",
+    },
+    {
+      "name": "@stall-core/shadcn-ui",
+      "path": "packages/@core/ui-kit/shadcn-ui",
+    },
+    {
+      "name": "@stall-core/tabs-ui",
+      "path": "packages/@core/ui-kit/tabs-ui",
+    },
+    {
+      "name": "@stall/constants",
+      "path": "packages/constants",
+    },
+    {
+      "name": "@stall/access",
+      "path": "packages/effects/access",
+    },
+    {
+      "name": "@stall/common-ui",
+      "path": "packages/effects/common-ui",
+    },
+    {
+      "name": "@stall/hooks",
+      "path": "packages/effects/hooks",
+    },
+    {
+      "name": "@stall/layouts",
+      "path": "packages/effects/layouts",
+    },
+    {
+      "name": "@stall/plugins",
+      "path": "packages/effects/plugins",
+    },
+    {
+      "name": "@stall/request",
+      "path": "packages/effects/request",
+    },
+    {
+      "name": "@stall/icons",
+      "path": "packages/icons",
+    },
+    {
+      "name": "@stall/locales",
+      "path": "packages/locales",
+    },
+    {
+      "name": "@stall/preferences",
+      "path": "packages/preferences",
+    },
+    {
+      "name": "@stall/stores",
+      "path": "packages/stores",
+    },
+    {
+      "name": "@stall/styles",
+      "path": "packages/styles",
+    },
+    {
+      "name": "@stall/types",
+      "path": "packages/types",
+    },
+    {
+      "name": "@stall/utils",
+      "path": "packages/utils",
+    },
+    {
+      "name": "@stall/playground",
+      "path": "playground",
+    },
+    {
+      "name": "@stall/turbo-run",
+      "path": "scripts/turbo-run",
+    },
+    {
+      "name": "@stall/vsh",
+      "path": "scripts/vsh",
+    },
+  ],
+}

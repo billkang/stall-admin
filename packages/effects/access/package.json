@@ -1,0 +1,21 @@
+{
+  "name": "@stall/access",
+  "version": "1.0.0",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@stall/preferences": "workspace:*",
+    "@stall/stores": "workspace:*",
+    "@stall/types": "workspace:*",
+    "@stall/utils": "workspace:*",
+    "vue": "catalog:"
+  }
+}

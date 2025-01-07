@@ -1,0 +1,37 @@
+{
+  "name": "@stall/web-antd",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm vite build --mode production",
+    "build:analyze": "pnpm vite build --mode analyze",
+    "dev": "pnpm vite --mode development",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit --skipLibCheck"
+  },
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "dependencies": {
+    "@stall/access": "workspace:*",
+    "@stall/common-ui": "workspace:*",
+    "@stall/constants": "workspace:*",
+    "@stall/hooks": "workspace:*",
+    "@stall/icons": "workspace:*",
+    "@stall/layouts": "workspace:*",
+    "@stall/locales": "workspace:*",
+    "@stall/plugins": "workspace:*",
+    "@stall/preferences": "workspace:*",
+    "@stall/request": "workspace:*",
+    "@stall/stores": "workspace:*",
+    "@stall/styles": "workspace:*",
+    "@stall/types": "workspace:*",
+    "@stall/utils": "workspace:*",
+    "@vueuse/core": "catalog:",
+    "ant-design-vue": "catalog:",
+    "dayjs": "catalog:",
+    "pinia": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  }
+}

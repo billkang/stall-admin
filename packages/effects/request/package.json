@@ -1,0 +1,22 @@
+{
+  "name": "@stall/request",
+  "version": "1.0.0",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@stall/locales": "workspace:*",
+    "@stall/utils": "workspace:*",
+    "axios": "catalog:"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "catalog:"
+  }
+}

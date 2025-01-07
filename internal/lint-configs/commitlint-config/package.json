@@ -1,0 +1,25 @@
+{
+  "name": "@stall/commitlint-config",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./index.mjs",
+  "module": "./index.mjs",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "default": "./index.mjs"
+    }
+  },
+  "dependencies": {
+    "@commitlint/cli": "catalog:",
+    "@commitlint/config-conventional": "catalog:",
+    "@stall/node-utils": "workspace:*",
+    "commitlint-plugin-function-rules": "catalog:",
+    "cz-git": "catalog:",
+    "czg": "catalog:"
+  }
+}

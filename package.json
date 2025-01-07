@@ -1,0 +1,106 @@
+{
+  "name": "stall-admin-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "keywords": [
+    "monorepo",
+    "turbo",
+    "Stall Admin",
+    "vue",
+    "vue admin",
+    "vue Stall Admin",
+    "vue Stall Admin pro",
+    "vue3"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 turbo build",
+    "build:analyze": "turbo build:analyze",
+    "build:antd": "pnpm run build --filter=@stall/web-antd",
+    "build:docs": "pnpm run build --filter=@stall/docs",
+    "build:naive": "pnpm run build --filter=@stall/web-naive",
+    "build:play": "pnpm run build --filter=@stall/playground",
+    "changeset": "pnpm exec changeset",
+    "check": "pnpm run check:circular && pnpm run check:dep && pnpm run check:type && pnpm check:cspell",
+    "check:circular": "vsh check-circular",
+    "check:cspell": "cspell lint **/*.ts **/README.md .changeset/*.md --no-progress",
+    "check:dep": "vsh check-dep",
+    "check:type": "turbo run typecheck",
+    "clean": "node ./scripts/clean.mjs",
+    "commit": "czg",
+    "dev": "turbo-run dev",
+    "dev:antd": "pnpm -F @stall/web-antd run dev",
+    "dev:docs": "pnpm -F @stall/docs run dev",
+    "dev:naive": "pnpm -F @stall/web-naive run dev",
+    "dev:play": "pnpm -F @stall/playground run dev",
+    "format": "vsh lint --format",
+    "lint": "vsh lint",
+    "postinstall": "pnpm -r run stub --if-present",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "is-ci || husky",
+    "preview": "turbo-run preview",
+    "publint": "vsh publint",
+    "reinstall": "pnpm clean --del-lock && pnpm install",
+    "test:unit": "vitest run --dom",
+    "test:e2e": "turbo run test:e2e",
+    "update:deps": "npx taze -r -w",
+    "version": "pnpm exec changeset version && pnpm install --no-frozen-lockfile"
+  },
+  "devDependencies": {
+    "@playwright/test": "catalog:",
+    "@types/node": "catalog:",
+    "@stall/commitlint-config": "workspace:*",
+    "@stall/eslint-config": "workspace:*",
+    "@stall/prettier-config": "workspace:*",
+    "@stall/stylelint-config": "workspace:*",
+    "@stall/tailwind-config": "workspace:*",
+    "@stall/tsconfig": "workspace:*",
+    "@stall/turbo-run": "workspace:*",
+    "@stall/vite-config": "workspace:*",
+    "@stall/vsh": "workspace:*",
+    "@vitejs/plugin-vue": "catalog:",
+    "@vitejs/plugin-vue-jsx": "catalog:",
+    "@vue/test-utils": "catalog:",
+    "autoprefixer": "catalog:",
+    "cross-env": "catalog:",
+    "cspell": "catalog:",
+    "happy-dom": "catalog:",
+    "husky": "catalog:",
+    "is-ci": "catalog:",
+    "lint-staged": "catalog:",
+    "playwright": "catalog:",
+    "rimraf": "catalog:",
+    "tailwindcss": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:",
+    "unbuild": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "vue": "catalog:",
+    "vue-tsc": "catalog:"
+  },
+  "engines": {
+    "node": ">=20.10.0",
+    "pnpm": ">=9.12.0"
+  },
+  "packageManager": "pnpm@9.15.2",
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "eslint": "*"
+      }
+    },
+    "overrides": {
+      "@ast-grep/napi": "catalog:",
+      "@ctrl/tinycolor": "catalog:",
+      "clsx": "catalog:",
+      "esbuild": "0.24.0",
+      "pinia": "catalog:",
+      "vue": "catalog:"
+    },
+    "neverBuiltDependencies": [
+      "canvas",
+      "node-gyp"
+    ]
+  }
+}

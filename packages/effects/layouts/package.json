@@ -1,0 +1,35 @@
+{
+  "name": "@stall/layouts",
+  "version": "1.0.0",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@stall-core/composables": "workspace:*",
+    "@stall-core/form-ui": "workspace:*",
+    "@stall-core/layout-ui": "workspace:*",
+    "@stall-core/menu-ui": "workspace:*",
+    "@stall-core/popup-ui": "workspace:*",
+    "@stall-core/shadcn-ui": "workspace:*",
+    "@stall-core/shared": "workspace:*",
+    "@stall-core/tabs-ui": "workspace:*",
+    "@stall/constants": "workspace:*",
+    "@stall/hooks": "workspace:*",
+    "@stall/icons": "workspace:*",
+    "@stall/locales": "workspace:*",
+    "@stall/preferences": "workspace:*",
+    "@stall/stores": "workspace:*",
+    "@stall/types": "workspace:*",
+    "@stall/utils": "workspace:*",
+    "@vueuse/core": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@stall/common-ui",
+  "version": "1.0.0",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@stall-core/form-ui": "workspace:*",
+    "@stall-core/popup-ui": "workspace:*",
+    "@stall-core/shadcn-ui": "workspace:*",
+    "@stall-core/shared": "workspace:*",
+    "@stall/constants": "workspace:*",
+    "@stall/hooks": "workspace:*",
+    "@stall/icons": "workspace:*",
+    "@stall/locales": "workspace:*",
+    "@stall/types": "workspace:*",
+    "@vueuse/core": "catalog:",
+    "@vueuse/integrations": "catalog:",
+    "qrcode": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "@types/qrcode": "catalog:"
+  }
+}
