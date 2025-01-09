@@ -24,13 +24,15 @@ git -v
 
 :::
 
+## 启动项目
+
 ### 安装依赖
 
 在你的代码目录内打开终端，并执行以下命令:
 
 ```bash
 # 进入项目目录
-cd stall-admin-admin
+cd stall-admin
 
 # 使用项目指定的pnpm版本进行依赖安装
 corepack enable
@@ -41,7 +43,7 @@ pnpm install
 
 ::: tip 注意
 
-- 项目只支持使用 `pnpm` 进行依赖安装，默认会使用 `corepack` 来安装指定版本的 `pnpm`。:
+- 项目只支持使用 `pnpm` 进行依赖安装，默认会使用 `corepack` 来安装指定版本的 `pnpm`。
 - 如果你的网络环境无法访问npm源，你可以设置系统的环境变量`COREPACK_NPM_REGISTRY=https://registry.npmmirror.com`，然后再执行`pnpm install`。
 - 如果你不想使用`corepack`，你需要禁用`corepack`，然后使用你自己的`pnpm`进行安装。
 
@@ -63,7 +65,7 @@ pnpm dev
 ```bash
 │
 ◆  Select the app you need to run [dev]:
-│  ○ @stall/web-antd
+│  ○ @stall/web
 │  ○ @stall/docs
 │  ● @stall/playground
 └

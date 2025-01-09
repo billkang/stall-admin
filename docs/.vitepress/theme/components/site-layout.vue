@@ -8,8 +8,6 @@ import {
   watch,
 } from 'vue';
 
-// import { useAntdDesignTokens } from '@stall/hooks';
-// import { initPreferences } from '@stall/preferences';
 import { ConfigProvider, theme } from 'ant-design-vue';
 import mediumZoom from 'medium-zoom';
 import { useRoute } from 'vitepress';
@@ -17,10 +15,8 @@ import DefaultTheme from 'vitepress/theme';
 
 const { Layout } = DefaultTheme;
 const route = useRoute();
-// const { tokens } = useAntdDesignTokens();
 
 const initZoom = () => {
-  // mediumZoom('[data-zoomable]', { background: 'var(--vp-c-bg)' });
   mediumZoom('.VPContent img', { background: 'var(--vp-c-bg)' });
 };
 
@@ -30,10 +26,6 @@ watch(
   () => route.path,
   () => nextTick(() => initZoom()),
 );
-
-// initPreferences({
-//   namespace: 'docs',
-// });
 
 onMounted(() => {
   initZoom();

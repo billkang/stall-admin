@@ -14,7 +14,6 @@ initComponentAdapter();
 setupStallForm<ComponentType>({
   config: {
     baseModelPropName: 'value',
-    // naive-ui组件的空值为null,不能是undefined，否则重置表单时不生效
     emptyStateValue: null,
     modelPropNameMap: {
       Checkbox: 'checked',

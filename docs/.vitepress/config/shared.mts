@@ -8,10 +8,6 @@ import {
   viteVxeTableImportsPlugin,
 } from '@stall/vite-config';
 
-import {
-  GitChangelog,
-  GitChangelogMarkdownSection,
-} from '@nolebase/vitepress-plugin-git-changelog/vite';
 import tailwind from 'tailwindcss';
 import { defineConfig, postcssIsolateStyles } from 'vitepress';
 import {
@@ -35,7 +31,6 @@ export const shared = defineConfig({
   srcDir: 'src',
   themeConfig: {
     i18nRouting: true,
-    logo: 'https://unpkg.com/@stalljs/static-source@0.1.7/source/logo-v1.webp',
     search: {
       options: {
         locales: {
@@ -45,9 +40,6 @@ export const shared = defineConfig({
       provider: 'local',
     },
     siteTitle: 'Stall Admin',
-    socialLinks: [
-      { icon: 'github', link: '' },
-    ],
   },
   title: 'Stall Admin',
   vite: {
@@ -72,25 +64,6 @@ export const shared = defineConfig({
       stringify: true,
     },
     plugins: [
-      GitChangelog({
-        mapAuthors: [
-          {
-            mapByNameAliases: ['Stall'],
-            name: 'stall',
-            username: 'anncwb',
-          },
-          {
-            name: 'vince',
-            username: 'vince292007',
-          },
-          {
-            name: 'Li Kui',
-            username: 'likui628',
-          },
-        ],
-        repoURL: () => '',
-      }),
-      GitChangelogMarkdownSection(),
       viteArchiverPlugin({ outputDir: '.vitepress' }),
       groupIconVitePlugin(),
       await viteVxeTableImportsPlugin(),
@@ -111,7 +84,6 @@ export const shared = defineConfig({
 
 function head(): HeadConfig[] {
   return [
-    ['meta', { content: 'Stalljs Team', name: 'author' }],
     [
       'meta',
       {
@@ -128,14 +100,8 @@ function head(): HeadConfig[] {
         name: 'viewport',
       },
     ],
-    ['meta', { content: 'Stall Admin docs', name: 'keywords' }],
+    ['meta', { content: 'stall admin docs', name: 'keywords' }],
     ['link', { href: '/favicon.ico', rel: 'icon' }],
-    // [
-    //   'script',
-    //   {
-    //     src: 'https://cdn.tailwindcss.com',
-    //   },
-    // ],
   ];
 }
 
@@ -146,6 +112,16 @@ function pwa(): PwaOptions {
       description:
         'Stall Admin is a modern admin dashboard template based on Vue 3. ',
       icons: [
+        {
+          sizes: '192x192',
+          src: 'https://unpkg.com/@stalljs/static-source@0.1.7/source/pwa-icon-192.png',
+          type: 'image/png',
+        },
+        {
+          sizes: '512x512',
+          src: 'https://unpkg.com/@stalljs/static-source@0.1.7/source/pwa-icon-512.png',
+          type: 'image/png',
+        },
       ],
       id: '/',
       name: 'Stall Admin Doc',

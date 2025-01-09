@@ -34,7 +34,7 @@ VITE_GLOB_API_URL=/api
 开发环境时候，如果需要处理跨域，接口地址在对应的应用目录下的 `vite.config.mts` 文件中配置：
 
 ```ts{8-16}
-// apps/web-antd/vite.config.mts
+// apps/web/vite.config.mts
 import { defineConfig } from '@stall/vite-config';
 
 export default defineConfig(async () => {
@@ -83,7 +83,7 @@ axios.get('/api/user').then((res) => {
 在项目根目录下的 `.env.development` 文件中配置接口地址：
 
 ```bash
-VITE_GLOB_API_URL=https://mock-napi.vben.pro/api
+VITE_GLOB_API_URL=https://mock-napi.stall.pro/api
 ```
 
 ## 生产环境交互
@@ -93,7 +93,7 @@ VITE_GLOB_API_URL=https://mock-napi.vben.pro/api
 在项目根目录下的 `.env.production` 文件中配置接口地址：
 
 ```bash
-VITE_GLOB_API_URL=https://mock-napi.vben.pro/api
+VITE_GLOB_API_URL=https://mock-napi.stall.pro/api
 ```
 
 ::: tip 打包如何动态修改接口地址
@@ -108,7 +108,7 @@ VITE_GLOB_API_URL=https://mock-napi.vben.pro/api
 
 ## 接口请求配置
 
-项目中默认自带了基于 `axios` 封装的基础的请求配置，核心由 `@stall/request` 包提供。项目没有过多的封装，只是简单的封装了一些常用的配置，如有其他需求，可以自行增加或者调整配置。针对不同的app，可能是用到了不同的组件库以及`store`,所以在应用目录下的`src/api/request.ts`文件夹下，有对应的请求配置文件,如`web-antd`项目下的`src/api/request.ts`文件,可以根据自己的需求进行配置。
+项目中默认自带了基于 `axios` 封装的基础的请求配置，核心由 `@stall/request` 包提供。项目没有过多的封装，只是简单的封装了一些常用的配置，如有其他需求，可以自行增加或者调整配置。针对不同的app，可能是用到了不同的组件库以及`store`,所以在应用目录下的`src/api/request.ts`文件夹下，有对应的请求配置文件,如`web`项目下的`src/api/request.ts`文件,可以根据自己的需求进行配置。
 
 ### 请求示例
 

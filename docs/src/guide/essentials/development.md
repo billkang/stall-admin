@@ -52,14 +52,10 @@ npm 脚本是项目常见的配置，用于执行一些常见的任务，比如�
     "build:analyze": "turbo build:analyze",
     // 构建本地 docker 镜像
     "build:docker": "./build-local-docker-image.sh",
-    // 单独构建 web-antd 应用
-    "build:antd": "pnpm run build --filter=@stall/web-antd",
+    // 单独构建 web 应用
+    "build:antd": "pnpm run build --filter=@stall/web",
     // 单独构建文档
     "build:docs": "pnpm run build --filter=@stall/docs",
-    // 单独构建 web-ele 应用
-    "build:ele": "pnpm run build --filter=@stall/web-ele",
-    // 单独构建 web-naive 应用
-    "build:naive": "pnpm run build --filter=@stall/naive",
     // 单独构建 playground 应用
     "build:play": "pnpm run build --filter=@stall/playground",
     // changeset 版本管理
@@ -80,14 +76,10 @@ npm 脚本是项目常见的配置，用于执行一些常见的任务，比如�
     "commit": "czg",
     // 启动项目（默认会运行整个仓库所有包的dev脚本）
     "dev": "turbo-run dev",
-    // 启动web-antd应用
-    "dev:antd": "pnpm -F @stall/web-antd run dev",
+    // 启动web应用
+    "dev:antd": "pnpm -F @stall/web run dev",
     // 启动文档
     "dev:docs": "pnpm -F @stall/docs run dev",
-    // 启动web-ele应用
-    "dev:ele": "pnpm -F @stall/web-ele run dev",
-    // 启动web-naive应用
-    "dev:naive": "pnpm -F @stall/web-naive run dev",
     // 启动演示应用
     "dev:play": "pnpm -F @stall/playground run dev",
     // 格式化代码
@@ -126,22 +118,10 @@ pnpm dev
 
 如果你想直接运行某个应用，可以执行以下命令：
 
-运行 `web-antd` 应用：
+运行 `web` 应用：
 
 ```bash
 pnpm dev:antd
-```
-
-运行 `web-naive` 应用：
-
-```bash
-pnpm dev:naive
-```
-
-运行 `web-ele` 应用：
-
-```bash
-pnpm dev:ele
 ```
 
 运行 `docs` 应用：

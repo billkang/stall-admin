@@ -34,7 +34,7 @@
 VITE_APP_TITLE=Stall Admin
 
 # 应用命名空间，用于缓存、store等功能的前缀，确保隔离
-VITE_APP_NAMESPACE=stall-web-antd
+VITE_APP_NAMESPACE=stall-web
 ```
 
 ```bash [.env.development]
@@ -225,8 +225,7 @@ const defaultPreferences: Preferences = {
   },
   logo: {
     enable: true,
-    source:
-      'https://unpkg.com/@stalljs/static-source@0.1.7/source/logo-v1.webp',
+    source: 'https://unpkg.com/@stalljs/static-source@0.1.7/source/logo-v1.webp',
   },
   navigation: {
     accordion: true,

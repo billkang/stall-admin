@@ -5,7 +5,7 @@
       "path": "apps/backend-mock",
     },
     {
-      "name": "@stall/web-antd",
+      "name": "@stall/web",
       "path": "apps/web",
     },
     {

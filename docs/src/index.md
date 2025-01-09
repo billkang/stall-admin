@@ -6,10 +6,7 @@ sidebar: false
 hero:
   name: Stall Admin
   text: 企业级管理系统框架
-  tagline: 全新升级，开箱即用，简单高效
-  image:
-    src: https://unpkg.com/@stalljs/static-source@0.1.7/source/logo-v1.webp
-    alt: Stall Admin
+  tagline: 开箱即用，简单高效
   actions:
     - theme: brand
       text: 快速开始 ->
@@ -66,3 +63,37 @@ features:
     link: https://nitro.unjs.io/
     linkText: 官方站点
 ---
+
+<!-- <script setup>
+import {
+  VPTeamPage,
+  VPTeamPageTitle,
+  VPTeamMembers,
+  VPTeamPageSection
+} from 'vitepress/theme';
+
+const members = [
+  {
+    avatar: 'https://avatars.githubusercontent.com/u/28132598?v=4',
+    name: 'Stall',
+    title: '创建者',
+    desc: 'Stall Admin以及相关生态的作者，负责项目的整体开发。',
+    links: [
+      { icon: 'github', link: 'https://github.com/anncwb' },
+    ]
+  },
+]
+</script>
+
+<VPTeamPage>
+  <VPTeamPageTitle>
+    <template #title>
+      核心成员介绍
+    </template>
+  </VPTeamPageTitle>
+  <VPTeamMembers
+    :members="members"
+  />
+</VPTeamPage> -->
+
+<StallContributors />

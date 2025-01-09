@@ -1,4 +1,5 @@
 import type { DefaultTheme } from 'vitepress';
+
 import { defineConfig } from 'vitepress';
 
 export const zh = defineConfig({
@@ -11,21 +12,8 @@ export const zh = defineConfig({
       next: '下一页',
       prev: '上一页',
     },
-    editLink: {
-      pattern: '',
-      text: '',
-    },
     footer: {
       copyright: `Copyright © 2020-${new Date().getFullYear()} Stall`,
-      message: '基于 MIT 许可发布.',
-    },
-    langMenuLabel: '多语言',
-    lastUpdated: {
-      formatOptions: {
-        dateStyle: 'short',
-        timeStyle: 'medium',
-      },
-      text: '最后更新于',
     },
     lightModeSwitchTitle: '切换到浅色模式',
     nav: nav(),
@@ -34,9 +22,30 @@ export const zh = defineConfig({
       label: '页面导航',
     },
     returnToTopLabel: '回到顶部',
+
+    sidebar: {
+      '/components/': { base: '/components/', items: sidebarComponents() },
+      '/guide/': { base: '/guide/', items: sidebarGuide() },
+      '/teaching/': { base: '/teaching/', items: sidebarTeaching() },
+    },
     sidebarMenuLabel: '菜单',
   },
 });
+
+function sidebarTeaching(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      collapsed: false,
+      text: 'javascript',
+      items: [
+        {
+          link: 'javascript',
+          text: 'JavaScript介绍',
+        },
+      ],
+    },
+  ];
+}
 
 function sidebarGuide(): DefaultTheme.SidebarItem[] {
   return [
@@ -47,7 +56,8 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         {
           link: 'introduction/stall',
           text: '关于 Stall Admin',
-        }
+        },
+        { link: 'introduction/quick-start', text: '快速开始' },
       ],
     },
     {
@@ -74,7 +84,6 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { link: 'in-depth/features', text: '常用功能' },
         { link: 'in-depth/check-updates', text: '检查更新' },
         { link: 'in-depth/loading', text: '全局loading' },
-        { link: 'in-depth/ui-framework', text: '组件库切换' },
       ],
     },
     {
@@ -87,28 +96,82 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { link: 'project/tailwindcss', text: 'Tailwind CSS' },
         { link: 'project/vite', text: 'Vite Config' },
       ],
-    }
+    },
+  ];
+}
+
+function sidebarComponents(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: '组件',
+      items: [
+        {
+          link: 'introduction',
+          text: '介绍',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '布局组件',
+      items: [
+        {
+          link: 'layout-ui/page',
+          text: 'Page 页面',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '通用组件',
+      items: [
+        {
+          link: 'common-ui/stall-api-component',
+          text: 'ApiComponent Api组件包装器',
+        },
+        {
+          link: 'common-ui/stall-modal',
+          text: 'Modal 模态框',
+        },
+        {
+          link: 'common-ui/stall-drawer',
+          text: 'Drawer 抽屉',
+        },
+        {
+          link: 'common-ui/stall-form',
+          text: 'Form 表单',
+        },
+        {
+          link: 'common-ui/stall-vxe-table',
+          text: 'Vxe Table 表格',
+        },
+        {
+          link: 'common-ui/stall-count-to-animator',
+          text: 'CountToAnimator 数字动画',
+        },
+        {
+          link: 'common-ui/stall-ellipsis-text',
+          text: 'EllipsisText 省略文本',
+        },
+      ],
+    },
   ];
 }
 
 function nav(): DefaultTheme.NavItem[] {
   return [
     {
-      activeMatch: '^/(guide|components)/',
-      text: '文档',
-      items: [
-        {
-          activeMatch: '^/guide/',
-          link: '/guide/introduction/stall',
-          text: '指南',
-        },
-        {
-          activeMatch: '^/components/',
-          link: '/components/introduction',
-          text: '组件',
-        }
-      ],
-    }
+      link: '/guide/introduction/stall',
+      text: '开发指南',
+    },
+    {
+      link: '/components/introduction',
+      text: '组件介绍',
+    },
+    {
+      link: '/teaching/introduction',
+      text: '前端教程',
+    },
   ];
 }
 

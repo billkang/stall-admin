@@ -86,6 +86,40 @@ Prettier 配置文件为 `.prettier.mjs`，其核心配置放在`internal/lint-c
 
 CommitLint 配置文件为 `.commitlintrc.mjs`，其核心配置放在`internal/lint-configs/commitlint-config`目录下，可以根据项目需求进行修改。
 
+### Git 提交规范
+
+参考 [Angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular)
+
+- `feat` 增加新功能
+- `fix` 修复问题/BUG
+- `style` 代码风格相关无影响运行结果的
+- `perf` 优化/性能提升
+- `refactor` 重构
+- `revert` 撤销修改
+- `test` 测试相关
+- `docs` 文档/注释
+- `chore` 依赖更新/脚手架配置修改等
+- `workflow` 工作流改进
+- `ci` 持续集成
+- `types` 类型修改
+
+### 关闭Git提交规范检查
+
+如果你想关闭 Git 提交规范检查，有两种方式：
+
+::: code-group
+
+```bash [临时关闭]
+git commit -m 'feat: add home page' --no-verify
+```
+
+```bash [永久关闭]
+# 在 .husky/commit-msg 内注释以下代码即可
+pnpm exec commitlint --edit "$1" # [!code --]
+```
+
+:::
+
 ## Publint
 
 Publint 是一个用于检查 npm 包的规范的工具，可以检查包的版本号是否符合规范，是否符合标准的 ESM 规范包等等。
