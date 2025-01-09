@@ -39,8 +39,16 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
       text: 'javascript',
       items: [
         {
-          link: 'javascript',
-          text: 'JavaScript介绍',
+          link: 'js/dynamic-vs-static',
+          text: '动态语言和静态语言的比较',
+        },
+        {
+          link: 'js/server',
+          text: '服务器知识介绍',
+        },
+        {
+          link: 'js/proto-vs-class',
+          text: '原型继承和类继承的比较',
         },
       ],
     },

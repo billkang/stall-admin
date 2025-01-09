@@ -91,7 +91,6 @@ function head(): HeadConfig[] {
         name: 'keywords',
       },
     ],
-    ['link', { href: '/favicon.ico', rel: 'icon', type: 'image/svg+xml' }],
     [
       'meta',
       {
@@ -101,7 +100,6 @@ function head(): HeadConfig[] {
       },
     ],
     ['meta', { content: 'stall admin docs', name: 'keywords' }],
-    ['link', { href: '/favicon.ico', rel: 'icon' }],
   ];
 }
 
