@@ -99,7 +99,6 @@ function head(): HeadConfig[] {
         name: 'viewport',
       },
     ],
-    ['meta', { content: 'stall admin docs', name: 'keywords' }],
   ];
 }
 

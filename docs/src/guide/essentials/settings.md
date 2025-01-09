@@ -63,7 +63,7 @@ VITE_INJECT_APP_LOADING=true
 VITE_BASE=/
 
 # 接口地址
-VITE_GLOB_API_URL=https://mock-napi.stall.pro/api
+VITE_GLOB_API_URL=/api
 
 # 是否开启压缩，可以设置为 none, brotli, gzip
 VITE_COMPRESS=gzip
@@ -92,7 +92,7 @@ VITE_ARCHIVER=true
 
 ```ts
 window._STALL_ADMIN_PRO_APP_CONF_ = {
-  VITE_GLOB_API_URL: 'https://mock-napi.stall.pro/api',
+  VITE_GLOB_API_URL: '/api',
 };
 Object.freeze(window._STALL_ADMIN_PRO_APP_CONF_);
 Object.defineProperty(window, '_STALL_ADMIN_PRO_APP_CONF_', {

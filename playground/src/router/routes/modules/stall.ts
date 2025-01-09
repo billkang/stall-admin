@@ -1,11 +1,8 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import {
-  STALL_DOC_URL,
-  STALL_LOGO_URL,
-} from '@stall/constants';
+import { STALL_LOGO_URL } from '@stall/constants';
 
-import { BasicLayout, IFrameView } from '#/layouts';
+import { BasicLayout } from '#/layouts';
 import { $t } from '#/locales';
 
 const routes: RouteRecordRaw[] = [
@@ -27,16 +24,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'lucide:copyright',
           title: $t('demos.stall.about'),
-        },
-      },
-      {
-        name: 'StallDocument',
-        path: '/stall-admin/document',
-        component: IFrameView,
-        meta: {
-          icon: 'lucide:book-open-text',
-          link: STALL_DOC_URL,
-          title: $t('demos.stall.document'),
         },
       },
     ],

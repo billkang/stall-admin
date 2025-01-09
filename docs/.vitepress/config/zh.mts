@@ -43,12 +43,32 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           text: '动态语言和静态语言的比较',
         },
         {
-          link: 'js/server',
-          text: '服务器知识介绍',
-        },
-        {
           link: 'js/proto-vs-class',
           text: '原型继承和类继承的比较',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: 'node.js',
+      items: [
+        {
+          link: 'nodejs/introduction',
+          text: 'Node.js介绍',
+        },
+        {
+          link: 'nodejs/server',
+          text: '服务器知识介绍',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '性能优化',
+      items: [
+        {
+          link: 'performance/introduction',
+          text: '性能优化介绍',
         },
       ],
     },

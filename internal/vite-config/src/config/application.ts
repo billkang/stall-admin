@@ -43,9 +43,6 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
       nitroMock: !isBuild,
       nitroMockOptions: {},
       print: !isBuild,
-      printInfoMap: {
-        'Stall Admin Docs': 'https://doc.stall.pro',
-      },
       pwa: true,
       pwaOptions: getDefaultPwaOptions(appTitle),
       vxeTableLazyImport: true,

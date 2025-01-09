@@ -62,7 +62,6 @@
   "stall": {
     "title": "Project",
     "about": "About",
-    "document": "Document",
     "antdv": "Ant Design Vue Version"
   }
 }
