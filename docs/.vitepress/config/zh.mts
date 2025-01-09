@@ -36,6 +36,20 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
   return [
     {
       collapsed: false,
+      text: '前端',
+      items: [
+        {
+          link: 'fe/web-components',
+          text: 'Web Components介绍',
+        },
+        {
+          link: 'fe/micro-frontend',
+          text: '微前端介绍',
+        },
+      ],
+    },
+    {
+      collapsed: false,
       text: 'javascript',
       items: [
         {
