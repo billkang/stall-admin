@@ -58,14 +58,12 @@ npm 脚本是项目常见的配置，用于执行一些常见的任务，比如�
     "build:docs": "pnpm run build --filter=@stall/docs",
     // 单独构建 playground 应用
     "build:play": "pnpm run build --filter=@stall/playground",
-    // changeset 版本管理
-    "changeset": "pnpm exec changeset",
     // 检查项目各种问题
     "check": "pnpm run check:circular && pnpm run check:dep && pnpm run check:type && pnpm check:cspell",
     // 检查循环引用
     "check:circular": "vsh check-circular",
     // 检查拼写
-    "check:cspell": "cspell lint **/*.ts **/README.md .changeset/*.md --no-progress"
+    "check:cspell": "cspell lint **/*.ts **/README.md --no-progress"
     // 检查依赖
     "check:dep": "vsh check-dep",
     // 检查类型
@@ -101,9 +99,7 @@ npm 脚本是项目常见的配置，用于执行一些常见的任务，比如�
     // 运行 vitest 单元测试
     "test:unit": "vitest run --dom",
     // 更新项目依赖
-    "update:deps": " pnpm update --latest --recursive",
-    // changeset生成提交集
-    "version": "pnpm exec changeset version && pnpm install --no-frozen-lockfile"
+    "update:deps": " pnpm update --latest --recursive"
   }
 }
 ```

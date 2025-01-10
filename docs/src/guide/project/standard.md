@@ -137,7 +137,7 @@ Cspell 是一个用于检查拼写错误的工具，可以检查代码中的拼�
 ### 命令
 
 ```bash
-pnpm cspell lint \"**/*.ts\"  \"**/README.md\" \".changeset/*.md\" --no-progress
+pnpm cspell lint \"**/*.ts\"  \"**/README.md\" --no-progress
 ```
 
 ### 配置

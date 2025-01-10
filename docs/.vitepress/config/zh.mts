@@ -25,12 +25,82 @@ export const zh = defineConfig({
 
     sidebar: {
       '/components/': { base: '/components/', items: sidebarComponents() },
+      '/course/': { base: '/course/', items: sidebarCourse() },
       '/guide/': { base: '/guide/', items: sidebarGuide() },
       '/teaching/': { base: '/teaching/', items: sidebarTeaching() },
     },
     sidebarMenuLabel: '菜单',
   },
 });
+
+function sidebarCourse(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      collapsed: false,
+      text: '数据中台-课时1',
+      items: [
+        {
+          link: 'period1/introduction',
+          text: '项目背景介绍',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '数据中台-课时2',
+      items: [
+        {
+          link: 'period2/axios',
+          text: '封装axios',
+        },
+        {
+          link: 'period2/vue-router',
+          text: '封装vue-router',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '数据中台-课时3',
+      items: [
+        {
+          link: 'period3/introduction',
+          text: '项目背景介绍',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '数据中台-课时4',
+      items: [
+        {
+          link: 'period4/introduction',
+          text: '项目背景介绍',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '数据中台-课时5',
+      items: [
+        {
+          link: 'period5/introduction',
+          text: '项目背景介绍',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '数据中台-课时6',
+      items: [
+        {
+          link: 'period6/introduction',
+          text: '项目背景介绍',
+        },
+      ],
+    },
+  ];
+}
 
 function sidebarTeaching(): DefaultTheme.SidebarItem[] {
   return [
@@ -39,12 +109,20 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
       text: '前端',
       items: [
         {
+          link: 'fe/axios',
+          text: 'Axios介绍',
+        },
+        {
           link: 'fe/web-components',
           text: 'Web Components介绍',
         },
         {
           link: 'fe/micro-frontend',
           text: '微前端介绍',
+        },
+        {
+          link: 'fe/project-code-management',
+          text: '项目代码组织管理方案',
         },
       ],
     },
@@ -212,7 +290,11 @@ function nav(): DefaultTheme.NavItem[] {
     },
     {
       link: '/teaching/introduction',
-      text: '前端教程',
+      text: '前端资料',
+    },
+    {
+      link: '/course/period1/introduction',
+      text: '项目课程',
     },
   ];
 }

@@ -1,7 +1,5 @@
 # 关于 Stall Admin
 
-:::
-
 Stall Admin 是一个基于 [Vue3.0](https://github.com/vuejs/core)、[Vite](https://github.com/vitejs/vite)、 [TypeScript](https://www.typescriptlang.org/) 的中后台解决方案，目标是为开发中大型项目提供开箱即用的解决方案。包括二次封装组件、utils、hooks、动态菜单、权限校验、多主题配置、按钮级别权限控制等功能。项目会使用前端较新的技术栈，可以作为项目的启动模板，以帮助你快速搭建企业级中后台产品原型。也可以作为一个示例，用于学习 `vue3`、`vite`、`ts` 等主流技术。该项目会持续跟进最新技术，并将其应用在项目中。
 
 ## 特点
@@ -14,7 +12,7 @@ Stall Admin 是一个基于 [Vue3.0](https://github.com/vuejs/core)、[Vite](htt
 - **Mock 数据**：基于 `Nitro` 的本地高性能 Mock 数据方案。
 - **组件丰富**：提供了丰富的组件，可以满足大部分的业务需求。
 - **规范**：代码规范，使用 `ESLint`、`Prettier`、`Stylelint`、`Publint`、`CSpell` 等工具保证代码质量。
-- **工程化**：使用 `Pnpm Monorepo`、`TurboRepo`、`Changeset` 等工具，提高开发效率。
+- **工程化**：使用 `Pnpm Monorepo`、`TurboRepo` 等工具，提高开发效率。
 
 ## 浏览器支持
 
