@@ -138,6 +138,18 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           link: 'js/proto-vs-class',
           text: '原型继承和类继承的比较',
         },
+        {
+          link: 'js/object-create',
+          text: '对象创建方式概括',
+        },
+        {
+          link: 'js/object-inherit',
+          text: '对象继承方式总结',
+        },
+        {
+          link: 'js/gc',
+          text: '浏览器垃圾回收机制详解',
+        },
       ],
     },
     {
