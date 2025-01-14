@@ -21,6 +21,7 @@
 | JS | [深入理解JavaScript系列](https://www.cnblogs.com/TomXu/archive/2011/12/15/2288411.html) | ⭐⭐⭐⭐⭐ |
 | JS | [你不知道的js](https://github.com/getify/You-Dont-Know-JS) | ⭐⭐⭐⭐⭐ |
 | TS | [TypeScript教程](https://www.runoob.com/typescript/ts-tutorial.html)）| ⭐⭐ |
+| TS | [深入理解 TypeScript](https://jkchao.github.io/typescript-book-chinese/)）| ⭐⭐⭐⭐⭐ |
 | Vue | [Vue3教程](https://www.runoob.com/vue3/vue3-tutorial.html) | ⭐⭐ |
 | Vue | [Vue3官网](https://cn.vuejs.org/guide/introduction) | ⭐⭐⭐ |
 | Vue | [Pinia](https://pinia.vuejs.org/zh/introduction.html) | ⭐⭐ |
@@ -28,4 +29,9 @@
 | React | [React教程](https://www.runoob.com/react/react-tutorial.html) | ⭐⭐ |
 | React | [React中文学习站](https://www.reactjs.cn/learn) | ⭐⭐ |
 | Node.js | [Nodejs教程](https://www.runoob.com/nodejs/nodejs-tutorial.html) | ⭐⭐ |
+| 浏览器 | [渲染页面：浏览器的工作原理](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work) | ⭐⭐⭐ |
+| 浏览器 | [史上最全！图解浏览器的工作原理](https://www.infoq.cn/article/CS9-WZQlNR5h05HHDo1b) | ⭐⭐⭐⭐ |
+| 浏览器 | [浏览器简史及其核心原理详解：47 张图带你走进浏览器的世界](https://juejin.cn/post/6983896089703235592) | ⭐⭐⭐⭐ |
+| 浏览器 | [万字详文：深入理解浏览器原理](https://zhuanlan.zhihu.com/p/96986818) | ⭐⭐⭐⭐⭐ |
 | 设计模式 | [设计模式](https://refactoringguru.cn/design-patterns) | ⭐⭐⭐⭐⭐ |
+| 函数式编程 | [函数式编程指南](https://llh911001.gitbooks.io/mostly-adequate-guide-chinese/content/) | ⭐⭐⭐⭐ |

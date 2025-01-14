@@ -124,6 +124,10 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           link: 'fe/project-code-management',
           text: '项目代码组织管理方案',
         },
+        {
+          link: 'fe/web-security',
+          text: '常见web安全',
+        },
       ],
     },
     {
@@ -154,6 +158,36 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
     },
     {
       collapsed: false,
+      text: 'vue',
+      items: [
+        {
+          link: 'vue/virtual-dom',
+          text: 'Virtual DOM 介绍',
+        },
+        {
+          link: 'vue/binding',
+          text: '双向绑定实现方案',
+        },
+        {
+          link: 'vue/rendering',
+          text: 'Vue 3 渲染原理',
+        },
+        {
+          link: 'vue/compile',
+          text: 'Vue 3 模版编译原理',
+        },
+        {
+          link: 'vue/vue-router',
+          text: 'Vue Router 核心技术原理',
+        },
+        {
+          link: 'vue/pinia',
+          text: 'Pinia 核心技术原理',
+        },
+      ],
+    },
+    {
+      collapsed: false,
       text: 'node.js',
       items: [
         {
@@ -173,6 +207,20 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         {
           link: 'performance/introduction',
           text: '性能优化介绍',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '其他',
+      items: [
+        {
+          link: 'other/oop',
+          text: '面向对象编程概述',
+        },
+        {
+          link: 'other/fp',
+          text: '函数式编程概述',
         },
       ],
     },
