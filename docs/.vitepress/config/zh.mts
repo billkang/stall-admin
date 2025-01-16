@@ -121,10 +121,6 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           text: '微前端介绍',
         },
         {
-          link: 'fe/project-code-management',
-          text: '项目代码组织管理方案',
-        },
-        {
           link: 'fe/web-security',
           text: '常见web安全',
         },
@@ -197,6 +193,38 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         {
           link: 'nodejs/server',
           text: '服务器知识介绍',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '工程化',
+      items: [
+        {
+          link: 'engineering/fe',
+          text: '前端工程化深度解析与实践指南',
+        },
+        {
+          link: 'engineering/css',
+          text: 'CSS 工程化系统介绍',
+        },
+        {
+          link: 'engineering/project-code-management',
+          text: '项目代码组织管理方案',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '浏览器',
+      items: [
+        {
+          link: 'browser/bytecode-v8',
+          text: '理解 V8 引擎的字节码与解释执行',
+        },
+        {
+          link: 'browser/bytecode-comparison',
+          text: 'Java 的字节码与 V8 的字节码：架构与功能对比',
         },
       ],
     },

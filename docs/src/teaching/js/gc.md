@@ -171,3 +171,7 @@ obj2.a = null;
 - 使用严格模式（use strict），避免隐式全局变量。
 
 通过上述内容，可以深入了解垃圾回收机制及其在 V8 引擎中的具体实现方式，从而更好地优化 JavaScript 应用性能并提升用户体验。
+
+## 参考
+
+[高性能 JavaScript 引擎 V8 - 垃圾回收](https://mp.weixin.qq.com/s/TnaQRMpJaxxIUIZS2MK9-g)

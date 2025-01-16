@@ -125,6 +125,14 @@
       "path": "packages/icons",
     },
     {
+      "name": "@stall/jssdk-core",
+      "path": "packages/jssdk-core",
+    },
+    {
+      "name": "@stall/jssdk-ui",
+      "path": "packages/jssdk-ui",
+    },
+    {
       "name": "@stall/locales",
       "path": "packages/locales",
     },

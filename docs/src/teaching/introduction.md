@@ -29,8 +29,8 @@
 | React | [React教程](https://www.runoob.com/react/react-tutorial.html) | ⭐⭐ |
 | React | [React中文学习站](https://www.reactjs.cn/learn) | ⭐⭐ |
 | Node.js | [Nodejs教程](https://www.runoob.com/nodejs/nodejs-tutorial.html) | ⭐⭐ |
-| 浏览器 | [渲染页面：浏览器的工作原理](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work) | ⭐⭐⭐ |
 | 浏览器 | [史上最全！图解浏览器的工作原理](https://www.infoq.cn/article/CS9-WZQlNR5h05HHDo1b) | ⭐⭐⭐⭐ |
+| 浏览器 | [浏览器是如何工作的：Chrome V8让你更懂JavaScript](https://juejin.cn/post/6882529843892731911) | ⭐⭐⭐⭐⭐ |
 | 浏览器 | [浏览器简史及其核心原理详解：47 张图带你走进浏览器的世界](https://juejin.cn/post/6983896089703235592) | ⭐⭐⭐⭐ |
 | 浏览器 | [万字详文：深入理解浏览器原理](https://zhuanlan.zhihu.com/p/96986818) | ⭐⭐⭐⭐⭐ |
 | 设计模式 | [设计模式](https://refactoringguru.cn/design-patterns) | ⭐⭐⭐⭐⭐ |
