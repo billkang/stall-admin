@@ -150,6 +150,18 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           link: 'js/gc',
           text: '浏览器垃圾回收机制详解',
         },
+        {
+          link: 'js/borrowing',
+          text: '理解 JavaScript 中的借用方法',
+        },
+        {
+          link: 'js/ec',
+          text: 'JavaScript 执行上下文、作用域、作用域链与 this',
+        },
+        {
+          link: 'js/valueOf-toString',
+          text: 'JavaScript 中的 `valueOf` 和 `toString` 方法',
+        },
       ],
     },
     {
