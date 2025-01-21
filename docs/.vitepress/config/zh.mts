@@ -110,11 +110,11 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
       items: [
         {
           link: 'fe/axios',
-          text: 'Axios介绍',
+          text: 'Axios 深入解析',
         },
         {
           link: 'fe/web-components',
-          text: 'Web Components介绍',
+          text: 'Web Components 全面解析',
         },
         {
           link: 'fe/micro-frontend',
@@ -122,7 +122,7 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         },
         {
           link: 'fe/web-security',
-          text: '常见web安全',
+          text: 'Web 安全全面解析',
         },
       ],
     },
@@ -174,7 +174,7 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         },
         {
           link: 'vue/binding',
-          text: '双向绑定实现方案',
+          text: '双向绑定实现方案深度解析',
         },
         {
           link: 'vue/rendering',
@@ -182,7 +182,7 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         },
         {
           link: 'vue/compile',
-          text: 'Vue 3 模版编译原理',
+          text: 'Vue3 模板编译原理详解',
         },
         {
           link: 'vue/vue-router',
@@ -213,7 +213,7 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
       text: '工程化',
       items: [
         {
-          link: 'engineering/fe',
+          link: 'engineering/guide',
           text: '前端工程化深度解析与实践指南',
         },
         {
@@ -236,7 +236,7 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         },
         {
           link: 'browser/bytecode-comparison',
-          text: 'Java 的字节码与 V8 的字节码：架构与功能对比',
+          text: 'Java 的字节码与 V8 的字节码',
         },
       ],
     },
