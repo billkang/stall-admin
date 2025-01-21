@@ -1,6 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import { BasicLayout, IFrameView } from '#/layouts';
+import { BasicLayout, IFrameView, MicroAppView } from '#/layouts';
 import { $t } from '#/locales';
 
 const routes: RouteRecordRaw[] = [
@@ -419,6 +419,27 @@ const routes: RouteRecordRaw[] = [
         path: '/demos/outside',
         children: [
           {
+            name: 'MicroAppDemos',
+            path: '/demos/outside/micro-app',
+            meta: {
+              icon: 'mdi:newspaper-variant-outline',
+              title: $t('demos.outside.microApp'),
+            },
+            children: [
+              {
+                name: 'child-vue3-vite',
+                path: '/demos/outside/micro-app/child-vue3-vite',
+                component: MicroAppView,
+                meta: {
+                  appName: 'child-vue3-vite',
+                  appUrl: 'http://localhost:3000/',
+                  icon: 'logos:vue',
+                  title: 'child-vue3-vite',
+                },
+              },
+            ],
+          },
+          {
             name: 'IframeDemos',
             path: '/demos/outside/iframe',
             meta: {
@@ -427,24 +448,12 @@ const routes: RouteRecordRaw[] = [
             },
             children: [
               {
-                name: 'VueDocumentDemo',
-                path: '/demos/outside/iframe/vue-document',
-                component: IFrameView,
-                meta: {
-                  icon: 'logos:vue',
-                  iframeSrc: 'https://cn.vuejs.org/',
-                  keepAlive: true,
-                  title: 'Vue',
-                },
-              },
-              {
                 name: 'TailwindcssDemo',
                 path: '/demos/outside/iframe/tailwindcss',
                 component: IFrameView,
                 meta: {
                   icon: 'devicon:tailwindcss',
                   iframeSrc: 'https://tailwindcss.com/',
-                  // keepAlive: true,
                   title: 'Tailwindcss',
                 },
               },
@@ -458,6 +467,16 @@ const routes: RouteRecordRaw[] = [
               title: $t('demos.outside.externalLink'),
             },
             children: [
+              {
+                name: 'VueDocumentDemo',
+                path: '/demos/outside/external-link/vue-document',
+                component: IFrameView,
+                meta: {
+                  icon: 'logos:vue',
+                  link: 'https://cn.vuejs.org/',
+                  title: 'Vue',
+                },
+              },
               {
                 name: 'ViteDemo',
                 path: '/demos/outside/external-link/vite',
@@ -477,89 +496,6 @@ const routes: RouteRecordRaw[] = [
                   link: 'https://vueuse.org',
                   title: 'VueUse',
                 },
-              },
-            ],
-          },
-        ],
-      },
-      // 嵌套菜单
-      {
-        meta: {
-          icon: 'ic:round-menu',
-          title: $t('demos.nested.title'),
-        },
-        name: 'NestedDemos',
-        path: '/demos/nested',
-        children: [
-          {
-            name: 'Menu1Demo',
-            path: '/demos/nested/menu1',
-            component: () => import('#/views/demos/nested/menu-1.vue'),
-            meta: {
-              icon: 'ic:round-menu',
-              keepAlive: true,
-              title: $t('demos.nested.menu1'),
-            },
-          },
-          {
-            name: 'Menu2Demo',
-            path: '/demos/nested/menu2',
-            meta: {
-              icon: 'ic:round-menu',
-              keepAlive: true,
-              title: $t('demos.nested.menu2'),
-            },
-            children: [
-              {
-                name: 'Menu21Demo',
-                path: '/demos/nested/menu2/menu2-1',
-                component: () => import('#/views/demos/nested/menu-2-1.vue'),
-                meta: {
-                  icon: 'ic:round-menu',
-                  keepAlive: true,
-                  title: $t('demos.nested.menu2_1'),
-                },
-              },
-            ],
-          },
-          {
-            name: 'Menu3Demo',
-            path: '/demos/nested/menu3',
-            meta: {
-              icon: 'ic:round-menu',
-              title: $t('demos.nested.menu3'),
-            },
-            children: [
-              {
-                name: 'Menu31Demo',
-                path: 'menu3-1',
-                component: () => import('#/views/demos/nested/menu-3-1.vue'),
-                meta: {
-                  icon: 'ic:round-menu',
-                  keepAlive: true,
-                  title: $t('demos.nested.menu3_1'),
-                },
-              },
-              {
-                name: 'Menu32Demo',
-                path: 'menu3-2',
-                meta: {
-                  icon: 'ic:round-menu',
-                  title: $t('demos.nested.menu3_2'),
-                },
-                children: [
-                  {
-                    name: 'Menu321Demo',
-                    path: '/demos/nested/menu3/menu3-2/menu3-2-1',
-                    component: () =>
-                      import('#/views/demos/nested/menu-3-2-1.vue'),
-                    meta: {
-                      icon: 'ic:round-menu',
-                      keepAlive: true,
-                      title: $t('demos.nested.menu3_2_1'),
-                    },
-                  },
-                ],
               },
             ],
           },
