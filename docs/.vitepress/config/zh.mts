@@ -40,7 +40,7 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时1',
       items: [
         {
-          link: 'period1/introduction',
+          link: 'lesson1_background/introduction',
           text: '项目背景介绍',
         },
       ],
@@ -50,12 +50,16 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时2',
       items: [
         {
-          link: 'period2/axios',
-          text: '封装axios',
+          link: 'lesson2_basic/axios',
+          text: 'Axios 深入解析',
         },
         {
-          link: 'period2/vue-router',
-          text: '封装vue-router',
+          link: 'lesson2_basic/using-axios',
+          text: '封装 axios',
+        },
+        {
+          link: 'lesson2_basic/using-vue-router',
+          text: '封装 vue-router',
         },
       ],
     },
@@ -64,8 +68,8 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时3',
       items: [
         {
-          link: 'period3/introduction',
-          text: '项目背景介绍',
+          link: 'lesson3_table/how-to',
+          text: '开发复杂 table 组件',
         },
       ],
     },
@@ -74,8 +78,12 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时4',
       items: [
         {
-          link: 'period4/introduction',
-          text: '项目背景介绍',
+          link: 'lesson4_web-components/introduction',
+          text: 'Web Components 全面解析',
+        },
+        {
+          link: 'lesson4_web-components/how-to',
+          text: '封装一个 web components 组件',
         },
       ],
     },
@@ -84,8 +92,12 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时5',
       items: [
         {
-          link: 'period5/introduction',
-          text: '项目背景介绍',
+          link: 'lesson5_lowcode/renderer',
+          text: '低代码渲染器',
+        },
+        {
+          link: 'lesson5_lowcode/how-to',
+          text: '使用低代码渲染器',
         },
       ],
     },
@@ -94,8 +106,12 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时6',
       items: [
         {
-          link: 'period6/introduction',
-          text: '项目背景介绍',
+          link: 'lesson6_micro-frontend/introduction',
+          text: '微前端介绍',
+        },
+        {
+          link: 'lesson6_micro-frontend/how-to',
+          text: '接入微前端',
         },
       ],
     },
@@ -108,18 +124,6 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
       collapsed: false,
       text: '前端',
       items: [
-        {
-          link: 'fe/axios',
-          text: 'Axios 深入解析',
-        },
-        {
-          link: 'fe/web-components',
-          text: 'Web Components 全面解析',
-        },
-        {
-          link: 'fe/micro-frontend',
-          text: '微前端介绍',
-        },
         {
           link: 'fe/web-security',
           text: 'Web 安全全面解析',
@@ -393,7 +397,7 @@ function nav(): DefaultTheme.NavItem[] {
       text: '前端资料',
     },
     {
-      link: '/course/period1/introduction',
+      link: '/course/lesson1_background/introduction',
       text: '项目课程',
     },
   ];

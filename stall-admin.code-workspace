@@ -5,6 +5,10 @@
       "path": "apps/backend-mock",
     },
     {
+      "name": "@stall/child-vue3-vite",
+      "path": "apps/child-vue3-vite",
+    },
+    {
       "name": "@stall/web",
       "path": "apps/web",
     },
