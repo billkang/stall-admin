@@ -1,0 +1,20 @@
+{
+  "name": "@stall-lowcode/renderer",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@stall-lowcode/hooks": "workspace:*",
+    "@stall-lowcode/micro-widget": "workspace:*",
+    "@stall-lowcode/types": "workspace:*",
+    "@stall-lowcode/utils": "workspace:*",
+    "intl-messageformat": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  }
+}

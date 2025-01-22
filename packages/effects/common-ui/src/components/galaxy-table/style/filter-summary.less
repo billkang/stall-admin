@@ -1,0 +1,35 @@
+@import './token.less';
+
+.stall-galaxy-table-filter__summary {
+  display: flex;
+  margin-top: 12px;
+  font-size: 12px;
+  height: 28px;
+  line-height: 28px;
+
+  .label {
+    margin-right: 8px;
+    font-weight: 510;
+    color: #4d5156;
+
+    &::after {
+      display: inline-block;
+      content: ': ';
+    }
+  }
+
+  .tag-list {
+    .stall-tag {
+      padding: 4px 8px;
+      background: #fff5e8;
+      color: #4d5156;
+      line-height: 20px;
+    }
+  }
+
+  .clear-all {
+    margin-left: 8px;
+    color: @blue-6;
+    cursor: pointer;
+  }
+}

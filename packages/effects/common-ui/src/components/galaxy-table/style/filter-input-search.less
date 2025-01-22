@@ -1,0 +1,39 @@
+@import './token.less';
+
+.stall-galaxy-table-filter__input-search {
+  height: 32px;
+
+  .icon-search-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: @color-text-1;
+    background: @color-bg-white;
+    border: 1px solid @color-border-2;
+    border-radius: 4px;
+    cursor: pointer;
+    align-items: center;
+  }
+
+  .stall-input {
+    width: 130px;
+  }
+
+  .stall-input-wrapper {
+    height: 30px;
+    padding-left: 8px;
+    border-radius: 4px;
+
+    .stall-input-prefix {
+      margin-top: 2px;
+      padding-right: 10px;
+    }
+  }
+
+  &.focused-filter {
+    .stall-input-wrapper {
+      border: 1px solid @color-primary-5;
+    }
+  }
+}

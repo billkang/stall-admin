@@ -1,0 +1,76 @@
+@import './token.less';
+
+.stall-galaxy-table-filter__my-filter {
+  &-overlay {
+    font-size: 14px;
+    line-height: 22px;
+    background: #fff;
+    border: 1px solid @color-border-2;
+    padding: 4px 8px 4px 10px;
+    height: 32px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    width: max-content;
+    cursor: pointer;
+
+    &.focused-filter {
+      border: 1px solid @color-primary-5;
+    }
+
+    span {
+      margin-right: 5px;
+    }
+  }
+
+  .empty {
+    padding: 33px;
+    width: 200px;
+    height: 88px;
+    color: #080808;
+    text-align: center;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.12);
+  }
+
+  .custom-filter-wrapper {
+    margin: 0;
+    padding: 4px 4px 0 4px;
+    width: 200px;
+    min-height: 112px;
+    max-height: 220px;
+    color: @color-text-1;
+    background: #fff;
+    overflow-y: auto;
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      padding: 5px 8px;
+      height: 32px;
+      border-radius: 3px;
+      align-items: center;
+
+      label {
+        min-width: 120px;
+        cursor: pointer;
+      }
+
+      .icon {
+        display: none !important;
+        cursor: pointer;
+      }
+
+      &:hover {
+        background: #f0f0f0;
+
+        .icon {
+          display: inline-flex !important;
+        }
+      }
+    }
+  }
+}

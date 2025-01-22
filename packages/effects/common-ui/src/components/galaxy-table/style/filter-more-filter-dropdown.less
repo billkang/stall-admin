@@ -1,0 +1,110 @@
+@import './token.less';
+
+.stall-galaxy-table-filter__more-filter {
+  position: relative;
+  padding: 4px 8px 4px 10px;
+  height: 32px;
+  background: @color-bg-white;
+  border: 1px solid @color-border-2;
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  &.focused-filter {
+    border: 1px solid @color-primary-5;
+  }
+
+  .dropdown-title {
+    font-size: 14px;
+    line-height: 22px;
+    color: @color-text-1;
+    padding: 0 5px 0 5px;
+    width: max-content;
+
+    .filter-count {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 100px;
+      background: @blue-6;
+      font-size: 12px;
+      font-weight: 510;
+      line-height: 20px;
+      text-align: center;
+      color: @color-bg-white;
+    }
+  }
+
+  &-overlay {
+    background: @color-bg-white;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.12);
+
+    .stall-dropdown-menu {
+      padding: 16px 20px 8px;
+      width: 696px;
+      display: grid;
+      grid-template-columns: auto auto auto;
+
+      .stall-form-item {
+        width: 200px;
+        margin-bottom: 16px;
+
+        &.grid-rang-picker {
+          width: 100%;
+          grid-column: 1 / 3;
+        }
+
+        .stall-form-row,
+        .stall-form-item-control {
+          display: block;
+        }
+
+        .stall-form-item-label {
+          display: block;
+          text-align: left;
+
+          label::after {
+            display: none;
+          }
+        }
+      }
+
+      .form-footer {
+        grid-column-end: span 3;
+        width: 100%;
+        line-height: 32px;
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+
+        .left {
+          display: flex;
+          align-items: center;
+
+          .checker {
+            margin-right: 6px;
+          }
+
+          .stall-icon {
+            margin-left: 5px;
+          }
+
+          .app-icon {
+            margin-left: 4px;
+            cursor: pointer;
+          }
+
+          .custom-filter-input {
+            margin-left: 8px;
+            width: 220px;
+          }
+        }
+      }
+    }
+  }
+}
