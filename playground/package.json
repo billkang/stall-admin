@@ -16,7 +16,7 @@
     "#/*": "./src/*"
   },
   "dependencies": {
-    "@tanstack/vue-query": "catalog:",
+    "@micro-zoe/micro-app": "catalog:",
     "@stall-core/menu-ui": "workspace:*",
     "@stall/access": "workspace:*",
     "@stall/common-ui": "workspace:*",
@@ -32,6 +32,7 @@
     "@stall/styles": "workspace:*",
     "@stall/types": "workspace:*",
     "@stall/utils": "workspace:*",
+    "@tanstack/vue-query": "catalog:",
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",

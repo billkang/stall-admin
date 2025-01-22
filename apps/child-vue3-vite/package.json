@@ -1,0 +1,11 @@
+{
+  "name": "@stall/child-vue3-vite",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite"
+  },
+  "dependencies": {
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  }
+}

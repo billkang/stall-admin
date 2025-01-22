@@ -1,7 +1,11 @@
 import { initPreferences } from '@stall/preferences';
 import { unmountGlobalLoading } from '@stall/utils';
 
+import microApp from '@micro-zoe/micro-app';
+
 import { overridesPreferences } from './preferences';
+
+microApp.start();
 
 /**
  * 应用初始化完成之后再进行页面加载渲染

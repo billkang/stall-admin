@@ -10,20 +10,11 @@
     "adminVisible": "Visible to Admin",
     "userVisible": "Visible to User"
   },
-  "nested": {
-    "title": "Nested Menu",
-    "menu1": "Menu 1",
-    "menu2": "Menu 2",
-    "menu2_1": "Menu 2-1",
-    "menu3": "Menu 3",
-    "menu3_1": "Menu 3-1",
-    "menu3_2": "Menu 3-2",
-    "menu3_2_1": "Menu 3-2-1"
-  },
   "outside": {
     "title": "External Pages",
     "embedded": "Embedded",
-    "externalLink": "External Link"
+    "externalLink": "External Link",
+    "microApp": "Micro App"
   },
   "badge": {
     "title": "Menu Badge",
