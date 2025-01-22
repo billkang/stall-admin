@@ -5,6 +5,10 @@
       "path": "apps/backend-mock",
     },
     {
+      "name": "@stall/child-demo",
+      "path": "apps/child-demo",
+    },
+    {
       "name": "@stall/child-vue3-vite",
       "path": "apps/child-vue3-vite",
     },
@@ -47,6 +51,14 @@
     {
       "name": "@stall/vite-config",
       "path": "internal/vite-config",
+    },
+    {
+      "name": "@stall-jssdk/components",
+      "path": "jssdk/components",
+    },
+    {
+      "name": "@stall-jssdk/core",
+      "path": "jssdk/core",
     },
     {
       "name": "@stall-core/design",
@@ -127,14 +139,6 @@
     {
       "name": "@stall/icons",
       "path": "packages/icons",
-    },
-    {
-      "name": "@stall/jssdk-core",
-      "path": "packages/jssdk-core",
-    },
-    {
-      "name": "@stall/jssdk-ui",
-      "path": "packages/jssdk-ui",
     },
     {
       "name": "@stall/locales",
