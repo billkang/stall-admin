@@ -77,5 +77,6 @@
       "backToLogin": "返回登录",
       "entry": "进入系统"
     }
-  }
+  },
+  "table": {}
 }

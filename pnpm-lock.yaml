@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@ant-design/icons-vue':
+      specifier: ^7.0.1
+      version: 7.0.1
     '@clack/prompts':
       specifier: ^0.9.0
       version: 0.9.0
@@ -1057,6 +1060,9 @@ importers:
       '@stall-jssdk/core':
         specifier: workspace:*
         version: link:../core
+      ant-design-vue:
+        specifier: 'catalog:'
+        version: 4.2.6(vue@3.5.13(typescript@5.7.2))
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.7.2)
@@ -1066,6 +1072,9 @@ importers:
 
   jssdk/core:
     dependencies:
+      '@ant-design/icons-vue':
+        specifier: 'catalog:'
+        version: 7.0.1(vue@3.5.13(typescript@5.7.2))
       '@vue/shared':
         specifier: 'catalog:'
         version: 3.5.13
@@ -1379,6 +1388,9 @@ importers:
 
   packages/effects/common-ui:
     dependencies:
+      '@ant-design/icons-vue':
+        specifier: 'catalog:'
+        version: 7.0.1(vue@3.5.13(typescript@5.7.2))
       '@stall-core/form-ui':
         specifier: workspace:*
         version: link:../../@core/ui-kit/form-ui
@@ -1412,6 +1424,9 @@ importers:
       '@vueuse/integrations':
         specifier: 'catalog:'
         version: 12.2.0(async-validator@4.2.5)(axios@1.7.9)(change-case@5.4.4)(focus-trap@7.6.2)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.6)(typescript@5.7.2)
+      ant-design-vue:
+        specifier: 'catalog:'
+        version: 4.2.6(vue@3.5.13(typescript@5.7.2))
       qrcode:
         specifier: 'catalog:'
         version: 1.5.4

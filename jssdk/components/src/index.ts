@@ -1,10 +1,9 @@
 import { initContext, defineJSSDK } from '@stall-jssdk/core';
-import { MemberSelector } from './MemberSelector';
-
-import './MemberSelector/style.less';
+import { MemberTable } from './MemberTable';
 
 initContext({
   APP_USER: 'STALL_BASIC___APP_USER',
 });
 
-export const defineSDKMemberSelector = () => defineJSSDK('member-selector', MemberSelector);
+export const defineSDKMemberSelector = () =>
+  defineJSSDK('member-selector', MemberTable);

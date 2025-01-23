@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="dcp-galaxy-table-filter__summary">
+  <div v-if="visible" class="stall-galaxy-table-filter__summary">
     <div class="label">{{ t(`table.filter.summaryLabel`) }}</div>
 
     <Space class="tag-list">

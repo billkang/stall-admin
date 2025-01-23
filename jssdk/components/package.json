@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@stall-jssdk/core": "workspace:*",
+    "ant-design-vue": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
   }

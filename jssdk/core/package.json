@@ -9,6 +9,7 @@
     }
   },
   "dependencies": {
+    "@ant-design/icons-vue": "catalog:",
     "@vue/shared": "catalog:",
     "ant-design-vue": "catalog:",
     "axios": "catalog:",

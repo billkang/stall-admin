@@ -1,7 +1,7 @@
 <template>
   <Dropdown position="bottom" trigger="click" @click.stop="handleToggle">
     <div
-      class="flex dcp-galaxy-table-filter__my-filter-overlay"
+      class="flex stall-galaxy-table-filter__my-filter-overlay"
       :class="{ 'focused-filter': focusedFilter === 'myFilter' }">
       <span>{{ t(`table.filter.myConditions`) }}</span>
       <IconUp v-if="isOpenOverlay" />
@@ -9,7 +9,7 @@
     </div>
 
     <template #content>
-      <div class="dcp-galaxy-table-filter__my-filter">
+      <div class="stall-galaxy-table-filter__my-filter">
         <div v-if="customFilters.size === 0" class="empty">{{ t(`table.filter.noCustomFilterText`) }}</div>
         <ul v-else class="custom-filter-wrapper">
           <li class="item" v-for="key in customFilters.keys()" :key="key">

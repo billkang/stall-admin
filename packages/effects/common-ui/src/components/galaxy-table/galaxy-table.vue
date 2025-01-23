@@ -121,10 +121,9 @@ import {
   Space,
   Button,
   Table,
-  useI18n
 } from 'ant-design-vue';
 
-import IconSettings from '../icon/icon-settings';
+import IconSettings from '@ant-design/icons-vue';
 import { useTableInit } from './hooks/useTableInit';
 import { useTable } from './hooks/useTable';
 import { useTableSetting } from './hooks/useTableSetting';

@@ -16,7 +16,7 @@ export const emitter: Emitter<Events> = mitt<Events>();
 
 export const request = axios.create();
 
-request.interceptors.request.use(function (config: { headers: { Authorization: any; tenantId: any; domainCode: any; }; }) {
+request.interceptors.request.use(function (config: any) {
   emitter.emit(ENUM_REQUEST_EVENT.LOADING, true);
 
   let appUser;

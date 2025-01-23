@@ -1,6 +1,6 @@
 import { defineComponent, h, ref, provide } from 'vue';
 import { Spin } from 'ant-design-vue';
-import { IconRefresh } from 'ant-design-vue/es/icon';
+import { ReloadOutlined } from '@ant-design/icons-vue';
 import { request, emitter, ENUM_REQUEST_EVENT } from './request';
 
 export default defineComponent({
@@ -27,15 +27,16 @@ export default defineComponent({
           h(
             Spin,
             {
-              loading: loading.value,
-              ring: true,
+              spinning: loading.value,
               style: { width: '100%' },
             },
             [
               error.value
                 ? h('div', [
-                    h('span', { style: { 'margin-right': '8px' } }, [`组件加载失败: ${error.value}`]),
-                    h(IconRefresh, {
+                    h('span', { style: { 'margin-right': '8px' } }, [
+                      `组件加载失败: ${error.value}`,
+                    ]),
+                    h(ReloadOutlined, {
                       style: { cursor: 'pointer' },
                       onClick: () => handleRefresh(),
                     }),

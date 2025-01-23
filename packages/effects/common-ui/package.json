@@ -12,6 +12,7 @@
     }
   },
   "dependencies": {
+    "@ant-design/icons-vue": "catalog:",
     "@stall-core/form-ui": "workspace:*",
     "@stall-core/popup-ui": "workspace:*",
     "@stall-core/shadcn-ui": "workspace:*",
@@ -23,6 +24,7 @@
     "@stall/types": "workspace:*",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
+    "ant-design-vue": "catalog:",
     "qrcode": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
