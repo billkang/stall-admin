@@ -143,6 +143,14 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           text: '原型继承和类继承的比较',
         },
         {
+          link: 'js/ec',
+          text: 'JavaScript 执行上下文、作用域、作用域链与 this',
+        },
+        {
+          link: 'js/closure',
+          text: 'JavaScript 闭包权威指南',
+        },
+        {
           link: 'js/object-create',
           text: '对象创建方式概括',
         },
@@ -155,12 +163,12 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           text: '浏览器垃圾回收机制详解',
         },
         {
-          link: 'js/borrowing',
-          text: '理解 JavaScript 中的借用方法',
+          link: 'js/boxing-unboxing',
+          text: 'JavaScript 装箱与拆箱操作全面指南',
         },
         {
-          link: 'js/ec',
-          text: 'JavaScript 执行上下文、作用域、作用域链与 this',
+          link: 'js/borrowing',
+          text: '理解 JavaScript 中的借用方法',
         },
         {
           link: 'js/valueOf-toString',
