@@ -16,26 +16,27 @@ export const emitter: Emitter<Events> = mitt<Events>();
 
 export const request = axios.create();
 
+function formatToken(token: null | string) {
+  return token ? `Bearer ${token}` : null;
+}
+
 request.interceptors.request.use(function (config: any) {
   emitter.emit(ENUM_REQUEST_EVENT.LOADING, true);
 
-  let appUser;
+  let accessStore;
   try {
-    const str = window.localStorage.getItem(context.APP_USER || 'stall_BASIC___APP_USER');
-    appUser = JSON.parse(str || '');
+    const str = window.localStorage.getItem(
+      context.CORE_ACCESS || 'stall-web-play-1.0.0-dev-core-access',
+    );
+    accessStore = JSON.parse(str || '');
   } catch {}
 
-  if (appUser) {
-    const { accessToken, userInfo } = appUser;
+  if (accessStore) {
+    const { accessToken } = accessStore;
 
     if (accessToken) {
       // jwt token
-      config.headers.Authorization = accessToken;
-
-      if (userInfo) {
-        config.headers.tenantId = userInfo.tenantId;
-        config.headers.domainCode = userInfo.domainCode;
-      }
+      config.headers.Authorization = formatToken(accessToken);
     }
   }
 
@@ -43,66 +44,19 @@ request.interceptors.request.use(function (config: any) {
 });
 
 request.interceptors.response.use(
-  function (res: { data: any; }) {
+  function (response: { data: any; status: number }) {
     emitter.emit(ENUM_REQUEST_EVENT.LOADING, false);
 
-    if (!res) {
-      return;
+    const { data: responseData, status } = response;
+
+    const { code, data: _data, error, message } = responseData;
+    if (status >= 200 && status < 400 && code === 0) {
+      return _data;
     }
 
-    const { data } = res;
+    emitter.emit(ENUM_REQUEST_EVENT.ERROR, error || message);
 
-    if (!data) {
-      emitter.emit(ENUM_REQUEST_EVENT.ERROR, 'no data');
-      throw new Error('error');
-    }
-
-    // 用于处理文件下载
-    if (
-      ['application/octet-stream', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].includes(
-        data.type,
-      )
-    ) {
-      return res;
-    }
-
-    //  这里 code，result，message为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
-    const { data: _data, errCode, errMessage, pageIndex, pageSize, success, totalCount, traceId } = data as any;
-
-    let result;
-    // 区分 分页接口和非分页接口的返回数据类型格式
-    if (totalCount !== null && totalCount !== undefined) {
-      result = {
-        items: _data,
-        traceId,
-        pageIndex,
-        pageSize,
-        totalCount,
-      };
-    } else {
-      result = _data;
-    }
-
-    const hasSuccess = data && !!success;
-    if (hasSuccess) {
-      return result || null;
-    }
-
-    // 在此处根据自己项目的实际情况对不同的code执行不同的操作
-    // 如果不希望中断当前请求，请return数据，否则直接抛出异常即可
-    let timeoutMsg = '';
-    switch (errCode) {
-      default:
-        if (errMessage) {
-          timeoutMsg = errMessage;
-        } else {
-          timeoutMsg = 'error';
-        }
-    }
-
-    emitter.emit(ENUM_REQUEST_EVENT.ERROR, timeoutMsg);
-
-    throw new Error(timeoutMsg);
+    throw Object.assign({}, response, { response });
   },
   function (error: any) {
     emitter.emit(ENUM_REQUEST_EVENT.ERROR, error);

@@ -1,5 +1,5 @@
 type JSSDKContext = {
-  APP_USER: string;
+  CORE_ACCESS: string;
 };
 
 export let context: JSSDKContext;

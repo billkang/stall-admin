@@ -2,7 +2,7 @@ import { initContext, defineJSSDK } from '@stall-jssdk/core';
 import { MemberTable } from './MemberTable';
 
 initContext({
-  APP_USER: 'STALL_BASIC___APP_USER',
+  CORE_ACCESS: 'stall-web-play-1.0.0-dev-core-access',
 });
 
 export const defineSDKMemberSelector = () =>

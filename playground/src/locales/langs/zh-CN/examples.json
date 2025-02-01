@@ -12,6 +12,9 @@
   "resize": {
     "title": "拖动调整"
   },
+  "jssdk": {
+    "title": "JSSDK"
+  },
   "form": {
     "title": "表单",
     "basic": "基础表单",

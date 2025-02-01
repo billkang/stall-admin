@@ -32,6 +32,7 @@
     "@stall/styles": "workspace:*",
     "@stall/types": "workspace:*",
     "@stall/utils": "workspace:*",
+    "@stall-jssdk/components": "workspace:*",
     "@tanstack/vue-query": "catalog:",
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",

@@ -1,9 +1,9 @@
 <template>
-  <Table></Table>
+  <Table :dataSource="memberDataList" :columns="columns"></Table>
 </template>
 
 <script setup lang="ts">
-import { PropType, ref, inject, watch } from 'vue';
+import { ref, inject, onMounted } from 'vue';
 import { Table } from 'ant-design-vue';
 import { columns } from './columns';
 
@@ -11,9 +11,16 @@ const request = inject('request') as any;
 
 const memberDataList = ref<any[]>([]);
 
-async function queryByPage(data: any) {
-  const res = await request.post('/api/table/list', data);
+onMounted(async () => {
+  const { items } = await queryByPage({ page: 1, pageSize: 20 });
 
+  memberDataList.value = items;
+});
+
+async function queryByPage(params: any) {
+  const res = await request.get('/api/table/list', {
+    params,
+  });
   return res;
 }
 </script>

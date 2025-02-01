@@ -16,6 +16,15 @@ const routes: RouteRecordRaw[] = [
     path: '/examples',
     children: [
       {
+        name: 'JSSDKExample',
+        path: '/examples/jssdk',
+        meta: {
+          icon: 'mdi:form-select',
+          title: $t('examples.jssdk.title'),
+        },
+        component: () => import('#/views/examples/jssdk.vue'),
+      },
+      {
         name: 'FormExample',
         path: '/examples/form',
         meta: {

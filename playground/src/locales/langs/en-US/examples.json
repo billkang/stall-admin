@@ -9,6 +9,9 @@
   "ellipsis": {
     "title": "EllipsisText"
   },
+  "jssdk": {
+    "title": "JSSDK"
+  },
   "form": {
     "title": "Form",
     "basic": "Basic Form",

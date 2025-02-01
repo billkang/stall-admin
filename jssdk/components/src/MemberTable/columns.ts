@@ -1,20 +1,20 @@
 export const columns = [
   {
-    title: '姓名',
-    dataIndex: 'personName',
-    width: 120,
-    filterable: {
-      componentType: 'input',
-    },
+    title: 'productName',
+    dataIndex: 'productName',
   },
   {
-    title: '账号',
-    dataIndex: 'userName',
+    title: 'category',
+    dataIndex: 'category',
     width: 120,
   },
   {
-    title: '供应商',
-    dataIndex: 'supplier',
+    title: 'description',
+    dataIndex: 'description',
+  },
+  {
+    title: 'status',
+    dataIndex: 'status',
     width: 120,
   },
 ];
