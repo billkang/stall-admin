@@ -143,9 +143,9 @@ function processLargeData() {
     };
 }
 
-const processor = processLargeData();
+let processor = processLargeData();
 processor();
-largeData = null; // 解除对 largeData 的引用
+processor = null; // 解除对 largeData 的引用
 ```
 
 ### 性能影响

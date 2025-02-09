@@ -60,7 +60,8 @@ async function loadCommonPlugins(
           },
           template: {
             compilerOptions: {
-              isCustomElement: (tag) => tag.startsWith('micro-app'),
+              isCustomElement: (tag) =>
+                tag.startsWith('micro-app') || tag.startsWith('stall-jssdk'),
             },
           },
         }),
