@@ -332,3 +332,7 @@ String Pool (For String Literals)
 - Java 类继承：适用于需要强类型、封装性和多态性的场景，如大型企业级应用、需要严格控制对象属性和方法访问权限的场景。类继承提供了清晰的结构和易于理解的继承关系，但内存使用相对较高，灵活性较低。
 
 在实际开发中，开发者可以根据具体需求和项目特点选择合适的继承方式。JavaScript 的原型继承在 Web 开发中具有广泛的应用，而 Java 的类继承在企业级应用开发中得到了广泛应用。
+
+## 参考
+
+[Javascript继承机制的设计思想](http://www.ruanyifeng.com/blog/2011/06/designing_ideas_of_inheritance_mechanism_in_javascript.html)

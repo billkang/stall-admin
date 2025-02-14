@@ -159,6 +159,10 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           text: '对象继承方式总结',
         },
         {
+          link: 'js/async',
+          text: 'JavaScript 异步编程详解',
+        },
+        {
           link: 'js/gc',
           text: '浏览器垃圾回收机制详解',
         },
@@ -202,7 +206,7 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         },
         {
           link: 'vue/pinia',
-          text: 'Pinia 核心技术原理',
+          text: 'Pinia 核心技术原理及内部实现',
         },
       ],
     },
