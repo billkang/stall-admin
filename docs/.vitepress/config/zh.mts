@@ -163,10 +163,6 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           text: 'JavaScript 异步编程详解',
         },
         {
-          link: 'js/gc',
-          text: '浏览器垃圾回收机制详解',
-        },
-        {
           link: 'js/boxing-unboxing',
           text: 'JavaScript 装箱与拆箱操作全面指南',
         },
@@ -202,11 +198,11 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         },
         {
           link: 'vue/vue-router',
-          text: 'Vue Router 核心技术原理',
+          text: 'Vue Router 深度解析与实现原理',
         },
         {
           link: 'vue/pinia',
-          text: 'Pinia 核心技术原理及内部实现',
+          text: 'Pinia 深度解析',
         },
       ],
     },
@@ -246,6 +242,10 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
       collapsed: false,
       text: '浏览器',
       items: [
+        {
+          link: 'browser/gc',
+          text: '浏览器垃圾回收机制详解',
+        },
         {
           link: 'browser/bytecode-v8',
           text: '理解 V8 引擎的字节码与解释执行',

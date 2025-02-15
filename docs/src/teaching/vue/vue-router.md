@@ -1,240 +1,305 @@
-# Vue Router 核心技术原理
+### Vue Router 深度解析与实现原理
 
-Vue Router 是 Vue.js 提供的官方路由解决方案，用于单页面应用（SPA）中管理不同视图的展示。它的核心职责是根据 URL 路径的变化，动态加载不同的组件，并更新视图。Vue Router 具有以下核心特点：
+Vue Router 是 Vue.js 官方的路由管理器，它使构建单页应用（SPA）变得更加简单。本文将系统地介绍 Vue Router 4 的核心概念、工作流程及其相关原理，并附上关键示例代码帮助理解。
 
-1. **路由匹配**：Vue Router 通过 path 和 component 的映射关系，解析用户请求的 URL，找到对应的组件并渲染。
-2. **动态视图渲染**：每当 URL 发生变化时，Vue Router 会根据当前的路由配置加载相应的组件，并通过 Vue 的响应式系统更新视图。
-3. **支持多种路由模式**：Vue Router 支持多种路由模式，最常见的是 Hash 模式 和 History 模式。
-4. **路由守卫**：Vue Router 允许开发者在路由跳转之前、之后进行钩子函数的拦截，用于处理权限控制、数据加载等操作。
+## 一、Vue Router 核心概念
 
-## 1. Hash 模式实现原理
+1. **`createRouter`**: 创建一个新的路由器实例。
+2. **`RouterView`**: 动态渲染匹配到的组件。
+3. **`RouterLink`**: 声明式导航链接。
+4. **`createWebHistory` 和 `createWebHashHistory`**: 提供不同的路由历史模式。
+5. **`createRouterMatcher`**: 管理和匹配路由规则。
 
-Hash 模式 是基于浏览器的 `window.location.hash` 进行路由控制的。在 Hash 模式下，URL 中的 # 符号后面的部分表示当前路由状态，当 URL 中的 hash 值发生变化时，浏览器不会重新加载页面，而是通过监听 `hashchange` 事件来触发页面内容的更新。
+## 二、核心组件与函数详解
 
-### Hash 模式核心代码
-
-```javascript
-// Hash 路由实现
-class HashRouter {
-  constructor(options) {
-    this.routes = options.routes || [];  // 路由配置
-    this.currentRoute = null;  // 当前路由
-    this.history = window.history;  // 浏览器历史对象
-    this.beforeEach = options.beforeEach || null;  // 路由守卫
-    this.init();  // 初始化路由
-  }
-
-  // 获取当前路由的 hash 值
-  getCurrentPath() {
-    return window.location.hash.slice(1) || '/';  // 默认为首页 '/'
-  }
-
-  // 路由匹配方法，返回匹配的路由配置
-  matchRoute(path) {
-    return this.routes.find(route => route.path === path);
-  }
-
-  // 路由更新，渲染视图
-  updateView() {
-    const route = this.matchRoute(this.currentRoute);
-    if (route) {
-      const component = route.component;
-      document.getElementById('app').innerHTML = component.render();  // 渲染组件
-    }
-  }
-
-  // 路由跳转方法，改变 hash
-  push(path) {
-    if (this.beforeEach && !this.beforeEach(path)) {  // 执行路由守卫
-      return;
-    }
-    window.location.hash = path;
-  }
-
-  // 初始化，监听 hashchange 事件
-  init() {
-    window.addEventListener('hashchange', this.onHashChange.bind(this));
-    this.onHashChange();  // 初始化时也进行一次路由匹配
-  }
-
-  // 处理 hashchange 事件
-  onHashChange() {
-    this.currentRoute = this.getCurrentPath();  // 获取当前路由路径
-    this.updateView();  // 更新视图
-  }
-}
-
-// 示例组件：Home 和 About
-const Home = {
-  render() {
-    return `<h1>Home Page</h1>`;
-  }
-};
-
-const About = {
-  render() {
-    return `<h1>About Page</h1>`;
-  }
-};
-
-// 路由定义
-const hashRouter = new HashRouter({
-  routes: [
-    { path: '/', component: Home },
-    { path: '/about', component: About }
-  ],
-  beforeEach(path) {
-    // 模拟路由守卫：阻止某些路径的访问
-    if (path === '/about') {
-      alert('You cannot visit the About page!');
-      return false;  // 返回 false 阻止跳转
-    }
-    return true;  // 允许跳转
-  }
-});
-
-// 路由跳转
-hashRouter.push('/');  // 默认导航到 Home 页面
-```
-
-在上面的代码中，`beforeEach` 是一个路由守卫函数，用于拦截路由跳转。在 `push` 方法中，我们在路由跳转前检查是否允许进入目标页面。如果不允许，则返回 `false`，阻止路由跳转。
-
-## 2. History 模式实现原理
-
-History 模式 利用现代浏览器的 History API（`pushState` 和 `replaceState`）来实现 URL 路径的变化，而不需要使用 `#` 符号。这种方式能够使得 URL 看起来更加简洁，更符合传统网站的导航方式。并且由于没有使用 `#`，这种方式对 SEO 和浏览器历史的管理也更友好。
-
-为了正确处理所有的 URL 变化，包括编程式地调用 `pushState` 和 `replaceState`，Vue Router 实现了一个自定义的监听机制来覆盖原生的 History API 方法，并在这些方法内部触发自定义事件。此外，它还需要处理页面刷新和首次加载的情况。
-
-### History 模式核心代码
+### 1. 创建路由器：`createRouter`
 
 ```javascript
-// History API 路由实现
-class HistoryRouter {
-  constructor(options) {
-    this.routes = options.routes || [];  // 路由配置
-    this.currentRoute = null;  // 当前路由
-    this.history = window.history;  // 浏览器历史对象
-    this.beforeEach = options.beforeEach || null;  // 路由守卫
-    this.listener = null;  // 自定义事件监听器
-    this.init();  // 初始化路由
-  }
+// src/router/index.js
+import { createRouterMatcher } from './matcher';
+import { createWebHistory, createWebHashHistory } from './history';
+import { inject, provide, shallowRef } from 'vue';
 
-  // 获取当前路由的路径
-  getCurrentPath() {
-    return window.location.pathname || '/';  // 默认为首页 '/'
-  }
+export function createRouter(options) {
+  const matcher = createRouterMatcher(options.routes, options);
+  const history = options.history || createWebHistory();
 
-  // 路由匹配方法，返回匹配的路由配置
-  matchRoute(path) {
-    return this.routes.find(route => route.path === path);
-  }
+  const currentRoute = shallowRef(matcher.resolve(history.location));
 
-  // 路由更新，渲染视图
-  updateView() {
-    const route = this.matchRoute(this.currentRoute);
-    if (route) {
-      const component = route.component;
-      document.getElementById('app').innerHTML = component.render();  // 渲染组件
+  const router = {
+    matcher,
+    history,
+    get currentRoute() {
+      return currentRoute.value;
+    },
+    push(to) {
+      history.push(to);
+      currentRoute.value = matcher.resolve(history.location);
+    },
+    replace(to) {
+      history.replace(to);
+      currentRoute.value = matcher.resolve(history.location);
     }
-  }
+  };
 
-  // 复写 history 方法
-  overrideHistoryMethods() {
-    const originalPushState = this.history.pushState.bind(this.history);
-    const originalReplaceState = this.history.replaceState.bind(this.history);
+  history.listen((location) => {
+    currentRoute.value = matcher.resolve(location);
+  });
 
-    this.history.pushState = (...args) => {
-      originalPushState(...args);
-      this.onPopState();
-    };
+  provide('router', router); // 使用provide注册router实例
+  provide('routerViewLocationKey', currentRoute); // 注册currentRoute
 
-    this.history.replaceState = (...args) => {
-      originalReplaceState(...args);
-      this.onPopState();
-    };
-  }
-
-  // 路由跳转方法，使用 pushState
-  push(path) {
-    if (this.beforeEach && !this.beforeEach(path)) {  // 执行路由守卫
-      return;
-    }
-    this.history.pushState({}, '', path);  // 修改 URL 路径
-  }
-
-  // 初始化，监听 popstate 事件并复写 history 方法
-  init() {
-    this.overrideHistoryMethods();  // 复写 history 方法
-    window.addEventListener('popstate', this.onPopState.bind(this));
-    this.onPopState();  // 初始化时进行一次路由匹配
-  }
-
-  // 处理 popstate 事件
-  onPopState() {
-    this.currentRoute = this.getCurrentPath();  // 获取当前路由路径
-  }
+  return router;
 }
-
-// 示例组件：Home 和 About
-const Home = {
-  render() {
-    return `<h1>Home Page</h1>`;
-  }
-};
-
-const About = {
-  render() {
-    return `<h1>About Page</h1>`;
-  }
-};
-
-// 路由定义
-const historyRouter = new HistoryRouter({
-  routes: [
-    { path: '/', component: Home },
-    { path: '/about', component: About }
-  ],
-  beforeEach(path) {
-    // 模拟路由守卫：阻止某些路径的访问
-    if (path === '/about') {
-      alert('You cannot visit the About Page!');
-      return false;  // 返回 false 阻止跳转
-    }
-    return true;  // 允许跳转
-  }
-});
-
-// 路由跳转
-historyRouter.push('/');  // 默认导航到 Home 页面
 ```
 
-我们添加了 `overrideHistoryMethods` 方法，它会覆写 `history.pushState` 和 `history.replaceState` 方法，在每次调用这两个方法时，都会手动调用 `onPopState` 方法以确保 URL 改变时能够正确更新视图。这样，无论是在用户点击浏览器的前进/后退按钮，还是通过编程方式改变 URL，都能触发相应的视图更新逻辑。
+**说明：**
+- 使用 `shallowRef` 来创建一个浅层响应式的 `currentRoute` 变量，并通过 `provide` 方法将其注入到组件树中。
+- `history` 参数决定了使用哪种历史记录模式 (`HTML5 History API` 或 `Hash 模式`)。
 
-此外，对于页面刷新和首次加载，我们仍然依赖于 `popstate` 事件，但在初始化时也立即调用了 `onPopState` 方法，以确保应用启动时也能正确设置初始状态。
+### 2. 视图渲染：`RouterView`
 
-## 3. Vue Router 实现的核心原理与设计思想
+```javascript
+// src/components/RouterView.js
+import { h, inject } from 'vue';
 
-### 路由匹配
+export default {
+  name: 'RouterView',
+  setup() {
+    const currentRoute = inject('routerViewLocationKey');
+    
+    return () => {
+      const matchedRoute = currentRoute.value.matched.find(record => record.components.default);
+      return matchedRoute ? h(matchedRoute.components.default) : null;
+    };
+  }
+};
+```
 
-通过配置路由表，Vue Router 会在浏览器 URL 发生变化时，查找匹配的路径，并渲染相应的组件。无论是 Hash 路由模式还是 History 路由模式，Vue Router 都会根据 URL 路径的变化，动态加载组件并渲染视图。
+在 `RouterView` 组件中，我们通过 `inject` 获取到 `currentRoute`，并根据其变化动态渲染相应的组件。
 
-### 组件渲染
+### 3. 导航链接：`RouterLink`
 
-Vue Router 通过 Vue 的 动态组件 和 嵌套路由 特性，使得视图切换更加高效和灵活。每次路由变化时，Vue Router 会使用 Vue 的响应式机制更新视图，不需要刷新整个页面。
+```javascript
+// src/components/RouterLink.js
+import { h, inject } from 'vue';
 
-### 路由模式的选择
+export default {
+  props: ['to'],
+  setup(props) {
+    const router = inject('router');
 
-- **Hash 模式**：简单易用，兼容性好，适合一些无需与后端交互的单页面应用。
-- **History 模式**：URL 更加简洁，更符合现代化的 SPA 应用需求，适合大多数现代应用，前提是后端需要支持。
+    function handleClick(event) {
+      event.preventDefault();
+      router.push(props.to);
+    }
 
-### 路由守卫
+    return () => h('a', {
+      attrs: { href: props.to },
+      on: { click: handleClick }
+    }, this.$slots.default());
+  }
+};
+```
 
-Vue Router 提供了路由守卫功能，用于拦截路由跳转的逻辑，进行权限控制、数据加载等操作。常见的守卫有 `beforeEach`、`afterEach` 等。
+用于创建导航链接，避免直接跳转导致页面刷新。
 
-### 动态路由与懒加载
+### 4. 历史模式：`createWebHistory` 和 `createWebHashHistory`
 
-Vue Router 支持懒加载和动态路由配置，可以根据需要按需加载路由组件，优化应用的性能。
+#### `createWebHistory`
 
-## 总结
+```javascript
+// src/history/html5.js
+function createBaseLocation(base) {
+  if (!base && !window.location.origin) {
+    return '';
+  }
+  return base || window.location.origin + window.location.pathname;
+}
 
-Vue Router 作为 Vue.js 官方的路由库，通过 Hash 模式和 History 模式实现了对单页面应用的路径管理。两种模式的实现机制有所不同，Hash 模式依赖于 `#` 符号，而 History 模式通过 `pushState` 和 `replaceState` 更加简洁地管理 URL。Vue Router 提供了强大的路由匹配、视图渲染、路由守卫等功能，使得 Vue 单页面应用的路由管理更加灵活和高效。
+function createCurrentLocation(base) {
+  return window.location.pathname + window.location.search + window.location.hash;
+}
+
+function useHistoryListeners(base, listener) {
+  window.addEventListener('popstate', () => {
+    listener(createCurrentLocation(base));
+  });
+}
+
+export function createWebHistory(base) {
+  const baseLocation = createBaseLocation(base);
+  let currentLocation = createCurrentLocation(baseLocation);
+
+  useHistoryListeners(baseLocation, (location) => {
+    currentLocation = location;
+  });
+
+  return {
+    get location() {
+      return currentLocation;
+    },
+    push(to) {
+      window.history.pushState({}, '', to);
+      currentLocation = to;
+    },
+    replace(to) {
+      window.history.replaceState({}, '', to);
+      currentLocation = to;
+    },
+    listen(listener) {
+      window.addEventListener('popstate', () => {
+        listener(currentLocation);
+      });
+    }
+  };
+}
+```
+
+#### `createWebHashHistory`
+
+```javascript
+// src/history/hash.js
+function createBaseLocation(base) {
+  if (!base && !window.location.origin) {
+    return '';
+  }
+  return base || window.location.origin + window.location.pathname;
+}
+
+function createCurrentLocation(base) {
+  return window.location.hash.slice(1) || '/';
+}
+
+export function createWebHashHistory(base) {
+  const baseLocation = createBaseLocation(base);
+  let currentLocation = createCurrentLocation(baseLocation);
+
+  window.addEventListener('hashchange', () => {
+    currentLocation = createCurrentLocation(baseLocation);
+  });
+
+  return {
+    get location() {
+      return currentLocation;
+    },
+    push(to) {
+      window.location.hash = to;
+    },
+    replace(to) {
+      window.location.replace(`#${to}`);
+    },
+    listen(listener) {
+      window.addEventListener('hashchange', () => {
+        listener(createCurrentLocation(baseLocation));
+      });
+    }
+  };
+}
+```
+
+### 5. 路由匹配器：`createRouterMatcher`
+
+```javascript
+// src/matcher/index.js
+export function createRouterMatcher(routes, options) {
+  const matcher = {};
+
+  matcher.resolve = (location) => {
+    for (let route of routes) {
+      if (route.path === location.path) {
+        return { matched: [route] };
+      }
+    }
+    return { matched: [] };
+  };
+
+  return matcher;
+}
+```
+
+**核心流程：**
+- 解析路由配置，接收路由配置数组，解析每个路由的路径模式、名称和其他属性。
+- 匹配路径，提供方法来根据当前 URL 匹配最合适的路由规则，返回匹配结果。
+
+## 三、工作流程
+
+1. **初始化阶段**：
+   - 调用 `createRouter` 初始化路由实例。
+   - 设置历史模式（`createWebHistory` 或 `createWebHashHistory`）。
+   - 使用 `createRouterMatcher` 解析并存储路由规则。
+
+2. **监听URL变化**：
+   - 根据选择的历史模式设置监听器，当 URL 发生变化时触发相应的导航逻辑。
+
+3. **导航处理**：
+   - 当用户点击 `RouterLink` 或通过编程方式调用 `$router.push()` 时，会触发导航逻辑。
+   - 使用路由匹配器查找匹配的路由，并更新 `currentRoute`。
+   - 根据新的路由状态重新渲染 `RouterView` 中的内容。
+
+4. **视图更新**：
+   - `RouterView` 监听路由变化，动态渲染匹配到的组件。
+
+## 四、完整示例
+
+以下是一个完整的 Vue Router 示例，展示了如何配置和使用上述核心组件和函数：
+
+```javascript
+// main.js
+import { createApp } from 'vue';
+import App from './App.vue';
+import { createRouter, createWebHistory } from './router'; // 自定义实现
+import Home from './views/Home.vue';
+import About from './views/About.vue';
+
+const routes = [
+  { path: '/', component: Home },
+  { path: '/about', component: About }
+];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+});
+
+const app = createApp(App);
+app.use(router);
+app.mount('#app');
+
+// App.vue
+<template>
+  <div id="app">
+    <router-link to="/">Home</router-link>
+    <router-link to="/about">About</router-link>
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App'
+}
+</script>
+```
+
+对于 `Home.vue` 和 `About.vue` 组件，可以简单定义如下：
+
+```html
+<!-- Home.vue -->
+<template>
+  <div>
+    <h1>Home Page</h1>
+  </div>
+</template>
+
+<!-- About.vue -->
+<template>
+  <div>
+    <h1>About Page</h1>
+  </div>
+</template>
+```
+
+## 五、总结
+
+通过深入了解 Vue Router 4 的核心概念和工作流程，我们可以更好地利用其功能来构建复杂的单页应用。掌握这些基础知识不仅有助于解决日常开发中的问题，也为探索更高级的功能和优化打下了坚实的基础。希望这篇指南能够帮助你更好地理解和使用 Vue Router 4。
