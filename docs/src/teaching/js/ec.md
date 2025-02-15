@@ -226,7 +226,7 @@ Eval Execution Context:
 - **This Binding**: 继承自全局执行上下文的 `this` 绑定。
 - **Scope Chain**: 包括全局执行上下文。
 
-## 执行上下文的生命周期
+## 2. 执行上下文的生命周期
 
 执行上下文的生命周期分为两个阶段：
 
@@ -391,7 +391,7 @@ Example Function Execution Context:
 - **This Binding**: 继承自全局执行上下文的 `this` 绑定。
 - **Scope Chain**: 包括当前函数执行上下文和全局执行上下文。
 
-## 作用域（Scope）
+## 3. 作用域（Scope）
 
 JavaScript中的作用域确实可以分为几种不同的类型。通常情况下，我们可以将其分为以下三种主要类型：
 
@@ -679,7 +679,7 @@ For Loop with let:
   - **j**: 具有块级作用域，每次迭代都会创建一个新的 `j`。
   - 每个回调函数捕获的是当前迭代的 `j`，因此输出分别是 0, 1, 2。
 
-## 作用域链（Scope Chain）
+## 4. 作用域链（Scope Chain）
 
 作用域链是执行上下文中用来查找变量的一个有序列表。当查找一个变量或函数时，如果在当前作用域找不到，则会沿着作用域链向上查找，直到找到为止或到达全局作用域。如果没有找到则抛出ReferenceError异常。
 
@@ -770,7 +770,7 @@ Second Level Execution Context:
   - **y**: 查找 `y` 在第一级函数的激活对象中找到。
   - **x**: 查找 `x` 在全局变量对象中找到。
 
-## `this` 关键字
+## 5. `this` 关键字
 
 `this` 关键字在JavaScript中指向当前执行上下文的对象。它的值取决于函数的调用方式。
 
@@ -845,7 +845,7 @@ var person = {
 person.greet(); // 输出: Hello, my name is Charlie
 ```
 
-## 总结
+## 6. 总结
 
 理解JavaScript中的执行上下文、作用域、作用域链以及`this`关键字对于掌握其运行机制至关重要。通过了解全局执行上下文、函数执行上下文和Eval执行上下文的不同属性和行为，你可以更好地编写和调试JavaScript代码。以下是关键点总结：
 

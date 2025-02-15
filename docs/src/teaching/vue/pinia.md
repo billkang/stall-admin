@@ -35,53 +35,294 @@ Plugins 是 Pinia 提供的插件机制，允许开发者扩展 Pinia 的功能�
 ### 1. 基础架构
 
 ```javascript
-import { reactive, computed, effectScope, markRaw } from 'vue';
+export function defineStore(id, setup, setupOptions) {
+  let options = setupOptions || setup;
 
-// 全局 Store 注册表
-const stores = {};
+  function useStore(pinia = null) {
+    const hasContext = hasInjectionContext();
+    pinia = hasContext ? inject(piniaSymbol, null) : pinia || getActivePinia();
 
-// 定义 Store 工厂函数
-export function defineStore(id, options) {
-    if (stores[id]) return stores[id];
+    if (!pinia) {
+      throw new Error();
+    }
 
-    const scope = effectScope(true);
-    const store = scope.run(() => {
-        const state = reactive(options.state ? options.state() : {});
-        const getters = {};
-        const actions = {};
+    if (!pinia._s.has(id)) {
+      if (typeof setup === 'function') {
+        createSetupStore(id, setup, options, pinia);
+      } else {
+        createOptionsStore(id, options, pinia);
+      }
+    }
 
-        // 设置 Getters
-        if (options.getters) {
-            for (const key in options.getters) {
-                getters[key] = computed(() => options.getters[key].call(store));
-            }
-        }
+    const store = pinia._s.get(id);
+    return store;
+  }
 
-        // 设置 Actions
-        if (options.actions) {
-            for (const key in options.actions) {
-                actions[key] = options.actions[key].bind(store);
-            }
-        }
+  useStore.$id = id;
+  return useStore;
+}
 
-        return {
-            ...state,
-            ...getters,
-            ...actions,
-            $id: id,
-            $reset() {
-                Object.assign(state, options.state());
-            }
-        };
+function createOptionsStore(id, options, pinia) {
+  const { state, actions, getters } = options;
+
+  // Initialize the state in the Pinia instance
+  if (!pinia.state.value[id]) {
+    pinia.state.value[id] = state ? state() : {};
+  }
+
+  // Create the store using the setup function
+  const store = createSetupStore(id, () => {
+    const localState = toRefs(pinia.state.value[id]);
+    const computedGetters = Object.keys(getters || {}).reduce((computedGetters, name) => {
+      computedGetters[name] = computed(() => {
+        setActivePinia(pinia);
+        const store = pinia._s.get(id);
+        return getters[name].call(store, store);
+      });
+      return computedGetters;
+    }, {});
+
+    return assign(localState, actions, computedGetters);
+  }, options, pinia);
+
+  return store;
+}
+
+function createSetupStore($id, setup, options = {}, pinia, isOptionsStore = false) {
+  let scope;
+
+  const optionsForPlugin = Object.assign({ actions: {} }, options);
+
+  const $subscribeOptions = { deep: true };
+
+  let isListening; // set to true at the end
+  let isSyncListening; // set to true at the end
+  let subscriptions = [];
+  let actionSubscriptions = [];
+  let debuggerEvents;
+  const initialState = pinia.state.value[$id];
+
+  if (!isOptionsStore && !initialState) {
+    pinia.state.value[$id] = {};
+  }
+
+  const hotState = { value: {} };
+
+  let activeListener;
+  function $patch(partialStateOrMutator) {
+    let subscriptionMutation;
+    isListening = isSyncListening = false;
+
+    if (typeof partialStateOrMutator === 'function') {
+      partialStateOrMutator(pinia.state.value[$id]);
+      subscriptionMutation = {
+        type: 'patchFunction',
+        storeId: $id,
+        events: debuggerEvents
+      };
+    } else {
+      mergeReactiveObjects(pinia.state.value[$id], partialStateOrMutator);
+      subscriptionMutation = {
+        type: 'patchObject',
+        payload: partialStateOrMutator,
+        storeId: $id,
+        events: debuggerEvents
+      };
+    }
+
+    const myListenerId = (activeListener = Symbol());
+    nextTick().then(() => {
+      if (activeListener === myListenerId) {
+        isListening = true;
+      }
     });
 
-    markRaw(store);
-    stores[id] = store;
-    return store;
+    isSyncListening = true;
+    triggerSubscriptions(subscriptions, subscriptionMutation, pinia.state.value[$id]);
+  }
+
+  const $reset = isOptionsStore
+    ? function $reset() {
+        const { state } = options;
+        const newState = state ? state() : {};
+        this.$patch(($state) => {
+          Object.assign($state, newState);
+        });
+      }
+    : function noop() {};
+
+  function $dispose() {
+    scope.stop();
+    subscriptions = [];
+    actionSubscriptions = [];
+    pinia._s.delete($id);
+  }
+
+  function action(fn, name = '') {
+    if (ACTION_MARKER in fn) {
+      fn[ACTION_NAME] = name;
+      return fn;
+    }
+
+    const wrappedAction = function () {
+      setActivePinia(pinia);
+      const args = Array.from(arguments);
+
+      const afterCallbackList = [];
+      const onErrorCallbackList = [];
+
+      function after(callback) {
+        afterCallbackList.push(callback);
+      }
+
+      function onError(callback) {
+        onErrorCallbackList.push(callback);
+      }
+
+      triggerSubscriptions(actionSubscriptions, {
+        args,
+        name: wrappedAction[ACTION_NAME],
+        store,
+        after,
+        onError
+      });
+
+      let ret;
+      try {
+        ret = fn.apply(this && this.$id === $id ? this : store, args);
+      } catch (error) {
+        triggerSubscriptions(onErrorCallbackList, error);
+        throw error;
+      }
+
+      if (ret instanceof Promise) {
+        return ret
+          .then((value) => {
+            triggerSubscriptions(afterCallbackList, value);
+            return value;
+          })
+          .catch((error) => {
+            triggerSubscriptions(onErrorCallbackList, error);
+            return Promise.reject(error);
+          });
+      }
+
+      triggerSubscriptions(afterCallbackList, ret);
+      return ret;
+    };
+
+    wrappedAction[ACTION_MARKER] = true;
+    wrappedAction[ACTION_NAME] = name;
+    return wrappedAction;
+  }
+
+  const partialStore = {
+    _p: pinia,
+    $id,
+    $onAction: addSubscription.bind(null, actionSubscriptions),
+    $patch,
+    $reset,
+    $subscribe(callback, options = {}) {
+      const removeSubscription = addSubscription(
+        subscriptions,
+        callback,
+        options.detached,
+        () => stopWatcher()
+      );
+
+      const stopWatcher = scope.run(() =>
+        watch(
+          () => pinia.state.value[$id],
+          (state) => {
+            if (options.flush === 'sync' ? isSyncListening : isListening) {
+              callback(
+                {
+                  storeId: $id,
+                  type: 'direct',
+                  events: debuggerEvents
+                },
+                state
+              );
+            }
+          },
+          Object.assign({}, $subscribeOptions, options)
+        )
+      );
+
+      return removeSubscription;
+    },
+    $dispose
+  };
+
+  const store = reactive(partialStore);
+
+  pinia._s.set($id, store);
+
+  const runWithContext = (pinia._a && pinia._a.runWithContext) || fallbackRunWithContext;
+
+  const setupStore = runWithContext(() =>
+    pinia._e.run(() => (scope = effectScope()).run(() => setup({ action })))
+  );
+
+  for (const key in setupStore) {
+    const prop = setupStore[key];
+
+    if ((isRef(prop) && !isComputed(prop)) || isReactive(prop)) {
+      if (!isOptionsStore) {
+        if (initialState && shouldHydrate(prop)) {
+          if (isRef(prop)) {
+            prop.value = initialState[key];
+          } else {
+            mergeReactiveObjects(prop, initialState[key]);
+          }
+        }
+        pinia.state.value[$id][key] = prop;
+      }
+    } else if (typeof prop === 'function') {
+      const actionValue = action(prop, key);
+      setupStore[key] = actionValue;
+    }
+  }
+
+  Object.assign(store, setupStore);
+  Object.assign(toRaw(store), setupStore);
+
+  Object.defineProperty(store, '$state', {
+    get: () => (pinia.state.value[$id]),
+    set: (state) => {
+      $patch(($state) => {
+        Object.assign($state, state);
+      });
+    }
+  });
+
+  pinia._p.forEach((extender) => {
+    Object.assign(store, scope.run(() =>
+      extender({
+        store,
+        app: pinia._a,
+        pinia,
+        options: optionsForPlugin
+      })
+    ));
+  });
+
+  if (
+    initialState &&
+    isOptionsStore &&
+    options.hydrate
+  ) {
+    options.hydrate(store.$state, initialState);
+  }
+
+  isListening = true;
+  isSyncListening = true;
+  return store;
 }
 ```
 
 **说明：**
+
 - `defineStore` 函数用于定义一个新的 Store。
 - 使用 `effectScope` 来确保所有副作用都在同一个作用域内运行，方便清理。
 - `$reset` 方法用于重置 Store 到初始状态。
@@ -91,9 +332,24 @@ export function defineStore(id, options) {
 为了让组件能够方便地使用 Store，我们提供了 `useStore` 函数。
 
 ```javascript
-export function useStore(id) {
-    if (!stores[id]) throw new Error(`Store "${id}" is not registered.`);
-    return stores[id];
+function useStore(pinia = null) {
+  const hasContext = hasInjectionContext();
+  pinia = hasContext ? inject(piniaSymbol, null) : pinia || getActivePinia();
+
+  if (!pinia) {
+    throw new Error();
+  }
+
+  if (!pinia._s.has(id)) {
+    if (typeof setup === 'function') {
+      createSetupStore(id, setup, options, pinia);
+    } else {
+      createOptionsStore(id, options, pinia);
+    }
+  }
+
+  const store = pinia._s.get(id);
+  return store;
 }
 ```
 
@@ -101,22 +357,22 @@ export function useStore(id) {
 
 ```javascript
 export const useCounterStore = defineStore('counter', {
-    state: () => ({
-        count: 0
-    }),
-    getters: {
-        doubleCount(state) {
-            return state.count * 2;
-        }
-    },
-    actions: {
-        increment() {
-            this.count++;
-        },
-        decrement() {
-            this.count--;
-        }
+  state: () => ({
+    count: 0
+  }),
+  getters: {
+    doubleCount(state) {
+      return state.count * 2;
     }
+  },
+  actions: {
+    increment() {
+      this.count++;
+    },
+    decrement() {
+      this.count--;
+    }
+  }
 });
 ```
 
@@ -125,25 +381,42 @@ export const useCounterStore = defineStore('counter', {
 Pinia 支持插件，可以通过插件扩展 Store 的功能。插件是一个函数，接收 Store 作为参数，并可以对其进行修改或添加额外的功能。
 
 ```javascript
-function persistPlugin({ store }) {
-    const storedState = localStorage.getItem(store.$id);
-    if (storedState) {
-        Object.assign(store, JSON.parse(storedState));
-    }
-
-    watch(() => ({...store }), (newState) => {
-        localStorage.setItem(store.$id, JSON.stringify(newState));
-    }, { deep: true });
-}
-
 // 创建 Pinia 实例并应用插件
 export function createPinia() {
-    return {
-        use(plugin) {
-            Object.values(stores).forEach(store => plugin({ store }));
-            return this;
-        }
-    };
+  const scope = effectScope(true);
+  const state = scope.run(() => ref({}))!;
+
+  let _p = [];
+  let toBeInstalled = [];
+
+  const pinia = {
+    install(app) {
+      setActivePinia(pinia);
+      pinia._a = app;
+      app.provide(piniaSymbol, pinia);
+      app.config.globalProperties.$pinia = pinia;
+
+      toBeInstalled.forEach(plugin => _p.push(plugin));
+      toBeInstalled = [];
+    },
+
+    use(plugin) {
+      if (!this._a) {
+        toBeInstalled.push(plugin);
+      } else {
+        _p.push(plugin);
+      }
+      return this;
+    },
+
+    _p,
+    _a: null,
+    _e: scope,
+    _s: new Map(),
+    state,
+  };
+
+  return pinia;
 }
 ```
 
