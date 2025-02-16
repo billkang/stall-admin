@@ -22,6 +22,18 @@ jack/123456
 
 - 安装依赖
 
+1. 安装nodejs
+
+进去nodejs官网 https://nodejs.org/zh-cn，下载LTS版本进行安装。
+
+2. 打开cmd命令行工具，安装pnpm
+
+```bash
+npm install -g pnpm
+```
+
+3. 进入项目目录，安装依赖
+
 ```bash
 cd stall-admin
 
@@ -32,8 +44,15 @@ pnpm install
 
 - 运行
 
+1. 运行项目
 ```bash
-pnpm dev
+pnpm run dev
+```
+
+2. 运行文档站
+
+```bash
+pnpm run dev:docs
 ```
 
 - 打包
