@@ -159,6 +159,10 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           text: '对象继承方式总结',
         },
         {
+          link: 'js/event-loop',
+          text: '深入解析 JavaScript 事件执行队列',
+        },
+        {
           link: 'js/async',
           text: 'JavaScript 异步编程详解',
         },
@@ -227,6 +231,10 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         {
           link: 'engineering/guide',
           text: '前端工程化深度解析与实践指南',
+        },
+        {
+          link: 'engineering/monorepo',
+          text: 'Monorepo 技术实践指南',
         },
         {
           link: 'engineering/css',
