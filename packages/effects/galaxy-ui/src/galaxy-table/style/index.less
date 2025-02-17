@@ -8,7 +8,7 @@
 @import './filter.less';
 @import './setting.less';
 
-.stall-galaxy-table-container {
+.dcp-galaxy-table-container {
   display: flex;
   flex-direction: column;
   position: relative;
@@ -19,7 +19,7 @@
   overflow-y: auto;
 
   &.pagination-top {
-    .stall-table-container {
+    .dcp-table-container {
       margin-bottom: 0 !important;
     }
   }
@@ -31,13 +31,13 @@
 
     .table-header__left-section,
     .table-header__right-section {
-      .stall-space {
+      .dcp-space {
         flex-wrap: wrap;
       }
     }
 
     .right-section {
-      .stall-btn {
+      .dcp-btn {
         padding: 5px 12px;
         margin-right: 4px;
 
@@ -77,32 +77,32 @@
     flex: 1;
     max-height: calc(100% - 68px);
 
-    .stall-table {
+    .dcp-table {
       height: 100%;
 
-      .stall-table-container {
+      .dcp-table-container {
         margin-bottom: 52px;
         height: 100%;
         border: 1px solid @color-border-1;
 
-        .stall-table-content-scroll-x {
+        .dcp-table-content-scroll-x {
           overflow-x: auto;
           overflow-y: auto;
         }
 
-        .stall-virtual-list {
-          .stall-table-element {
+        .dcp-virtual-list {
+          .dcp-table-element {
             width: 100%;
           }
         }
 
-        .stall-table-element {
-          .stall-table-th {
-            .stall-table-cell {
+        .dcp-table-element {
+          .dcp-table-th {
+            .dcp-table-cell {
               padding: 7px 12px;
               line-height: 20px;
 
-              .stall-table-th-title {
+              .dcp-table-th-title {
                 .header-cell-action {
                   display: flex;
                   justify-content: space-between;
@@ -129,7 +129,7 @@
         }
       }
 
-      .stall-table-pagination {
+      .dcp-table-pagination {
         position: absolute;
         left: 0;
         right: 0;
@@ -138,20 +138,20 @@
         background: @color-bg-white;
         z-index: 10;
 
-        &.stall-table-pagination-top {
+        &.dcp-table-pagination-top {
           position: absolute;
           top: -60px;
           left: unset;
           bottom: unset;
         }
 
-        .stall-pagination {
+        .dcp-pagination {
           width: 100%;
           justify-content: flex-end;
           font-size: 14px;
           line-height: 22px;
 
-          .stall-pagination-total {
+          .dcp-pagination-total {
             flex: 1;
             color: @color-text-3;
           }
@@ -169,12 +169,12 @@
             }
 
             &-disabled {
-              color: var(~'@{stall-cssvars-prefix}-color-text-4');
+              color: var(~'@{dcp-cssvars-prefix}-color-text-4');
             }
           }
 
-          .stall-pagination-options {
-            .stall-select-view-single {
+          .dcp-pagination-options {
+            .dcp-select-view-single {
               height: 32px;
               border-radius: 4px;
               background: @color-bg-white;
@@ -183,8 +183,8 @@
             }
           }
 
-          .stall-pagination-jumper {
-            .stall-input-wrapper {
+          .dcp-pagination-jumper {
+            .dcp-input-wrapper {
               height: 32px;
               border-radius: 2px;
               border: 1px solid @color-border-2;

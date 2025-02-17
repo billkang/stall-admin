@@ -1,12 +1,12 @@
 <template>
-  <div class="stall-galaxy-table-filter__select" :class="{ 'focused-filter': focusedFilter === column.dataIndex }">
+  <div class="dcp-galaxy-table-filter__select" :class="{ 'focused-filter': focusedFilter === column.dataIndex }">
     <span class="option-title">{{ column.title }}</span>
     <Select
       v-model="formData[column.dataIndex]"
       :multiple="column.filterable.multiple === true"
       :filter-option="false"
       allow-clear
-      :placeholder="t(`table.filter.all`)"
+      placeholder="table.filter.all"
       @click.stop="handleFocus(column.dataIndex)"
       @search="handleCustomSearch(column.dataIndex, $event)"
       @change="handleChange">
@@ -21,8 +21,7 @@
 
 <script lang="ts">
 import { defineComponent, type PropType, onMounted } from 'vue';
-import Select, { Option } from '../select';
-import { useI18n } from '../locale';
+import { Select, Option } from '@arco-design/web-vue';
 import { useTableSetting } from './hooks/useTableSetting';
 import { useTable } from './hooks/useTable';
 
@@ -43,8 +42,7 @@ export default defineComponent({
   },
   emits: ['custom-search', 'search'],
   setup(props, { emit }) {
-    const { t } = useI18n();
-    const { handleClickFilter, focusedFilter, handleClearFocusedFilter } = useTable({ props, emit, t });
+    const { handleClickFilter, focusedFilter, handleClearFocusedFilter } = useTable({ props, emit });
 
     const { formData } = useTableSetting(props);
 
@@ -72,7 +70,6 @@ export default defineComponent({
       handleClickFilter,
       focusedFilter,
       handleClearFocusedFilter,
-      t,
     };
   },
 });

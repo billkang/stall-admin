@@ -1,7 +1,10 @@
 {
-  "name": "@stall-jssdk/core",
+  "name": "@stall/galaxy-ui",
   "version": "1.0.0",
   "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -10,9 +13,6 @@
   },
   "dependencies": {
     "@arco-design/web-vue": "catalog:",
-    "@vue/shared": "catalog:",
-    "axios": "catalog:",
-    "mitt": "catalog:",
     "vue": "catalog:"
   }
 }

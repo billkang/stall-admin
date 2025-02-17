@@ -2,18 +2,26 @@
   "name": "@stall-jssdk/components",
   "version": "1.0.0",
   "type": "module",
-  "sideEffects": [
-    "**/*.css"
-  ],
   "exports": {
+    "./dist/*.css": {
+      "import": "./dist/*.css"
+    },
     ".": {
-      "types": "./src/index.ts",
-      "default": "./src/index.ts"
+      "import": "./dist/jssdk.js"
     }
   },
+  "main": "./dist/jssdk.js",
+  "module": "./dist/jssdk.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build"
+  },
   "dependencies": {
+    "@stall/vite-config": "workspace:*",
     "@stall-jssdk/core": "workspace:*",
-    "ant-design-vue": "catalog:",
+    "@arco-design/web-vue": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
   }

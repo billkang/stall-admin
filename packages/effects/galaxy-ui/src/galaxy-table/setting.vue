@@ -1,16 +1,15 @@
 <template>
   <Drawer
     v-model:visible="innerVisible"
-    class="stall-galaxy-table__setting"
+    class="dcp-galaxy-table__setting"
     :width="592"
     :mask="false"
     :footer="false"
-    @close="handleClose"
-  >
-    <template #title>{{ t('table.setting.title') }}</template>
+    @close="handleClose">
+    <template #title>table.setting.title</template>
     <div class="table-setting__left-section">
       <div class="table-size-wrapper">
-        <div class="wrapper-title">{{ t('table.setting.size.title') }}</div>
+        <div class="wrapper-title">table.setting.size.title</div>
         <div class="size-list">
           <div class="size-item">
             <div class="img-box" :class="{ selected: tableSize === 'large' }">
@@ -19,7 +18,7 @@
                 <IconCheckCircleFill />
               </span>
             </div>
-            {{ t('table.setting.size.large') }}
+            table.setting.size.large
           </div>
           <div class="size-item">
             <div class="img-box" :class="{ selected: tableSize === 'small' }">
@@ -28,7 +27,7 @@
                 <IconCheckCircleFill />
               </span>
             </div>
-            {{ t('table.setting.size.small') }}
+            table.setting.size.small
           </div>
         </div>
       </div>
@@ -36,29 +35,15 @@
       <Divider />
 
       <div class="table-text-control-wrapper">
-        <div class="wrapper-title">
-          {{ t('table.setting.textControl.title') }}
-        </div>
-        <RadioGroup
-          class="text-control-list"
-          v-model="textControl"
-          @change="handleChangeTextControl"
-        >
+        <div class="wrapper-title">table.setting.textControl.title</div>
+        <RadioGroup class="text-control-list" v-model="textControl" @change="handleChangeTextControl">
           <Radio value="wrap" class="text-control-item">
-            <div class="text-control-title">
-              {{ t('table.setting.textControl.wrapTitle') }}
-            </div>
-            <div class="text-control-desc">
-              {{ t('table.setting.textControl.wrapDesc') }}
-            </div>
+            <div class="text-control-title">table.setting.textControl.wrapTitle</div>
+            <div class="text-control-desc">table.setting.textControl.wrapDesc</div>
           </Radio>
           <Radio value="ellipsis" class="text-control-item">
-            <div class="text-control-title">
-              {{ t('table.setting.textControl.ellipsisTitle') }}
-            </div>
-            <div class="text-control-desc">
-              {{ t('table.setting.textControl.ellipsisTitle') }}
-            </div>
+            <div class="text-control-title">table.setting.textControl.ellipsisTitle</div>
+            <div class="text-control-desc">table.setting.textControl.ellipsisTitle</div>
           </Radio>
         </RadioGroup>
       </div>
@@ -66,18 +51,13 @@
 
     <div class="table-setting__right-section">
       <div class="table-columns-sort-wrapper">
-        <div class="wrapper-title">{{ t('table.setting.sort.title') }}</div>
+        <div class="wrapper-title">table.setting.sort.title</div>
         <Tree
           draggable
-          :data="
-            sortedColumns
-              .filter(
-                (c: any) => !['id', 'uuid', 'optional'].includes(c.dataIndex),
-              )
-              .map((c: any) => ({ ...c, key: c.dataIndex }))
-          "
-          @drop="handleDrop"
-        >
+          :data="sortedColumns
+            .filter((c: any) => !['id', 'uuid', 'optional'].includes(c.dataIndex))
+            .map((c: any) => ({ ...c, key: c.dataIndex }))"
+          @drop="handleDrop">
           <template #title="{ key, title, disabled }">
             <span>
               <IconDragDotVertical />
@@ -85,12 +65,9 @@
             </span>
 
             <Switch
-              v-model="
-                sortedColumns.find((c: any) => c.dataIndex === key)['visible']
-              "
+              v-model="sortedColumns.find((c: any) => c.dataIndex === key)['visible']"
               :disabled="disabled"
-              size="small"
-            />
+              size="small" />
           </template>
         </Tree>
       </div>
@@ -100,17 +77,11 @@
 
 <script lang="ts">
 import type { PropType } from 'vue';
-import type { TreeNodeData } from '../tree';
+import type { TreeNodeData } from '@arco-design/web-vue';
 import { defineComponent, ref, watch } from 'vue';
-import { Drawer, Divider, Tree, Switch, useI18n } from 'ant-design-vue';
-import Radio, { RadioGroup } from '../radio';
-import IconCheckCircleFill from '../icon/icon-check-circle-fill';
-import IconDragDotVertical from '../icon/icon-drag-dot-vertical';
-import {
-  TableSize,
-  TableTextControl,
-  useTableSetting,
-} from './hooks/useTableSetting';
+import { Drawer, Divider, Tree, Radio, RadioGroup, Switch } from '@arco-design/web-vue';
+import { IconCheckCircleFill, IconDragDotVertical } from '@arco-design/web-vue/es/icon';
+import { TableSize, TableTextControl, useTableSetting } from './hooks/useTableSetting';
 import sizeLarge from './assets/images/table-size-large.png';
 import sizeSmall from './assets/images/table-size-small.png';
 
@@ -143,19 +114,12 @@ export default defineComponent({
   emits: ['update:modelValue'],
   setup(props, { emit }) {
     const innerVisible = ref<boolean>(false);
-    const { t } = useI18n();
-    const {
-      sortedColumns,
-      setTextControl,
-      textControl,
-      setTableSize,
-      tableSize,
-      saveSortedColumns,
-    } = useTableSetting(props);
+    const { sortedColumns, setTextControl, textControl, setTableSize, tableSize, saveSortedColumns } =
+      useTableSetting(props);
 
     watch(
       () => props.modelValue,
-      (val) => {
+      val => {
         innerVisible.value = val || false;
       },
     );
@@ -179,11 +143,7 @@ export default defineComponent({
     }) => {
       const columns = [...sortedColumns.value];
 
-      const loop = (
-        columns: any[],
-        key: string,
-        callback: (item: any, index: number, arr: any[]) => void,
-      ) => {
+      const loop = (columns: any[], key: string, callback: (item: any, index: number, arr: any[]) => void) => {
         columns.some((item, index, arr) => {
           if (item.dataIndex === key) {
             callback(item, index, arr);
@@ -217,7 +177,6 @@ export default defineComponent({
     };
 
     return {
-      t,
       innerVisible,
       textControl,
       tableSize,

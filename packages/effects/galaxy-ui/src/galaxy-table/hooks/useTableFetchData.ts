@@ -1,5 +1,5 @@
 import type { TablePagination } from '../types';
-import { Ref, ref, unref } from 'vue';
+import { type Ref, ref, unref } from 'vue';
 
 export function useTableFetchData(fn: Function, tableRef?: Ref<any>) {
   const loading = ref<boolean>(false);

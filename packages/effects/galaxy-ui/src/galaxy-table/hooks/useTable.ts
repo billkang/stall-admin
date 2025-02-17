@@ -1,15 +1,11 @@
-import type { PaginationProps } from '../../pagination/interface';
-import type { TableColumnData, TableData } from '../../table/interface';
-import { ref, createVNode, watch } from 'vue';
-import { FilterXSS } from 'xss';
-import Modal from '../../modal';
-import Message from '../../message';
-import IconQuestionCircle from '../../icon/icon-question-circle';
-import { isValidValue } from '../../_utils/is';
+import type {
+  PaginationProps,
+  TableData,
+} from '@arco-design/web-vue';
+import { ref, watch } from 'vue';
+import { Modal, Message } from '@arco-design/web-vue';
 
 export type RowKey = string | number;
-
-const xss = new FilterXSS({});
 
 function flatten(data: any[]) {
   const ret: any[] = [];
@@ -28,11 +24,9 @@ function flatten(data: any[]) {
 export function useTable({
   props,
   emit,
-  t,
 }: {
   props: Record<string, any>;
   emit: any;
-  t: (key: string, ...args: any[]) => string;
 }) {
   let formData: Record<string, string> = {};
   const selectedRowKeys = ref<RowKey[]>(props.defaultSelectedKeys || []);
@@ -94,8 +88,8 @@ export function useTable({
     if (data) {
       Object.keys(data).forEach((key: string) => {
         const val = data[key];
-        if (isValidValue(val)) {
-          formData[key] = typeof val === 'string' ? xss.process(val) : val;
+        if (val) {
+          formData[key] = val!;
         } else {
           delete formData[key];
         }
@@ -105,7 +99,7 @@ export function useTable({
     }
 
     const extraData: Record<string, any> = {};
-    (props.columns as TableColumnData[])
+    (props.columns as any[])
       .filter(col => !!col.extra)
       .forEach(({ dataIndex, extra }) => {
         extraData[dataIndex!] = extra;
@@ -173,7 +167,7 @@ export function useTable({
 
   const handleSelectionChange = (keys: RowKey[]) => {
     if (keys.length > props.maxSelectedKeysCount) {
-      Message.warning(t(`table.maxSelectedKeysCount`, props.maxSelectedKeysCount));
+      Message.warning("table.maxSelectedKeysCount");
       return;
     }
 
@@ -191,12 +185,10 @@ export function useTable({
 
     if (deleteBatch) {
       Modal.confirm({
-        size: 'small',
-        title: t(`table.deleteConfirm.batchTitle`),
-        icon: createVNode(IconQuestionCircle),
-        content: t(`table.deleteConfirm.content`),
-        okText: t(`table.deleteConfirm.ok`),
-        cancelText: t(`table.deleteConfirm.cancel`),
+        title: `table.deleteConfirm.batchTitle`,
+        content: `table.deleteConfirm.content`,
+        okText: `table.deleteConfirm.ok`,
+        cancelText: `table.deleteConfirm.cancel`,
         onOk() {
           emit('delete-batch', [...selectedRowKeys.value]);
           selectedRowKeys.value = [];
@@ -216,12 +208,10 @@ export function useTable({
 
     if (_delete) {
       Modal.confirm({
-        title: t(`table.deleteConfirm.singleTitle`),
-        icon: createVNode(IconQuestionCircle),
-        content: t(`table.deleteConfirm.content`),
-        size: 'small',
-        okText: t(`table.deleteConfirm.ok`),
-        cancelText: t(`table.deleteConfirm.cancel`),
+        title: `table.deleteConfirm.singleTitle`,
+        content: `table.deleteConfirm.content`,
+        okText: `table.deleteConfirm.ok`,
+        cancelText: `table.deleteConfirm.cancel`,
         onOk() {
           selectedRowKeys.value = selectedRowKeys.value.filter(key => key !== record[props.rowKey]);
 

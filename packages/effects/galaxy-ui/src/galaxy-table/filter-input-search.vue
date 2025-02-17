@@ -1,40 +1,26 @@
 <template>
-  <div
-    class="stall-galaxy-table-filter__input-search"
-    :class="{ 'focused-filter': focusedFilter === 'inputSearch' }"
-  >
+  <div class="dcp-galaxy-table-filter__input-search" :class="{ 'focused-filter': focusedFilter === 'inputSearch' }">
     <Input
       v-if="visible"
       v-model="formData[column.dataIndex]"
-      :placeholder="t(`table.filter.inputPlaceholder`)"
+      placeholder="table.filter.inputPlaceholder"
       allow-clear
       @clear="handleClear"
-      @press-enter="handleSearch"
-    >
+      @press-enter="handleSearch">
       <template #prefix>
         <IconSearch />
       </template>
     </Input>
-    <div
-      class="icon-search-wrapper"
-      v-else
-      @click.stop="handleClickInputSearch"
-    >
+    <div class="icon-search-wrapper" v-else @click.stop="handleClickInputSearch">
       <IconSearch class="icon-search" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  PropType,
-  ref,
-  onMounted,
-  onBeforeUnmount,
-} from 'vue';
-import { Input, useI18n } from 'ant-design-vue';
-import IconSearch from '../icon/icon-search';
+import { defineComponent, type PropType, ref, onMounted, onBeforeUnmount } from 'vue';
+import { Input } from '@arco-design/web-vue';
+import { IconSearch } from '@arco-design/web-vue/es/icon';
 import { useTableSetting } from './hooks/useTableSetting';
 import { recursiveCheckNodeClass } from './utils';
 import { useTable } from './hooks/useTable';
@@ -61,9 +47,7 @@ export default defineComponent({
   emits: ['search'],
   setup(props, { emit }) {
     const { formData } = useTableSetting(props);
-    const { t } = useI18n();
-    const { focusedFilter, handleClickFilter, handleClearFocusedFilter } =
-      useTable({ props, emit, t });
+    const { focusedFilter, handleClickFilter, handleClearFocusedFilter } = useTable({ props, emit });
 
     const visible = ref<boolean>(props.expand);
     const handleClickInputSearch = () => {
@@ -73,10 +57,7 @@ export default defineComponent({
 
     const handleToggleVisible = (e: Event) => {
       if (!props.expand) {
-        const found = recursiveCheckNodeClass(
-          e.target as any,
-          'stall-galaxy-table-filter__input-search',
-        );
+        const found = recursiveCheckNodeClass(e.target as any, 'dcp-galaxy-table-filter__input-search');
         if (!found) {
           visible.value = false;
         }
@@ -102,7 +83,6 @@ export default defineComponent({
     };
 
     return {
-      t,
       visible,
       formData,
       focusedFilter,

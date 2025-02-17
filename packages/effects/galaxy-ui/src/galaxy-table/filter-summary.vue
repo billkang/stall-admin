@@ -1,24 +1,20 @@
 <template>
-  <div v-if="visible" class="stall-galaxy-table-filter__summary">
-    <div class="label">{{ t(`table.filter.summaryLabel`) }}</div>
+  <div v-if="visible" class="dcp-galaxy-table-filter__summary">
+    <div class="label">table.filter.summaryLabel</div>
 
     <Space class="tag-list">
       <Tag v-for="tag in tagList" :key="tag.key" closable @close="handleClose(tag)">
-        {{ t(`table.filter.summaryTag`, tag.title, tag.value) }}
+        table.filter.summaryTag
       </Tag>
     </Space>
 
-    <div class="clear-all" @click="handleClear">{{ t(`table.filter.summaryClear`) }}</div>
+    <div class="clear-all" @click="handleClear">table.filter.summaryClear</div>
   </div>
 </template>
 
 <script lang="ts">
-import type { TableColumnData } from '../table/interface';
-import { computed, defineComponent, PropType } from 'vue';
-import Space from '../space';
-import Tag from '../tag';
-import { useI18n } from '../locale';
-import { isArray, isValidValue } from '../_utils/is';
+import { computed, defineComponent, type PropType } from 'vue';
+import { Space, Tag } from '@arco-design/web-vue';
 import { useTableSetting } from './hooks/useTableSetting';
 
 type TagData = {
@@ -38,22 +34,21 @@ export default defineComponent({
       required: true,
     },
     columns: {
-      type: Array as PropType<TableColumnData[]>,
+      type: Array as PropType<any[]>,
       required: true,
     },
   },
   emits: ['search'],
   setup(props, { emit }) {
     const { formData, resetFormData, cleanFormDataByKey } = useTableSetting(props);
-    const { t } = useI18n();
 
-    const visible = computed(() => Object.values(formData).filter(val => isValidValue(val)).length > 0);
+    const visible = computed(() => Object.values(formData).filter(val => !!val).length > 0);
     const tagList = computed(() => {
       const tags: Array<TagData> = [];
 
       Object.entries(formData).forEach(d => {
         const [key, val] = d;
-        if (isValidValue(val)) {
+        if (!!val) {
           const col = props.columns.find(c => c.dataIndex === key);
           if (col) {
             const { title, filterable } = col;
@@ -61,7 +56,7 @@ export default defineComponent({
 
             if (filterable?.filters) {
               let list: any = val;
-              if (!isArray(val)) {
+              if (!Array.isArray(val)) {
                 list = [val];
               }
 
@@ -70,7 +65,7 @@ export default defineComponent({
                 tagValue.push((item?.text as string) || `${val}`);
               });
             } else {
-              if (isArray(val)) {
+              if (Array.isArray(val)) {
                 tagValue.push(...val);
               } else {
                 tagValue.push(`${val}`);
@@ -104,7 +99,6 @@ export default defineComponent({
     };
 
     return {
-      t,
       visible,
       tagList,
       handleClose,

@@ -1,16 +1,16 @@
 <template>
   <Dropdown position="bottom" trigger="click" @click.stop="handleToggle">
     <div
-      class="flex stall-galaxy-table-filter__my-filter-overlay"
+      class="flex dcp-galaxy-table-filter__my-filter-overlay"
       :class="{ 'focused-filter': focusedFilter === 'myFilter' }">
-      <span>{{ t(`table.filter.myConditions`) }}</span>
+      <span>{{ `table.filter.myConditions` }}</span>
       <IconUp v-if="isOpenOverlay" />
       <IconDown v-else />
     </div>
 
     <template #content>
-      <div class="stall-galaxy-table-filter__my-filter">
-        <div v-if="customFilters.size === 0" class="empty">{{ t(`table.filter.noCustomFilterText`) }}</div>
+      <div class="dcp-galaxy-table-filter__my-filter">
+        <div v-if="customFilters.size === 0" class="empty">{{ `table.filter.noCustomFilterText` }}</div>
         <ul v-else class="custom-filter-wrapper">
           <li class="item" v-for="key in customFilters.keys()" :key="key">
             <label @click="handleClickCustomFilter(key)">{{ key }}</label>
@@ -24,11 +24,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
-import Dropdown from '../dropdown';
-import IconUp from '../icon/icon-up';
-import IconDown from '../icon/icon-down';
-import IconDelete from '../icon/icon-delete';
-import { useI18n } from '../locale';
+import { Dropdown } from '@arco-design/web-vue';
+import { IconUp, IconDown, IconDelete } from '@arco-design/web-vue/es/icon';
 import { useTableSetting } from './hooks/useTableSetting';
 import { useTable } from './hooks/useTable';
 
@@ -47,9 +44,8 @@ export default defineComponent({
   },
   emits: ['search'],
   setup(props, { emit }) {
-    const { t } = useI18n();
     const { getCustomFilter, deleteCustomFilter, resetFormData } = useTableSetting(props);
-    const { handleClickFilter, focusedFilter, handleClearFocusedFilter } = useTable({ props, emit, t });
+    const { handleClickFilter, focusedFilter, handleClearFocusedFilter } = useTable({ props, emit });
     onMounted(() => {
       handleClearFocusedFilter();
     });
@@ -72,7 +68,6 @@ export default defineComponent({
     };
 
     return {
-      t,
       isOpenOverlay,
       customFilters,
       focusedFilter,

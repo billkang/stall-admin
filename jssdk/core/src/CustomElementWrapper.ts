@@ -1,6 +1,6 @@
 import { defineComponent, h, ref, provide } from 'vue';
-import { Spin } from 'ant-design-vue';
-import { ReloadOutlined } from '@ant-design/icons-vue';
+import { Spin } from '@arco-design/web-vue';
+import { IconRefresh } from '@arco-design/web-vue/es/icon';
 import { request, emitter, ENUM_REQUEST_EVENT } from './request';
 
 export default defineComponent({
@@ -36,7 +36,7 @@ export default defineComponent({
                     h('span', { style: { 'margin-right': '8px' } }, [
                       `组件加载失败: ${error.value}`,
                     ]),
-                    h(ReloadOutlined, {
+                    h(IconRefresh, {
                       style: { cursor: 'pointer' },
                       onClick: () => handleRefresh(),
                     }),

@@ -4,19 +4,15 @@
     position="bottom"
     trigger="click"
     @click.stop="handleToggle"
-    @popup-visible-change="handlePopupVisibleChange"
-  >
+    @popup-visible-change="handlePopupVisibleChange">
     <div
-      class="stall-galaxy-table-filter__more-filter flex"
-      :class="{ 'focused-filter': focusedFilter === 'moreFilter' }"
-    >
+      class="flex dcp-galaxy-table-filter__more-filter"
+      :class="{ 'focused-filter': focusedFilter === 'moreFilter' }">
       <IconAlignCenter />
 
       <div class="dropdown-title">
-        {{ t(`table.filter.moreConditions`) }}
-        <span v-if="filterCount > 0" class="filter-count">{{
-          filterCount
-        }}</span>
+        table.filter.moreConditions
+        <span v-if="filterCount > 0" class="filter-count">{{ filterCount }}</span>
       </div>
 
       <IconUp v-if="isOpenOverlay" />
@@ -24,19 +20,15 @@
     </div>
 
     <template #content>
-      <div class="stall-galaxy-table-filter__more-filter-overlay">
-        <Form :model="formData" layout="vertical" class="stall-dropdown-menu">
+      <div class="dcp-galaxy-table-filter__more-filter-overlay">
+        <Form :model="formData" layout="vertical" class="dcp-dropdown-menu">
           <FormItem
-            :class="{
-              'grid-rang-picker':
-                column.filterable?.componentType === 'rang-picker',
-            }"
+            :class="{ 'grid-rang-picker': column.filterable?.componentType === 'rang-picker' }"
             v-for="column in filterableColumns"
             :key="column.dataIndex"
             :name="column.dataIndex"
             :label="`${column.title || ''}`"
-            label-col-flex="30px"
-          >
+            label-col-flex="30px">
             <!-- 根据column类型，展示不同组件 -->
             <template v-if="column.filterable?.render">
               <FilterCustomRender :render="column.filterable.render" />
@@ -46,18 +38,15 @@
                 <Input
                   v-if="column.filterable.componentType === 'input'"
                   v-model="formData[column.dataIndex!]"
-                  allow-clear
-                />
+                  allow-clear />
                 <DatePicker
                   v-else-if="column.filterable.componentType === 'date-picker'"
                   v-model="formData[column.dataIndex!]"
-                  allow-clear
-                />
+                  allow-clear />
                 <TimePicker
                   v-else-if="column.filterable.componentType === 'time-picker'"
                   v-model="formData[column.dataIndex!]"
-                  allow-clear
-                />
+                  allow-clear />
                 <RangePicker
                   v-else-if="column.filterable.componentType === 'rang-picker'"
                   v-model="formData[column.dataIndex!]"
@@ -65,20 +54,14 @@
                     defaultValue: ['00:00:00', '00:00:00'],
                   }"
                   showTime
-                  allow-clear
-                />
+                  allow-clear />
                 <Select
                   v-else-if="column.filterable?.filters"
                   v-model="formData[column.dataIndex!]"
                   :multiple="column.filterable.multiple === true"
                   allowClear
-                  @search="handleCustomSearch(`${column.dataIndex}`, $event)"
-                >
-                  <SelectOption
-                    v-for="opt in column.filterable.filters"
-                    :value="opt.value"
-                    :key="opt.value"
-                  >
+                  @search="handleCustomSearch(`${column.dataIndex}`, $event)">
+                  <SelectOption v-for="opt in column.filterable.filters" :value="opt.value" :key="opt.value">
                     {{ opt.text }}
                   </SelectOption>
                 </Select>
@@ -89,13 +72,8 @@
                   v-model="formData[column.dataIndex!]"
                   :multiple="column.filterable.multiple === true"
                   allowClear
-                  @search="handleCustomSearch(`${column.dataIndex}`, $event)"
-                >
-                  <SelectOption
-                    v-for="opt in column.filterable.filters"
-                    :value="opt.value"
-                    :key="opt.value"
-                  >
+                  @search="handleCustomSearch(`${column.dataIndex}`, $event)">
+                  <SelectOption v-for="opt in column.filterable.filters" :value="opt.value" :key="opt.value">
                     {{ opt.text }}
                   </SelectOption>
                 </Select>
@@ -105,28 +83,23 @@
           <div class="form-footer">
             <div class="left">
               <Checkbox class="checker" v-model="isOpenCustomFilterName" />
-              {{ t(`table.filter.saveText`) }}
-              <Tooltip :content="t(`table.filter.saveTooltip`)">
+              table.filter.saveText
+              <Tooltip content="table.filter.saveTooltip">
                 <IconQuestionCircle />
               </Tooltip>
               <Input
                 v-if="isOpenCustomFilterName"
                 class="custom-filter-input"
                 v-model="customFilterName"
-                :placeholder="t(`table.filter.enterCustomFilterName`)"
+                placeholder="table.filter.enterCustomFilterName"
                 show-word-limit
                 :max-length="10"
-                allow-clear
-              />
+                allow-clear />
             </div>
             <div class="right">
               <Space :size="8">
-                <Button @click="handleReset">{{
-                  t(`table.filter.resetText`)
-                }}</Button>
-                <Button type="primary" @click="handleSubmit">{{
-                  t(`table.filter.filterText`)
-                }}</Button>
+                <Button @click="handleReset">table.filter.resetText</Button>
+                <Button type="primary" @click="handleSubmit">table.filter.filterText</Button>
               </Space>
             </div>
           </div>
@@ -138,29 +111,12 @@
 
 <script lang="ts">
 import type { PropType, ComputedRef } from 'vue';
-import type { TableColumnData } from '../table/interface';
 import { defineComponent, ref, computed, onMounted } from 'vue';
-import Dropdown from '../dropdown';
-import Form from '../form';
-import FormItem from '../form/form-item.vue';
-import Select, { Option as SelectOption } from '../select';
-import Space from '../space';
-import Input from '../input';
-import DatePicker, { RangePicker } from '../date-picker';
-import TimePicker from '../time-picker';
-import Checkbox from '../checkbox';
-import Button from '../button';
-import Message from '../message';
-import IconAlignCenter from '../icon/icon-align-center';
-import IconUp from '../icon/icon-up';
-import IconDown from '../icon/icon-down';
-import IconQuestionCircle from '../icon/icon-question-circle';
-import Tooltip from '../tooltip';
-import { useI18n } from '../locale';
+import { Dropdown, Form, FormItem, Select, Option as SelectOption, Space, Input, DatePicker, RangePicker, TimePicker,Checkbox,Button,Message,Tooltip } from '@arco-design/web-vue';
+import { IconAlignCenter, IconUp, IconDown, IconQuestionCircle } from '@arco-design/web-vue/es/icon';
 import { useTableSetting } from './hooks/useTableSetting';
 import { useTable } from './hooks/useTable';
 import FilterCustomRender from './filter-custom-render.vue';
-import { isValidValue } from '../_utils/is';
 
 export default defineComponent({
   components: {
@@ -189,21 +145,18 @@ export default defineComponent({
       required: true,
     },
     filterableColumns: {
-      type: Array as PropType<TableColumnData[]>,
+      type: Array as PropType<any[]>,
       required: true,
     },
   },
   emits: ['reset', 'custom-search', 'submit'],
   setup(props, { emit }) {
-    const { t } = useI18n();
-    const { handleClickFilter, focusedFilter, handleClearFocusedFilter } =
-      useTable({ props, emit, t });
+    const { handleClickFilter, focusedFilter, handleClearFocusedFilter } = useTable({ props, emit });
 
-    const { formData, resetFormData, saveCustomFilter } =
-      useTableSetting(props);
+    const { formData, resetFormData, saveCustomFilter } = useTableSetting(props);
 
     const filterCount: ComputedRef<number> = computed(() => {
-      return Object.values(formData).filter((v) => isValidValue(v)).length;
+      return Object.values(formData).filter(v => !!v).length;
     });
 
     // 控制【更多筛选】菜单是否可见
@@ -246,14 +199,13 @@ export default defineComponent({
       if (isOpenCustomFilterName.value) {
         const name = customFilterName.value;
         if (!name) {
-          Message.warning(t(`table.filter.enterFilterName`));
+          Message.warning(`table.filter.enterFilterName`);
           return;
         }
 
-        const hasValue =
-          Object.values(formData).filter((v) => isValidValue(v)).length > 0;
+        const hasValue = Object.values(formData).filter(v => !!v).length > 0;
         if (!hasValue) {
-          Message.warning(t(`table.filter.selectFilter`));
+          Message.warning(`table.filter.selectFilter`);
           return;
         }
         handleCustomFilterName();
@@ -269,7 +221,6 @@ export default defineComponent({
     };
 
     return {
-      t,
       formData,
       filterCount,
       isOpenOverlay,
