@@ -142,6 +142,8 @@ Prototypes (Method and Property Information)
 
 ![vm](../../public/teaching/js/vm.png)
 
+![class](../../public/teaching/js/class.png)
+
 ### 实现机制
 
 - 类定义：在 Java 中，类是通过关键字 class 定义的，类可以继承其他类，形成类层次结构。类继承是通过 extends 关键字实现的，子类继承父类的属性和方法。

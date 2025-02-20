@@ -2,6 +2,8 @@
 
 理解JavaScript中的执行上下文（Execution Context）、作用域（Scope）、作用域链（Scope Chain）以及`this`关键字对于掌握其运行机制至关重要。本文将详细介绍这些概念，并通过详细的代码示例帮助你更好地理解和应用它们。
 
+![ec](../../public/teaching/js/ec.png)
+
 ## 1. 执行上下文（Execution Context）
 
 执行上下文是指代码在运行时所处的环境，决定了变量、函数如何解析以及它们的行为。每次函数调用都会创建一个新的执行上下文。主要分为三种类型：
