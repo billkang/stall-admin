@@ -2,14 +2,21 @@
   "name": "@stall/galaxy-ui",
   "version": "1.0.0",
   "type": "module",
-  "sideEffects": [
-    "**/*.css"
-  ],
   "exports": {
+    "./dist/*.css": {
+      "import": "./dist/*.css"
+    },
     ".": {
-      "types": "./src/index.ts",
-      "default": "./src/index.ts"
+      "import": "./dist/index.mjs"
     }
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build"
   },
   "dependencies": {
     "@arco-design/web-vue": "catalog:",

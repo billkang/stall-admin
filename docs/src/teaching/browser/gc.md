@@ -356,42 +356,6 @@ function example() {
 }
 ```
 
-#### 内存占用示意图
-
-```
-Before Manual Dereference:
-+-------------------+
-| Variable Object   |
-| +---------------+ |
-| | obj1          | |
-| | obj2          | |
-| +---------------+ |
-+-------------------+
-| Lexical Environment: |
-| +------------------|
-| | obj1 -> [variable object] |
-| | obj2 -> [variable object] |
-| +------------------|
-| This Binding: window |
-+-------------------+
-
-After Manual Dereference:
-+-------------------+
-| Variable Object   |
-| +---------------+ |
-| | obj1          | | -> null
-| | obj2          | | -> null
-| +---------------+ |
-+-------------------+
-| Lexical Environment: |
-| +------------------|
-| | obj1 -> [variable object] |
-| | obj2 -> [variable object] |
-| +------------------|
-| This Binding: window |
-+-------------------+
-```
-
 #### 详细解释
 
 - **Before Manual Dereference**: `obj1` 和 `obj2` 形成循环引用。

@@ -128,6 +128,14 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           link: 'fe/web-security',
           text: 'Web 安全全面解析',
         },
+        {
+          link: 'fe/typescript',
+          text: 'TypeScript：从基础到进阶的系统性介绍',
+        },
+        {
+          link: 'fe/typescript-qa',
+          text: 'TypeScript 面试常见问题汇总',
+        },
       ],
     },
     {
@@ -216,11 +224,15 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
       items: [
         {
           link: 'nodejs/introduction',
-          text: 'Node.js介绍',
+          text: 'Node.js 全面解析',
         },
         {
           link: 'nodejs/server',
-          text: '服务器知识介绍',
+          text: '服务器知识详解',
+        },
+        {
+          link: 'nodejs/nodejs-qa',
+          text: 'Node.js 面试常见问题汇总',
         },
       ],
     },
@@ -256,11 +268,19 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         },
         {
           link: 'browser/bytecode-v8',
-          text: '理解 V8 引擎的字节码与解释执行',
+          text: '理解V8引擎的字节码与解释执行',
         },
         {
           link: 'browser/bytecode-comparison',
-          text: 'Java 的字节码与 V8 的字节码',
+          text: 'Java的字节码与V8的字节码',
+        },
+        {
+          link: 'browser/java-bytecode-run',
+          text: 'JVM对字节码的处理',
+        },
+        {
+          link: 'browser/v8-bytecode-run',
+          text: 'V8引擎字节码执行过程',
         },
       ],
     },
@@ -271,6 +291,14 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         {
           link: 'performance/introduction',
           text: '性能优化介绍',
+        },
+        {
+          link: 'performance/qa',
+          text: '前端性能优化常见问题汇总',
+        },
+        {
+          link: 'performance/indicator',
+          text: '前端性能优化通用指标及提升手段',
         },
       ],
     },

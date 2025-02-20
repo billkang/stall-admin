@@ -21,6 +21,7 @@
     "@stall/access": "workspace:*",
     "@stall/common-ui": "workspace:*",
     "@stall/constants": "workspace:*",
+    "@stall/galaxy-ui": "workspace:*",
     "@stall/hooks": "workspace:*",
     "@stall/icons": "workspace:*",
     "@stall/layouts": "workspace:*",

@@ -277,3 +277,7 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="less" scoped>
+@import url('@arco-design/web-vue/es/table/style/index.less');
+</style>

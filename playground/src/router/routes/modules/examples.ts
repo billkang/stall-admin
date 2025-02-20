@@ -19,10 +19,19 @@ const routes: RouteRecordRaw[] = [
         name: 'JSSDKExample',
         path: '/examples/jssdk',
         meta: {
-          icon: 'mdi:form-select',
+          icon: 'mdi:home',
           title: $t('examples.jssdk.title'),
         },
         component: () => import('#/views/examples/jssdk.vue'),
+      },
+      {
+        name: 'GalaxyTableExample',
+        path: '/examples/galaxy-table',
+        meta: {
+          icon: 'mdi:table-large',
+          title: $t('examples.galaxy-table.title'),
+        },
+        component: () => import('#/views/examples/galaxy-table.vue'),
       },
       {
         name: 'FormExample',

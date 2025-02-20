@@ -15,6 +15,9 @@
   "jssdk": {
     "title": "JSSDK"
   },
+  "galaxy-table": {
+    "title": "自定义表格"
+  },
   "form": {
     "title": "表单",
     "basic": "基础表单",

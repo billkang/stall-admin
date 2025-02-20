@@ -12,6 +12,9 @@
   "jssdk": {
     "title": "JSSDK"
   },
+  "galaxy-table": {
+    "title": "custom table"
+  },
   "form": {
     "title": "Form",
     "basic": "Basic Form",

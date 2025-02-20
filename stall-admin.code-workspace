@@ -121,6 +121,10 @@
       "path": "packages/effects/common-ui",
     },
     {
+      "name": "@stall/galaxy-ui",
+      "path": "packages/effects/galaxy-ui",
+    },
+    {
       "name": "@stall/hooks",
       "path": "packages/effects/hooks",
     },

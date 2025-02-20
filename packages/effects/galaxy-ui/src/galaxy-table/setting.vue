@@ -81,7 +81,7 @@ import type { TreeNodeData } from '@arco-design/web-vue';
 import { defineComponent, ref, watch } from 'vue';
 import { Drawer, Divider, Tree, Radio, RadioGroup, Switch } from '@arco-design/web-vue';
 import { IconCheckCircleFill, IconDragDotVertical } from '@arco-design/web-vue/es/icon';
-import { TableSize, TableTextControl, useTableSetting } from './hooks/useTableSetting';
+import { type TableSize, type TableTextControl, useTableSetting } from './hooks/useTableSetting';
 import sizeLarge from './assets/images/table-size-large.png';
 import sizeSmall from './assets/images/table-size-small.png';
 
