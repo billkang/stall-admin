@@ -6,6 +6,8 @@
 
 ## 二、JavaScript 事件执行队列概述
 
+![loop-event](../../public/teaching/js/event-loop.png)
+
 JavaScript 事件执行队列是 JavaScript 单线程特性与异步操作相结合的产物。JavaScript 是单线程语言，这意味着同一时间只能执行一个任务。因此，在浏览器环境中，需要一种机制来协调任务的执行顺序，这个机制就是事件队列模型。
 
 JavaScript 的任务可以分为同步任务（Synchronous Tasks）和异步任务（Asynchronous Tasks）。同步任务直接在主线程上执行，而异步任务则由事件触发器管理，并在适当的时机将它们添加到任务队列中。当主线程完成当前同步任务后，会从任务队列中取出一个任务并执行。
