@@ -2,7 +2,11 @@
 
 双向绑定是现代前端框架中常见的特性之一，它允许数据模型与视图之间自动同步更新。本文将详细探讨三种主要的双向绑定实现方案：`Object.defineProperty + 发布-订阅模式`、`Proxy + 发布-订阅模式` 以及 `AngularJS 的脏检查机制`，并分析它们的技术原理、优缺点及适用场景。
 
+![mvvm](../../public/teaching/vue/mvvmpattern.png)
+
 ## 方案1：`Object.defineProperty + 发布-订阅模式`
+
+![vue-mvvm](../../public/teaching/vue/vue-mvvm.png)
 
 ### 技术原理
 
@@ -90,6 +94,8 @@ graph TD;
 * **局限性**：无法监听新增或删除的属性，对数组的变化也缺乏直接的支持。
 
 ## 方案2：`Proxy + 发布-订阅模式`
+
+![proxy](../../public/teaching/vue/js-proxy.jpeg)
 
 ### 技术原理
 

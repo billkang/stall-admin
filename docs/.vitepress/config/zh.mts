@@ -73,7 +73,7 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       items: [
         {
           link: 'lesson3_table/how-to',
-          text: '开发复杂 table 组件',
+          text: 'Vue 3业务组件封装：从设计到开发',
         },
       ],
     },
@@ -217,6 +217,10 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           text: 'Vue3 模板编译原理详解',
         },
         {
+          link: 'vue/hooks',
+          text: 'Hooks 深入解析：从 React 到 Vue 3',
+        },
+        {
           link: 'vue/vue-router',
           text: 'Vue Router 深度解析与实现原理',
         },
@@ -316,11 +320,11 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
       items: [
         {
           link: 'other/oop',
-          text: '面向对象编程概述',
+          text: '面向对象编程：深入理解与实践应用',
         },
         {
           link: 'other/fp',
-          text: '函数式编程概述',
+          text: '函数式编程在前端开发中的应用与实践',
         },
       ],
     },

@@ -1,16 +1,26 @@
-# Axios 深入解析：环境兼容性及适配器实现
+# Axios 深入解析：设计思路、插件化思想与环境适配
 
-## 1. Axios 设计思路
-Axios 是一个基于 Promise 的 HTTP 客户端库，用于浏览器和 Node.js 中发送 HTTP 请求。它通过以下特性提供了一个强大且灵活的解决方案：
+## 一、Axios 设计思路
 
-- **Promise API**：使用 Promise 来处理异步请求，简化了代码逻辑。
-- **请求和响应拦截器**：可以在请求发送前和响应接收后进行统一处理，如添加认证头、处理错误等。
-- **自动解析 JSON 数据**：默认情况下会自动解析 JSON 响应。
+### 1.1 核心特性
+
+Axios 是一个基于 Promise 的 HTTP 客户端库，广泛用于浏览器和 Node.js 环境中发送 HTTP 请求。它通过以下核心特性提供了一个强大且灵活的解决方案：
+
+- **Promise API**：使用 Promise 处理异步请求，简化代码逻辑。
+- **请求和响应拦截器**：在请求发送前和响应接收后进行统一处理，如添加认证头、处理错误等。
+- **自动解析 JSON 数据**：默认情况下自动解析 JSON 响应。
 - **配置方便**：允许设置全局或局部的默认配置项。
 - **请求数据格式化**：支持自动序列化请求体为 JSON 或查询字符串。
-- **取消请求**：提供了取消请求的功能。
+- **取消请求**：提供取消请求的功能。
 
-## 2. Axios 插件化思想
+### 1.2 设计模式
+
+Axios 的设计采用了多种设计模式，包括适配器模式、工厂模式、装饰器模式和单例模式。这些模式使得 Axios 能够在不同环境下高效工作，并提供了简单易用的 API 接口。
+
+## 二、Axios 插件化思想
+
+### 2.1 拦截器机制
+
 Axios 的插件化思想主要体现在其拦截器机制上，允许开发者在不修改核心逻辑的前提下扩展功能。例如，可以通过创建自定义插件来处理响应数据或显示加载动画。
 
 ```javascript
@@ -34,10 +44,15 @@ instance.interceptors.response.use(
 );
 ```
 
-## 3. 实际开发中的使用与封装
-为了提高项目的可维护性和复用性，通常会对 Axios 进行进一步封装，以集中管理配置和接口调用。
+### 2.2 插件化优势
 
-### 创建 Axios 实例并设置默认配置
+- **扩展功能**：通过拦截器机制，可以在不修改核心逻辑的前提下扩展 Axios 的功能。
+- **代码复用**：插件化设计使得代码更加模块化，便于复用和维护。
+- **简化开发**：开发者可以专注于特定功能的实现，而无需关注底层细节。
+
+## 三、实际开发中的使用与封装
+
+### 3.1 创建 Axios 实例并设置默认配置
 
 ```javascript
 import axios from 'axios';
@@ -51,7 +66,7 @@ const service = axios.create({
 });
 ```
 
-### 配置请求和响应拦截器
+### 3.2 配置请求和响应拦截器
 
 ```javascript
 service.interceptors.request.use(
@@ -77,7 +92,7 @@ service.interceptors.response.use(
 );
 ```
 
-### 封装 API 请求函数
+### 3.3 封装 API 请求函数
 
 ```javascript
 export function getUserData() {
@@ -89,7 +104,7 @@ export function postUserData(data) {
 }
 ```
 
-### 集中管理所有 API
+### 3.4 集中管理所有 API
 
 ```javascript
 // api.js
@@ -101,7 +116,7 @@ export const api = {
 };
 ```
 
-### 使用封装好的 API
+### 3.5 使用封装好的 API
 
 ```javascript
 import { api } from './api';
@@ -113,13 +128,13 @@ api.getUserData().then(data => {
 });
 ```
 
-## 4. Axios 的环境兼容性及适配器实现
+## 四、Axios 的环境兼容性及适配器实现
 
-### 适配器模式的应用
+### 4.1 适配器模式的应用
 
 Axios 使用适配器模式来抽象不同环境下的 HTTP 请求实现。这意味着无论是浏览器还是 Node.js，都可以通过相同的接口来进行网络请求，而具体的实现细节则由适配器负责处理。这种模式提高了代码的可移植性和复用性。
 
-#### 浏览器端适配器 (`adapters/xhr`)
+#### 4.1.1 浏览器端适配器 (`adapters/xhr`)
 
 在浏览器环境中，Axios 使用 `XMLHttpRequest` 或者 `fetch` API（如果浏览器支持）来发送 HTTP 请求。下面是一个简化的 `xhr` 适配器实现示例：
 
@@ -199,7 +214,7 @@ function createError(message, config, code, request) {
 export default xhrAdapter;
 ```
 
-#### Node.js 端适配器 (`adapters/http`)
+#### 4.1.2 Node.js 端适配器 (`adapters/http`)
 
 在 Node.js 环境中，Axios 使用 Node.js 内置的 `http` 或 `https` 模块来发起请求。这里展示一个简化版的 `http` 适配器实现：
 
@@ -245,7 +260,7 @@ function httpAdapter(config) {
 export default httpAdapter;
 ```
 
-### 动态选择适配器
+### 4.2 动态选择适配器
 
 根据运行时环境动态选择适配器是 Axios 设计的一个关键点。这通过检查当前执行环境来完成，并返回适当的适配器实例：
 
@@ -275,7 +290,7 @@ function Axios(config) {
 // 发送请求的方法
 Axios.prototype.request = function request(config) {
   // 处理配置...
-  
+
   // 执行适配器
   return this.adapter(config).then(function onAdapterResolution(response) {
     // 处理响应...
@@ -287,7 +302,7 @@ Axios.prototype.request = function request(config) {
 };
 ```
 
-### 设计模式总结
+### 4.3 设计模式总结
 
 - **适配器模式**：用于抽象不同环境下的 HTTP 请求实现。
 - **工厂模式**：根据当前环境动态创建适当的 HTTP 请求实例。

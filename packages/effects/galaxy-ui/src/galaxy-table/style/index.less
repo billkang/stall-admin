@@ -26,13 +26,13 @@
   }
 
   header {
-    margin: 16px 0;
+    margin: 16px 5px;
     display: flex;
     justify-content: space-between;
 
     .table-header__left-section,
     .table-header__right-section {
-      .stall-space {
+      .arco-space {
         flex-wrap: wrap;
       }
     }
@@ -75,6 +75,7 @@
 
   main {
     flex: 1;
+    margin: 0 5px;
     max-height: calc(100% - 68px);
 
     .arco-table {
@@ -90,7 +91,7 @@
           overflow-y: auto;
         }
 
-        .stall-virtual-list {
+        .arco-virtual-list {
           .arco-table-element {
             width: 100%;
           }
@@ -145,13 +146,13 @@
           bottom: unset;
         }
 
-        .stall-pagination {
+        .arco-pagination {
           width: 100%;
           justify-content: flex-end;
           font-size: 14px;
           line-height: 22px;
 
-          .stall-pagination-total {
+          .arco-pagination-total {
             flex: 1;
             color: @color-text-3;
           }
@@ -173,7 +174,7 @@
             }
           }
 
-          .stall-pagination-options {
+          .arco-pagination-options {
             .arco-select-view-single {
               height: 32px;
               border-radius: 4px;
@@ -183,7 +184,7 @@
             }
           }
 
-          .stall-pagination-jumper {
+          .arco-pagination-jumper {
             .arco-input-wrapper {
               height: 32px;
               border-radius: 2px;

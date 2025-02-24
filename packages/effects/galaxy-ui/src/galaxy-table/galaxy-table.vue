@@ -81,10 +81,6 @@
             <slot name="table-action-after" :record="record"></slot>
           </Space>
         </template>
-        <template #pagination-total="slotProps">
-          <slot name="pagination-total" :total="slotProps.total">
-          </slot>
-        </template>
       </Table>
     </main>
   </div>
@@ -184,9 +180,16 @@ export default defineComponent({
         }) => { rowspan?: number; colspan?: number } | void
       >,
     },
+    // 实现对操作栏的控制
+    optional: {
+      type: Object as PropType<{ visible: boolean; width: number }>,
+      default: () => ({
+        visible: true,
+        width: 120,
+      }),
+    },
     /**
-     * @zh 实现对搜索栏的控制
-     * @version 0.0.100
+     * 实现对搜索栏的控制
      */
     filter: {
       type: Object as PropType<{

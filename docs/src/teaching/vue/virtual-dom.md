@@ -2,6 +2,8 @@
 
 ## 虚拟 DOM 的历史
 
+![virtual-dom](../../public/teaching/vue/virtual-dom.jpg)
+
 **背景**
 
 在前端开发的早期阶段，页面动态更新主要依赖于直接操作真实 DOM（Document Object Model）。这种方式虽然直观，但随着应用复杂度增加，频繁的 DOM 操作带来了性能问题。浏览器为了重新渲染页面需要进行重绘（Repaint）和重排（Reflow），这会消耗大量资源，特别是当这些操作嵌套或过于频繁时。此外，直接操作 DOM 导致代码难以维护，并且增加了开发的复杂性。
@@ -30,6 +32,8 @@
 ## Virtual DOM 的核心技术原理
 
 **Virtual DOM 的结构**
+
+![virtual-dom](../../public/teaching/vue/vdom.webp)
 
 虚拟 DOM 是一种轻量级的数据结构，用来表示 HTML 文档的一个状态快照。它通常由一组 JavaScript 对象组成，每个对象代表一个 DOM 元素及其属性和子元素。例如：
 

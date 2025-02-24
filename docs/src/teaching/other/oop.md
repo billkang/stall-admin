@@ -1,331 +1,454 @@
-# 面向对象编程（OOP）概述
+# 面向对象编程：深入理解与实践应用
 
-面向对象编程（Object-Oriented Programming，简称OOP）是一种程序设计范式，通过将数据（属性）和操作数据的方法（行为）封装在对象中来组织代码。OOP的目标是提高代码的重用性、可扩展性和可维护性。
+## 一、引言
 
-OOP的核心思想是对象，对象是数据和方法的集合，体现了现实世界中的事物（如一个人、一个车等）的属性和行为。
+面向对象编程（Object-Oriented Programming，简称OOP）是一种程序设计范式，通过将数据（属性）和操作数据的方法（行为）封装在对象中来组织代码。OOP的目标是提高代码的重用性、可扩展性和可维护性。本文将深入探讨OOP的核心概念、设计原则以及常见设计模式，并提供丰富的示例代码。
 
-## 一、OOP的基本三要素
+## 二、OOP的基本三要素
 
-面向对象编程的三大核心概念是：封装、继承和多态。
-
-### 1. 封装（Encapsulation）
+### 1.封装
 
 封装是将数据和操作数据的代码（方法）结合成一个整体（对象），并隐藏对象的内部实现细节，只暴露必要的接口。这能够减少外部对对象内部结构的依赖，提高代码的安全性和可维护性。
 
-示例：
+#### 示例：银行账户类
 
 ```typescript
-class Car {
-    private brand: string;
-    private model: string;
-    private year: number;
+class BankAccount {
+    private balance: number;
 
-    constructor(brand: string, model: string, year: number) {
-        this.brand = brand;
-        this.model = model;
-        this.year = year;
+    constructor(initialBalance: number) {
+        this.balance = initialBalance;
     }
 
-    public getInfo(): string {
-        return `${this.year} ${this.brand} ${this.model}`;
+    public getBalance(): number {
+        return this.balance;
     }
 
-    public setYear(year: number): void {
-        if (year > 1900 && year <= 2025) {
-            this.year = year;
+    public deposit(amount: number): void {
+        if (amount > 0) {
+            this.balance += amount;
+            console.log(`Deposited $${amount}. New balance: $${this.balance}`);
         } else {
-            console.log("Invalid year");
+            console.log("Invalid deposit amount.");
+        }
+    }
+
+    public withdraw(amount: number): void {
+        if (amount > 0 && amount <= this.balance) {
+            this.balance -= amount;
+            console.log(`Withdrew $${amount}. New balance: $${this.balance}`);
+        } else {
+            console.log("Invalid withdrawal amount or insufficient funds.");
         }
     }
 }
 
-const car = new Car("Toyota", "Corolla", 2020);
-console.log(car.getInfo());  // 调用公共方法访问私有属性
-car.setYear(2023);
+const account = new BankAccount(1000);
+account.deposit(500); // Deposited $500. New balance: $1500
+account.withdraw(200); // Withdrew $200. New balance: $1300
+console.log(account.getBalance()); // 1300
 ```
 
-### 2. 继承（Inheritance）
+### 2.继承
 
 继承是子类继承父类的属性和方法的能力，子类可以复用父类的代码，同时可以在其基础上扩展功能。继承可以减少代码的冗余，提升代码的复用性。
 
-示例：
+#### 示例：员工类和经理类
 
 ```typescript
-class Animal {
+class Employee {
     protected name: string;
+    protected salary: number;
 
-    constructor(name: string) {
+    constructor(name: string, salary: number) {
         this.name = name;
+        this.salary = salary;
     }
 
-    speak(): string {
-        return '';
-    }
-}
-
-class Dog extends Animal {
-    speak(): string {
-        return `${this.name} says Woof!`;
+    getSalary(): number {
+        return this.salary;
     }
 }
 
-class Cat extends Animal {
-    speak(): string {
-        return `${this.name} says Meow!`;
+class Manager extends Employee {
+    private department: string;
+
+    constructor(name: string, salary: number, department: string) {
+        super(name, salary);
+        this.department = department;
+    }
+
+    getDepartment(): string {
+        return this.department;
+    }
+
+    getTotalCompensation(): number {
+        return this.salary * 1.2; // Managers get a 20% bonus
     }
 }
 
-const dog = new Dog("Buddy");
-console.log(dog.speak());
+const employee = new Employee("Alice", 50000);
+console.log(employee.getSalary()); // 50000
 
-const cat = new Cat("Whiskers");
-console.log(cat.speak());
+const manager = new Manager("Bob", 75000, "Marketing");
+console.log(manager.getDepartment()); // Marketing
+console.log(manager.getTotalCompensation()); // 90000 (75000 * 1.2)
 ```
 
-### 3. 多态（Polymorphism）
+### 3.多态
 
 多态是指对象可以以不同的形式表现出来。通过多态，一个父类引用可以指向不同类型的子类对象，并调用相同的方法，表现出不同的行为。
 
-示例：
+#### 示例：员工薪资计算
+
 ```typescript
-class Bird extends Animal {
-    speak(): string {
-        return `${this.name} says Tweet!`;
+interface Employee {
+    getSalary(): number;
+}
+
+class FullTimeEmployee implements Employee {
+    private salary: number;
+
+    constructor(salary: number) {
+        this.salary = salary;
+    }
+
+    getSalary(): number {
+        return this.salary;
     }
 }
 
-const animals: Animal[] = [new Dog("Max"), new Cat("Fluffy"), new Bird("Tweety")];
+class PartTimeEmployee implements Employee {
+    private hourlyRate: number;
+    private hoursWorked: number;
 
-animals.forEach(animal => {
-    console.log(animal.speak());  // 各自调用speak()方法，表现不同的行为
-});
+    constructor(hourlyRate: number, hoursWorked: number) {
+        this.hourlyRate = hourlyRate;
+        this.hoursWorked = hoursWorked;
+    }
+
+    getSalary(): number {
+        return this.hourlyRate * this.hoursWorked;
+    }
+}
+
+function calculateTotalSalary(employees: Employee[]): number {
+    return employees.reduce((total, employee) => total + employee.getSalary(), 0);
+}
+
+const employees: Employee[] = [
+    new FullTimeEmployee(60000),
+    new PartTimeEmployee(20, 100),
+    new FullTimeEmployee(55000),
+    new PartTimeEmployee(25, 80),
+];
+
+console.log(calculateTotalSalary(employees)); // 60000 + (20*100) + 55000 + (25*80) = 60000 + 2000 + 55000 + 2000 = 119000
 ```
 
-## 二、OOP的五大基本原则（SOLID原则）
+## 三、OOP的五大基本原则（SOLID原则）
 
-SOLID原则是面向对象设计中帮助开发者编写更清晰、可维护、可扩展代码的五大原则。每个原则都针对不同的设计需求，帮助解决不同的问题。
-
-### 1. 单一职责原则（Single Responsibility Principle，SRP）
+### 1.单一职责原则（SRP）
 
 一个类应该仅有一个职责，意味着该类只负责一项功能。类的变化应该是由单一功能引起的。
 
-示例：
+#### 示例：订单处理和日志记录
 
 ```typescript
-class Report {
-    generateReport(): void {
-        // 负责生成报告内容
+class OrderProcessor {
+    private logger: Logger;
+
+    constructor(logger: Logger) {
+        this.logger = logger;
+    }
+
+    process(order: Order): void {
+        this.logger.log(`Processing order ${order.id}`);
+        // 处理订单逻辑
     }
 }
 
-class ReportPrinter {
-    printReport(report: Report): void {
-        // 负责打印报告
+interface Logger {
+    log(message: string): void;
+}
+
+class ConsoleLogger implements Logger {
+    log(message: string): void {
+        console.log(`Console: ${message}`);
     }
 }
+
+class FileLogger implements Logger {
+    log(message: string): void {
+        console.log(`File: ${message}`);
+    }
+}
+
+class Order {
+    id: number;
+
+    constructor(id: number) {
+        this.id = id;
+    }
+}
+
+// 使用单一职责原则
+const order = new Order(123);
+const consoleLogger = new ConsoleLogger();
+const orderProcessor = new OrderProcessor(consoleLogger);
+orderProcessor.process(order); // Console: Processing order 123
 ```
 
-* 在这个示例中，`Report` 类负责报告的生成，`ReportPrinter` 类负责报告的打印。每个类的职责都很清晰，符合单一职责原则。
-
-### 2. 开放封闭原则（Open/Closed Principle，OCP）
+### 2.开放封闭原则（OCP）
 
 软件实体应该对扩展开放，对修改封闭。这意味着我们可以通过扩展已有类来增加新功能，而不是修改现有的代码。
 
-示例：
+#### 示例：支付网关
 
 ```typescript
-abstract class Shape {
-    abstract area(): number;
+abstract class PaymentGateway {
+    abstract processPayment(amount: number): void;
+}
+
+class CreditCardGateway extends PaymentGateway {
+    processPayment(amount: number): void {
+        console.log(`Processing $${amount} via Credit Card`);
+    }
+}
+
+class PayPalGateway extends PaymentGateway {
+    processPayment(amount: number): void {
+        console.log(`Processing $${amount} via PayPal`);
+    }
+}
+
+class PaymentService {
+    private gateway: PaymentGateway;
+
+    constructor(gateway: PaymentGateway) {
+        this.gateway = gateway;
+    }
+
+    makePayment(amount: number): void {
+        this.gateway.processPayment(amount);
+    }
+}
+
+// 使用开放封闭原则
+const creditCardService = new PaymentService(new CreditCardGateway());
+creditCardService.makePayment(100); // Processing $100 via Credit Card
+
+const paypalService = new PaymentService(new PayPalGateway());
+paypalService.makePayment(200); // Processing $200 via PayPal
+```
+
+### 3.里氏替换原则（LSP）
+
+子类对象应该能够替换父类对象而不改变程序的正确性。也就是说，子类必须能够继承父类的行为，且不破坏父类的预期行为。
+
+#### 示例：几何形状
+
+```typescript
+class Shape {
+    public calculateArea(): number {
+        throw new Error("Calculate area method not implemented");
+    }
 }
 
 class Rectangle extends Shape {
-    constructor(private width: number, private height: number) {
+    private width: number;
+    private height: number;
+
+    constructor(width: number, height: number) {
         super();
+        this.width = width;
+        this.height = height;
     }
 
-    area(): number {
+    public calculateArea(): number {
         return this.width * this.height;
     }
 }
 
 class Circle extends Shape {
-    constructor(private radius: number) {
+    private radius: number;
+
+    constructor(radius: number) {
         super();
+        this.radius = radius;
     }
 
-    area(): number {
-        return 3.14 * this.radius * this.radius;
+    public calculateArea(): number {
+        return Math.PI * Math.pow(this.radius, 2);
     }
 }
 
 function printArea(shape: Shape): void {
-    console.log(`Area: ${shape.area()}`);
+    console.log(`Area: ${shape.calculateArea()}`);
 }
 
-const rect = new Rectangle(4, 5);
+const rectangle = new Rectangle(4, 5);
 const circle = new Circle(3);
 
-printArea(rect);
-printArea(circle);
+printArea(rectangle); // Area: 20
+printArea(circle); // Area: 28.274333882308138
 ```
 
-* `Shape` 类是开放的，可以通过继承来扩展新的图形类型，而不需要修改现有的代码。
-
-### 3. 里氏替换原则（Liskov Substitution Principle，LSP）
-
-子类对象应该能够替换父类对象而不改变程序的正确性。也就是说，子类必须能够继承父类的行为，且不破坏父类的预期行为。
-
-示例：
-
-```typescript
-class Bird {
-    fly(): string {
-        return "Flying";
-    }
-}
-
-class Ostrich extends Bird {
-    fly(): string {
-        throw new Error("Ostriches can't fly!");
-    }
-}
-
-function makeBirdFly(bird: Bird): void {
-    console.log(bird.fly());
-}
-
-const bird = new Bird();
-makeBirdFly(bird); // 正常情况
-
-const ostrich = new Ostrich();
-// makeBirdFly(ostrich);  // 错误的替代，破坏了父类预期的行为
-```
-
-* 这个例子中，`Ostrich` 类不能替代 `Bird` 类，因为鸵鸟不能飞行，违反了里氏替换原则。
-
-### 4. 接口隔离原则（Interface Segregation Principle，ISP）
+### 4.接口隔离原则（ISP）
 
 客户端不应依赖于它不需要的接口。一个类对外暴露的接口应该根据客户需求拆分，不要把所有的功能都堆砌在一个接口中。
 
-示例：
+#### 示例：打印机接口
 
 ```typescript
-interface Workable {
-    work(): void;
+interface Printer {
+    print(): void;
 }
 
-interface Eatable {
-    eat(): void;
+interface Scanner {
+    scan(): void;
 }
 
-class Human implements Workable, Eatable {
-    work(): void {
-        console.log("Human is working");
+class Photocopier implements Printer, Scanner {
+    print(): void {
+        console.log("Copying document...");
     }
 
-    eat(): void {
-        console.log("Human is eating");
+    scan(): void {
+        console.log("Scanning document...");
     }
 }
 
-class Robot implements Workable {
-    work(): void {
-        console.log("Robot is working");
+class SimplePrinter implements Printer {
+    print(): void {
+        console.log("Printing document...");
     }
 }
+
+// 使用接口隔离原则
+const photocopier = new Photocopier();
+photocopier.print(); // Copying document...
+photocopier.scan(); // Scanning document...
+
+const simplePrinter = new SimplePrinter();
+simplePrinter.print(); // Printing document...
 ```
 
-* 在这个例子中，`Human` 类实现了 `Workable` 和 `Eatable` 接口，而 `Robot` 类只实现了 `Workable` 接口。这样，`Robot` 类没有不需要的方法，符合接口隔离原则。
-
-### 5. 依赖倒置原则（Dependency Inversion Principle，DIP）
+### 5.依赖倒置原则（DIP）
 
 高层模块不应依赖低层模块，二者都应依赖于抽象；抽象不应依赖细节，细节应依赖于抽象。
 
-示例：
+#### 示例：数据存储
 
 ```typescript
 interface Database {
-    save(): void;
+    save(data: string): void;
 }
 
-class Application {
+class DatabaseService {
     private db: Database;
 
     constructor(db: Database) {
         this.db = db;
     }
 
-    run(): void {
-        this.db.save();
+    saveData(data: string): void {
+        this.db.save(data);
     }
 }
 
 class MySQLDatabase implements Database {
-    save(): void {
-        console.log("Data saved to MySQL");
+    save(data: string): void {
+        console.log(`Data saved to MySQL: ${data}`);
     }
 }
 
+class SQLiteDatabase implements Database {
+    save(data: string): void {
+        console.log(`Data saved to SQLite: ${data}`);
+    }
+}
+
+// 使用依赖倒置原则
 const db = new MySQLDatabase();
-const app = new Application(db);
-app.run();
+const service = new DatabaseService(db);
+service.saveData("Sample data"); // Data saved to MySQL: Sample data
 ```
 
-* `Application` 类依赖于 `Database` 接口（抽象类），通过依赖注入的方式传入具体的数据库实现，符合依赖倒置原则。
+## 四、常用设计模式
 
-## 三、常用设计模式
-
-设计模式是针对常见软件设计问题的解决方案，旨在提高代码的可复用性、可维护性和可扩展性。
-
-### 1. 单例模式（Singleton Pattern）
+### 1.单例模式
 
 确保一个类只有一个实例，并提供全局访问点。
 
-示例：
+#### 示例：配置管理器
 
 ```typescript
-class Singleton {
-    private static instance: Singleton;
+class ConfigManager {
+    private static instance: ConfigManager;
+    private config: { [key: string]: any };
 
-    private constructor() {}
-
-    public static getInstance(): Singleton {
-        if (!Singleton.instance) {
-            Singleton.instance = new Singleton();
-        }
-        return Singleton.instance;
+    private constructor() {
+        this.config = {
+            apiUrl: "https://api.example.com",
+            timeout: 5000,
+        };
     }
 
-    public doSomething(): void {
-        console.log("Doing something...");
+    public static getInstance(): ConfigManager {
+        if (!ConfigManager.instance) {
+            ConfigManager.instance = new ConfigManager();
+        }
+        return ConfigManager.instance;
+    }
+
+    public getConfig(key: string): any {
+        return this.config[key];
+    }
+
+    public setConfig(key: string, value: any): void {
+        this.config[key] = value;
     }
 }
 
-// 使用单例
-const singleton1 = Singleton.getInstance();
-const singleton2 = Singleton.getInstance();
-console.log(singleton1 === singleton2); // true
-singleton1.doSomething(); // Doing something...
+const config1 = ConfigManager.getInstance();
+console.log(config1.getConfig("apiUrl")); // https://api.example.com
+
+const config2 = ConfigManager.getInstance();
+config2.setConfig("timeout", 10000);
+console.log(config1.getConfig("timeout")); // 10000
 ```
 
-### 2. 工厂方法模式（Factory Method Pattern）
+### 2.工厂方法模式
 
 定义一个创建对象的接口，但让子类决定实例化哪一个类。工厂方法使一个类的实例化延迟到其子类。
 
-示例：
+#### 示例：产品工厂
 
 ```typescript
-abstract class Creator {
-    abstract factoryMethod(): Product;
+abstract class Product {
+    public abstract getName(): string;
+}
 
-    public someOperation(): string {
-        const product = this.factoryMethod();
-        return `Creator: The same creator's code has just worked with ${product.operation()}`;
+class ConcreteProductA extends Product {
+    public getName(): string {
+        return "Product A";
     }
 }
 
-abstract class Product {
-    abstract operation(): string;
+class ConcreteProductB extends Product {
+    public getName(): string {
+        return "Product B";
+    }
+}
+
+abstract class Creator {
+    public abstract factoryMethod(): Product;
+
+    public someOperation(): void {
+        const product = this.factoryMethod();
+        console.log(`Creator: The same creator's code has just worked with ${product.getName()}`);
+    }
 }
 
 class ConcreteCreatorA extends Creator {
@@ -340,31 +463,18 @@ class ConcreteCreatorB extends Creator {
     }
 }
 
-class ConcreteProductA implements Product {
-    public operation(): string {
-        return "{Result of the ConcreteProductA}";
-    }
-}
-
-class ConcreteProductB implements Product {
-    public operation(): string {
-        return "{Result of the ConcreteProductB}";
-    }
-}
-
-// 使用工厂方法模式
 const creatorA = new ConcreteCreatorA();
-console.log(creatorA.someOperation());
+creatorA.someOperation(); // Creator: The same creator's code has just worked with Product A
 
 const creatorB = new ConcreteCreatorB();
-console.log(creatorB.someOperation());
+creatorB.someOperation(); // Creator: The same creator's code has just worked with Product B
 ```
 
-### 3. 抽象工厂模式（Abstract Factory Pattern）
+### 3.抽象工厂模式
 
 提供一个创建一系列相关或相互依赖对象的接口，而无需指定它们的具体类。
 
-示例：
+#### 示例：GUI工厂
 
 ```typescript
 interface GUIFactory {
@@ -373,11 +483,11 @@ interface GUIFactory {
 }
 
 interface Button {
-    paint(): void;
+    render(): void;
 }
 
 interface Checkbox {
-    paint(): void;
+    render(): void;
 }
 
 class WinFactory implements GUIFactory {
@@ -401,272 +511,247 @@ class MacFactory implements GUIFactory {
 }
 
 class WinButton implements Button {
-    public paint(): void {
-        console.log("I'm a Windows button.");
+    public render(): void {
+        console.log("Rendering Windows button");
     }
 }
 
 class WinCheckbox implements Checkbox {
-    public paint(): void {
-        console.log("I'm a Windows checkbox.");
+    public render(): void {
+        console.log("Rendering Windows checkbox");
     }
 }
 
 class MacButton implements Button {
-    public paint(): void {
-        console.log("I'm a MacOS button.");
+    public render(): void {
+        console.log("Rendering Mac button");
     }
 }
 
 class MacCheckbox implements Checkbox {
-    public paint(): void {
-        console.log("I'm a MacOS checkbox.");
+    public render(): void {
+        console.log("Rendering Mac checkbox");
     }
 }
 
-// 使用抽象工厂模式
-function clientCode(factory: GUIFactory) {
+function createUI(factory: GUIFactory): void {
     const button = factory.createButton();
     const checkbox = factory.createCheckbox();
-
-    button.paint();
-    checkbox.paint();
+    button.render();
+    checkbox.render();
 }
 
-clientCode(new WinFactory());
-clientCode(new MacFactory());
+createUI(new WinFactory()); // Rendering Windows button, Rendering Windows checkbox
+createUI(new MacFactory()); // Rendering Mac button, Rendering Mac checkbox
 ```
 
-### 4. 观察者模式（Observer Pattern）
+### 4.观察者模式
 
 定义一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都将得到通知并自动更新。
 
-示例：
+#### 示例：用户事件通知
 
 ```typescript
-interface Observer {
-    update(subject: Subject): void;
-}
+class User {
+    private observers: Array<(status: string) => void> = [];
 
-interface Subject {
-    attach(observer: Observer): void;
-    detach(observer: Observer): void;
-    notify(): void;
-}
-
-class ConcreteSubject implements Subject {
-    private state: number = null;
-    private observers: Observer[] = [];
-
-    public attach(observer: Observer): void {
-        const isExist = this.observers.includes(observer);
-        if (isExist) return console.log('Subject: Observer has been attached already.');
-        console.log('Subject: Attached an observer.');
+    public addObserver(observer: (status: string) => void): void {
         this.observers.push(observer);
     }
 
-    public detach(observer: Observer): void {
-        const observerIndex = this.observers.indexOf(observer);
-        if (observerIndex === -1) return console.log('Subject: Nonexistent observer.');
-        this.observers.splice(observerIndex, 1);
-        console.log('Subject: Detached an observer.');
-    }
-
-    public notify(): void {
-        console.log('Subject: Notifying observers...');
-        for (const observer of this.observers) {
-            observer.update(this);
+    public removeObserver(observer: (status: string) => void): void {
+        const index = this.observers.indexOf(observer);
+        if (index !== -1) {
+            this.observers.splice(index, 1);
         }
     }
 
-    public setState(state: number): void {
-        console.log(`Subject: Setting state to ${state}`);
-        this.state = state;
-        this.notify();
+    public notifyObservers(status: string): void {
+        this.observers.forEach(observer => observer(status));
     }
 
-    public getState(): number {
-        return this.state;
-    }
-}
-
-class ConcreteObserver implements Observer {
-    private name: string;
-
-    constructor(name: string) {
-        this.name = name;
-    }
-
-    public update(subject: Subject): void {
-        if (subject instanceof ConcreteSubject) {
-            console.log(`ConcreteObserver ${this.name}: Reacted to the event.`);
-        }
+    public updateUserStatus(status: string): void {
+        console.log(`User status updated to: ${status}`);
+        this.notifyObservers(status);
     }
 }
 
-// 使用观察者模式
-const subject = new ConcreteSubject();
+function sendEmailNotification(status: string): void {
+    console.log(`Sending email notification: Status is ${status}`);
+}
 
-const observer1 = new ConcreteObserver('Observer 1');
-subject.attach(observer1);
+function pushNotification(status: string): void {
+    console.log(`Sending push notification: Status is ${status}`);
+}
 
-const observer2 = new ConcreteObserver('Observer 2');
-subject.attach(observer2);
+const user = new User();
+user.addObserver(sendEmailNotification);
+user.addObserver(pushNotification);
 
-subject.setState(10);
-subject.detach(observer1);
-subject.setState(20);
+user.updateUserStatus("online"); // User status updated to: online
 ```
 
-### 5. 装饰者模式（Decorator Pattern）
+### 5.装饰者模式
 
 动态地给一个对象添加一些额外的职责。就增加功能来说，装饰者模式相比生成子类更为灵活。
 
-示例：
+#### 示例：咖啡装饰器
 
 ```typescript
-interface Component {
-    operation(): string;
+interface Coffee {
+    cost(): number;
+    description(): string;
 }
 
-class ConcreteComponent implements Component {
-    public operation(): string {
-        return "ConcreteComponent";
+class SimpleCoffee implements Coffee {
+    cost(): number {
+        return 10;
+    }
+
+    description(): string {
+        return "Simple coffee";
     }
 }
 
-abstract class Decorator implements Component {
-    protected component: Component;
+abstract class CoffeeDecorator implements Coffee {
+    protected coffee: Coffee;
 
-    constructor(component: Component) {
-        this.component = component;
+    constructor(coffee: Coffee) {
+        this.coffee = coffee;
     }
 
-    public operation(): string {
-        return this.component.operation();
+    cost(): number {
+        return this.coffee.cost();
     }
-}
 
-class ConcreteDecoratorA extends Decorator {
-    public operation(): string {
-        return `ConcreteDecoratorA(${super.operation()})`;
+    description(): string {
+        return this.coffee.description();
     }
 }
 
-class ConcreteDecoratorB extends Decorator {
-    public operation(): string {
-        return `ConcreteDecoratorB(${super.operation()})`;
+class MilkDecorator extends CoffeeDecorator {
+    cost(): number {
+        return this.coffee.cost() + 2;
+    }
+
+    description(): string {
+        return `${this.coffee.description()}, with milk`;
     }
 }
 
-// 使用装饰者模式
-const simple = new ConcreteComponent();
-console.log(`Client: I've got a simple component: ${simple.operation()}`);
+class SugarDecorator extends CoffeeDecorator {
+    cost(): number {
+        return this.coffee.cost() + 1;
+    }
 
-const decorator1 = new ConcreteDecoratorA(simple);
-console.log(`Client: Now I've got a decorated component: ${decorator1.operation()}`);
+    description(): string {
+        return `${this.coffee.description()}, with sugar`;
+    }
+}
 
-const decorator2 = new ConcreteDecoratorB(decorator1);
-console.log(`Client: Now I've got an even more decorated component: ${decorator2.operation()}`);
+const coffee = new MilkDecorator(new SugarDecorator(new SimpleCoffee()));
+console.log(coffee.cost()); // 13
+console.log(coffee.description()); // Simple coffee, with sugar, with milk
 ```
 
-### 6. 适配器模式（Adapter Pattern）
+### 6.适配器模式
 
 将一个类的接口转换成客户希望的另一个接口。适配器模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。
 
-示例：
+#### 示例：银行卡适配器
 
 ```typescript
-interface Target {
-    request(): string;
+interface Payment {
+    pay(amount: number): void;
 }
 
-class Adaptee {
-    public specificRequest(): string {
-        return ".eetpadA eht fo roivaheb laicepS";
+class BankCard {
+    public payment(amount: number): void {
+        console.log(`Paid $${amount} via Bank Card`);
     }
 }
 
-class Adapter implements Target {
-    private adaptee: Adaptee;
+class BankCardAdapter implements Payment {
+    private bankCard: BankCard;
 
-    constructor(adaptee: Adaptee) {
-        this.adaptee = adaptee;
+    constructor(bankCard: BankCard) {
+        this.bankCard = bankCard;
     }
 
-    public request(): string {
-        const result = this.adaptee.specificRequest().split('').reverse().join('');
-        return `Adapter: (TRANSLATED) ${result}`;
+    pay(amount: number): void {
+        this.bankCard.payment(amount);
     }
 }
 
-// 使用适配器模式
-function clientCode(target: Target) {
-    console.log(`Client: I am working with the ${target.request()}`);
+function makePayment(payment: Payment, amount: number): void {
+    payment.pay(amount);
 }
 
-const adaptee = new Adaptee();
-console.log(`Adaptee: I am not compatible with the client: ${adaptee.specificRequest()}`);
-
-const adapter = new Adapter(adaptee);
-clientCode(adapter);
+const bankCard = new BankCard();
+const adapter = new BankCardAdapter(bankCard);
+makePayment(adapter, 100); // Paid $100 via Bank Card
 ```
 
-### 7. 策略模式（Strategy Pattern）
+### 7.策略模式
 
 定义一系列算法，把它们一个个封装起来，并且使它们可以互相替换。策略模式使得算法可以在不影响客户端的情况下发生变化。
 
-示例：
+#### 示例：排序策略
 
 ```typescript
-interface Strategy {
-    doAlgorithm(data: string[]): string[];
+interface SortingStrategy {
+    sort(array: number[]): number[];
 }
 
-class ConcreteStrategyA implements Strategy {
-    public doAlgorithm(data: string[]): string[] {
-        return data.sort();
+class BubbleSortStrategy implements SortingStrategy {
+    sort(array: number[]): number[] {
+        const arr = [...array];
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = 0; j < arr.length - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                }
+            }
+        }
+        return arr;
     }
 }
 
-class ConcreteStrategyB implements Strategy {
-    public doAlgorithm(data: string[]): string[] {
-        return data.reverse();
+class QuickSortStrategy implements SortingStrategy {
+    sort(array: number[]): number[] {
+        if (array.length <= 1) return array;
+        const pivot = array[0];
+        const left = array.slice(1).filter(x => x <= pivot);
+        const right = array.slice(1).filter(x => x > pivot);
+        return [...this.sort(left), pivot, ...this.sort(right)];
     }
 }
 
 class Context {
-    private strategy: Strategy;
+    private strategy: SortingStrategy;
 
-    constructor(strategy: Strategy) {
+    constructor(strategy: SortingStrategy) {
         this.strategy = strategy;
     }
 
-    public setStrategy(strategy: Strategy): void {
+    setStrategy(strategy: SortingStrategy): void {
         this.strategy = strategy;
     }
 
-    public doSomeBusinessLogic(): void {
-        console.log(`Context: Sorting data using the strategy (not sure how it'll do it)`);
-        const result = this.strategy.doAlgorithm(['a', 'e', 'c', 'b', 'd']);
-        console.log(result.join(', '));
+    executeStrategy(array: number[]): number[] {
+        return this.strategy.sort(array);
     }
 }
 
-// 使用策略模式
-const context = new Context(new ConcreteStrategyA());
-context.doSomeBusinessLogic();
+const context = new Context(new BubbleSortStrategy());
+console.log(context.executeStrategy([3, 1, 4, 1, 5, 9, 2, 6])); // BubbleSort result
 
-console.log();
-
-context.setStrategy(new ConcreteStrategyB());
-context.doSomeBusinessLogic();
+context.setStrategy(new QuickSortStrategy());
+console.log(context.executeStrategy([3, 1, 4, 1, 5, 9, 2, 6])); // QuickSort result
 ```
 
-## 总结
+## 五、总结
 
-* 面向对象编程（OOP）的三大基本要素是：封装、继承和多态。
-* SOLID原则帮助设计更好的面向对象代码，包括：单一职责原则、开放封闭原则、里氏替换原则、接口隔离原则和依赖倒置原则。
-* 常见的设计模式包括但不限于：单例模式、工厂方法模式、抽象工厂模式、观察者模式、装饰者模式、适配器模式和策略模式，它们提供了解决特定设计问题的标准方法。
-
-这些设计模式为开发者提供了处理常见编程问题的有效方案。通过理解并应用这些模式，我们可以编写出更加模块化、可扩展和易于维护的代码。每种模式都有其独特之处，适用于不同的场景，在实际开发中应该根据具体需求选择最合适的模式。
+- **面向对象编程（OOP）的三大基本要素是：封装、继承和多态。**封装通过隐藏对象的内部实现细节，提高代码的安全性和可维护性。继承允许子类复用父类的代码，提升代码的复用性。多态使父类的引用可以指向不同类型的子类对象，表现出不同的行为。
+- **SOLID原则是OOP的重要设计准则，包括：单一职责原则、开放封闭原则、里氏替换原则、接口隔离原则和依赖倒置原则。**这些原则帮助开发者编写更清晰、可维护、可扩展的代码。
+- **常见设计模式如单例模式、工厂方法模式、抽象工厂模式、观察者模式、装饰者模式、适配器模式和策略模式，为解决特定设计问题提供了标准方法。**通过理解并应用这些模式，可以编写出更加模块化、可扩展和易于维护的代码。

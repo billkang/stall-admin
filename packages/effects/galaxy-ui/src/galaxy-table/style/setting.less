@@ -35,7 +35,7 @@
       border-radius: 4px;
       font-size: 16px;
 
-      .stall-icon-hover {
+      .arco-icon-hover {
         &::before {
           width: 24px;
           height: 24px;
@@ -75,7 +75,7 @@
         border-right: 1px solid @color-border-1;
       }
 
-      .stall-divider {
+      .arco-divider {
         margin: 20px 0;
         border-bottom: 1px solid #f0f1f3;
       }
@@ -105,24 +105,11 @@
 
               &.selected {
                 border: 2px solid #6284ff;
-
-                .app-iconify {
-                  display: inline-flex !important;
-                }
               }
 
               img {
                 width: 72px;
                 height: 32px;
-              }
-
-              .app-iconify {
-                display: none !important;
-                position: absolute;
-                right: 6px;
-                bottom: 6px;
-                font-size: 16px;
-                color: #6284ff;
               }
             }
           }
@@ -135,13 +122,13 @@
             position: relative;
             margin-bottom: 12px;
 
-            .stall-icon-hover {
+            .arco-icon-hover {
               position: absolute;
               top: 4px;
               left: 0;
             }
 
-            .stall-radio-label {
+            .arco-radio-label {
               margin-left: 22px;
             }
 
@@ -168,8 +155,8 @@
       padding-left: 24px;
 
       .table-columns-sort-wrapper {
-        .stall-tree-node,
-        .stall-tree-node-selected {
+        .arco-tree-node,
+        .arco-tree-node-selected {
           display: flex;
           justify-content: space-between;
           padding: 5px 8px;
@@ -183,12 +170,12 @@
             background: #f0f0f0;
           }
 
-          .stall-tree-node-indent,
-          .stall-tree-node-switcher {
+          .arco-tree-node-indent,
+          .arco-tree-node-switcher {
             display: none;
           }
 
-          .stall-tree-node-title {
+          .arco-tree-node-title {
             padding: 0;
             margin: 0;
             width: 100%;
@@ -200,23 +187,23 @@
               width: 100%;
               justify-content: space-between;
 
-              .stall-icon {
+              .arco-icon {
                 margin-right: 8px;
               }
 
-              .stall-tree-node-drag-icon {
+              .arco-tree-node-drag-icon {
                 display: none;
               }
             }
 
-            .stall-switch {
+            .arco-switch {
               margin: 8px 0;
 
-              &.stall-switch-checked {
+              &.arco-switch-checked {
                 background: #07c160;
               }
 
-              &.stall-switch-disabled {
+              &.arco-switch-disabled {
                 opacity: 0.65;
               }
             }

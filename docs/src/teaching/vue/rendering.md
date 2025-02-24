@@ -18,6 +18,8 @@ Vue 3 的响应式系统是基于 ECMAScript 的 Proxy 对象构建的，它能�
 
 ## 渲染过程
 
+![vdom-render](../../public/teaching/vue/vue-render.png)
+
 ### 1. 创建虚拟节点
 
 Vue 使用 `h` 函数（或 `createVNode`）来创建描述用户界面的虚拟节点。每个虚拟节点都包含了标签名、属性和子节点等信息。
@@ -35,6 +37,8 @@ Vue 通过一个称为“协调”（reconciliation）的过程，将虚拟 DOM 
 在检测到数据变化后，Vue 会创建一个新的虚拟 DOM 树并与旧的虚拟 DOM 树做对比。它使用一系列优化策略来确定哪些元素需要更新、添加或移除，然后把这些变更应用到实际的 DOM 上。
 
 ## Vue 3 渲染原理的核心代码实现
+
+![vdom-render](../../public/teaching/vue/vdom-render.png)
 
 为了更好地理解 Vue 3 的渲染机制，我们可以简化地展示一些关键功能的实现：
 
@@ -116,6 +120,8 @@ class Dep {
 ```
 
 ### 4. 渲染虚拟 DOM 到真实 DOM
+
+![vdom-render](../../public/teaching/vue/vue-patch.png)
 
 这是一个简化的渲染函数，它递归地遍历虚拟节点并将其转换为真实的 DOM 元素。
 

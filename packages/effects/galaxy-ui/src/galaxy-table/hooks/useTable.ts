@@ -181,53 +181,38 @@ export function useTable({
   };
 
   const handleDeleteBatch = () => {
-    const { deleteBatch } = props.switchConfirm;
-
-    if (deleteBatch) {
-      Modal.confirm({
-        title: `确定删除勾选的数据吗？`,
-        content: `删除后不可恢复，请谨慎操作。`,
-        okText: `删除`,
-        cancelText: `取消`,
-        onOk() {
-          emit('delete-batch', [...selectedRowKeys.value]);
-          selectedRowKeys.value = [];
-        },
-        onCancel() {
-          emit('delete-cancel', [...selectedRowKeys.value]);
-        },
-      });
-    } else {
-      emit('delete-batch', [...selectedRowKeys.value]);
-      selectedRowKeys.value = [];
-    }
+    Modal.confirm({
+      title: `确定删除勾选的数据吗？`,
+      content: `删除后不可恢复，请谨慎操作。`,
+      okText: `删除`,
+      cancelText: `取消`,
+      onOk() {
+        emit('delete-batch', [...selectedRowKeys.value]);
+        selectedRowKeys.value = [];
+      },
+      onCancel() {
+        emit('delete-cancel', [...selectedRowKeys.value]);
+      },
+    });
   };
 
   const handleDelete = (record: Record<string, string>) => {
-    const { delete: _delete } = props.switchConfirm;
+    Modal.confirm({
+      title: `确定删除当前数据吗？`,
+      content: `删除后不可恢复，请谨慎操作。`,
+      okText: `删除`,
+      cancelText: `取消`,
+      onOk() {
+        selectedRowKeys.value = selectedRowKeys.value.filter(
+          (key) => key !== record[props.rowKey],
+        );
 
-    if (_delete) {
-      Modal.confirm({
-        title: `确定删除当前数据吗？`,
-        content: `删除后不可恢复，请谨慎操作。`,
-        okText: `删除`,
-        cancelText: `取消`,
-        onOk() {
-          selectedRowKeys.value = selectedRowKeys.value.filter(
-            (key) => key !== record[props.rowKey],
-          );
-
-          emit('delete', record);
-        },
-        onCancel() {
-          emit('delete-cancel', record);
-        },
-      });
-    } else {
-      selectedRowKeys.value = selectedRowKeys.value.filter(key => key !== record[props.rowKey]);
-
-      emit('delete', record);
-    }
+        emit('delete', record);
+      },
+      onCancel() {
+        emit('delete-cancel', record);
+      },
+    });
   };
 
   const handleClickFilter = (name: string) => {

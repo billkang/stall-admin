@@ -4,7 +4,7 @@
 
     <Space class="tag-list">
       <Tag v-for="tag in tagList" :key="tag.key" closable @close="handleClose(tag)">
-        包含
+        {{ tag.title }} 包含 "{{ tag.value }}"
       </Tag>
     </Space>
 
