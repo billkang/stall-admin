@@ -50,72 +50,50 @@ function setupAccessGuard(router: Router) {
     const userStore = useUserStore();
     const authStore = useAuthStore();
 
+    // *******************************
+    // * 步骤 1：检查是否为基本路由 *
+    // *******************************
+
+    // 检查当前路由是否是核心路由
     // 基本路由，这些路由不需要进入权限拦截
     if (coreRouteNames.includes(to.name as string)) {
-      if (to.path === LOGIN_PATH && accessStore.accessToken) {
-        return decodeURIComponent(
-          (to.query?.redirect as string) ||
-            userStore.userInfo?.homePath ||
-            DEFAULT_HOME_PATH,
-        );
-      }
+      /**
+       * 待完善的代码
+       */
+
+      // 其他核心路由直接放行
       return true;
     }
 
+    // *******************************
+    // * 步骤 2：检查访问令牌 *
+    // *******************************
     // accessToken 检查
+    // 如果没有访问令牌
     if (!accessStore.accessToken) {
-      // 明确声明忽略权限访问权限，则可以访问
-      if (to.meta.ignoreAccess) {
-        return true;
-      }
+      /**
+       * 待完善的代码
+       */
 
-      // 没有访问权限，跳转登录页面
-      if (to.fullPath !== LOGIN_PATH) {
-        return {
-          path: LOGIN_PATH,
-          // 如不需要，直接删除 query
-          query:
-            to.fullPath === DEFAULT_HOME_PATH
-              ? {}
-              : { redirect: encodeURIComponent(to.fullPath) },
-          // 携带当前跳转的页面，登录后重新跳转该页面
-          replace: true,
-        };
-      }
+      // 如果已经是登录页面，直接放行
       return to;
     }
 
-    // 是否已经生成过动态路由
-    if (accessStore.isAccessChecked) {
-      return true;
-    }
+    // *******************************
+    // * 步骤 3：生成动态路由 *
+    // *******************************
 
-    // 生成路由表
-    // 当前登录用户拥有的角色标识列表
-    const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
-    const userRoles = userInfo.roles ?? [];
+    /**
+     * 待完善的代码
+     */
 
-    // 生成菜单和路由
-    const { accessibleMenus, accessibleRoutes } = await generateAccess({
-      roles: userRoles,
-      router,
-      // 则会在菜单中显示，但是访问会被重定向到403
-      routes: accessRoutes,
-    });
+    // *******************************
+    // * 步骤 4：导航重定向 *
+    // *******************************
 
-    // 保存菜单信息和路由信息
-    accessStore.setAccessMenus(accessibleMenus);
-    accessStore.setAccessRoutes(accessibleRoutes);
-    accessStore.setIsAccessChecked(true);
-    const redirectPath = (from.query.redirect ??
-      (to.path === DEFAULT_HOME_PATH
-        ? userInfo.homePath || DEFAULT_HOME_PATH
-        : to.fullPath)) as string;
-
-    return {
-      ...router.resolve(decodeURIComponent(redirectPath)),
-      replace: true,
-    };
+    /**
+     * 待完善的代码
+     */
   });
 }
 

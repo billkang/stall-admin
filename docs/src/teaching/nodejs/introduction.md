@@ -17,6 +17,8 @@ Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境，它允许�
 
 ## 三、Node.js 的核心特性
 
+![architecture](../../public/teaching/nodejs/architecture.png)
+
 ### （一）事件驱动
 
 Node.js 采用事件驱动模型，所有 I/O 操作都是异步的，并且通过事件触发回调函数来响应结果。这种模型使得 Node.js 能够高效地处理大量并发连接，而不会被阻塞在某个特定的操作上。
@@ -34,6 +36,8 @@ Node.js 使用单个线程来处理任务，但是可以通过 libuv 库提供�
 Node.js 非常适合用于创建实时性要求高的 Web 应用程序和服务，如聊天室、在线游戏等。其高性能和高并发处理能力使得这些应用能够快速响应用户操作，提供流畅的用户体验。
 
 ## 四、Node.js 的架构设计
+
+![architecture](../../public/teaching/nodejs/structor-layer.png)
 
 ### （一）V8 引擎
 
@@ -155,9 +159,13 @@ console.log(buffer.toString('base64')); // 输出: SGVsbG8sIFdvcmxkIQ==
 
 ## 六、Node.js 的功能与用途
 
+![used-for](../../public/teaching/nodejs/used-for.webp)
+
 ### （一）Web 应用程序开发
 
 借助 Express.js、Koa、Nest.js 等框架，开发者可以快速搭建各种类型的 Web 应用。这些框架提供了丰富的功能和灵活的配置，使得 Web 开发更加高效和便捷。
+
+![architecture](../../public/teaching/nodejs/web-app.png)
 
 **示例代码**
 
@@ -210,6 +218,8 @@ io.on('connection', (socket) => {
 ### （三）API 服务器
 
 Node.js 可以用于构建 RESTful API 或 GraphQL API，为前端或其他系统提供数据接口。其高性能和高并发处理能力使得 API 服务器能够快速响应请求，提高用户体验。
+
+![architecture](../../public/teaching/nodejs/bff.png)
 
 **示例代码**
 

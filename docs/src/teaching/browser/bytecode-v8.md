@@ -8,7 +8,7 @@
 4. **字节码与机器码的关系。**
 5. **总结：字节码的意义。**
 
----
+![v8-bytecode](../../public/teaching/browser/v8-bytecode.jpg)
 
 ## 一、什么是字节码？
 

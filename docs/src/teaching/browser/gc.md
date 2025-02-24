@@ -371,6 +371,8 @@ function example() {
 
 #### 新生代（Young Generation）
 
+![y-gc](../../public/teaching/browser/gc-1.png)
+
 - **存储生命周期较短的对象**，如局部变量、临时对象。
 - **回收算法**: Scavenge算法，将内存分为两个区域（From 和 To），大部分对象存活时间短，每次 GC 仅清理 From 区域。
 - **过程**
@@ -380,6 +382,8 @@ function example() {
 - **优点**: 处理速度快，适合短生命周期的对象。
 
 #### 老生代（Old Generation）
+
+![o-gc](../../public/teaching/browser/gc-2.png)
 
 - **存储生命周期较长的对象**，如全局变量、闭包中的变量。
 - **回收算法**: 标记清除 + 标记整理 + 增量式压缩。

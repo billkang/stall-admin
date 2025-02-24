@@ -54,12 +54,16 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
           text: 'Axios 深入解析',
         },
         {
-          link: 'lesson2_basic/using-axios',
-          text: '封装 axios',
+          link: 'lesson2_basic/how-to-use-axios',
+          text: 'Axios 封装：为企业级应用提供健壮的 HTTP 请求管理',
         },
         {
-          link: 'lesson2_basic/using-vue-router',
-          text: '封装 vue-router',
+          link: 'lesson2_basic/using-axios',
+          text: 'Axios 封装：项目实践',
+        },
+        {
+          link: 'lesson2_basic/how-to-use-vue-router',
+          text: 'Vue Router 在项目开发中的应用与封装指南',
         },
       ],
     },
@@ -79,11 +83,15 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       items: [
         {
           link: 'lesson4_web-components/introduction',
-          text: 'Web Components 全面解析',
+          text: 'Web Components 全面解析：构建模块化与可重用的前端组件',
         },
         {
           link: 'lesson4_web-components/how-to',
-          text: '封装一个 web components 组件',
+          text: '使用 Web Components 封装前端组件的实操指南',
+        },
+        {
+          link: 'lesson4_web-components/how-to-vue3',
+          text: '使用 Web Components 封装 Vue 3 组件',
         },
       ],
     },
@@ -107,11 +115,11 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       items: [
         {
           link: 'lesson6_micro-frontend/introduction',
-          text: '微前端介绍',
+          text: '微前端：架构模式、技术实现与最佳实践',
         },
         {
           link: 'lesson6_micro-frontend/how-to',
-          text: '接入微前端',
+          text: '使用 micro-app 进行微前端接入',
         },
       ],
     },
