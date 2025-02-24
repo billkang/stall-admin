@@ -1,15 +1,15 @@
 <template>
   <Drawer
     v-model:visible="innerVisible"
-    class="dcp-galaxy-table__setting"
+    class="stall-galaxy-table__setting"
     :width="592"
     :mask="false"
     :footer="false"
     @close="handleClose">
-    <template #title>table.setting.title</template>
+    <template #title>表格显示设置</template>
     <div class="table-setting__left-section">
       <div class="table-size-wrapper">
-        <div class="wrapper-title">table.setting.size.title</div>
+        <div class="wrapper-title">显示密度</div>
         <div class="size-list">
           <div class="size-item">
             <div class="img-box" :class="{ selected: tableSize === 'large' }">
@@ -18,7 +18,7 @@
                 <IconCheckCircleFill />
               </span>
             </div>
-            table.setting.size.large
+            宽松
           </div>
           <div class="size-item">
             <div class="img-box" :class="{ selected: tableSize === 'small' }">
@@ -27,7 +27,7 @@
                 <IconCheckCircleFill />
               </span>
             </div>
-            table.setting.size.small
+            紧凑
           </div>
         </div>
       </div>
@@ -35,15 +35,15 @@
       <Divider />
 
       <div class="table-text-control-wrapper">
-        <div class="wrapper-title">table.setting.textControl.title</div>
+        <div class="wrapper-title">文本控制</div>
         <RadioGroup class="text-control-list" v-model="textControl" @change="handleChangeTextControl">
           <Radio value="wrap" class="text-control-item">
-            <div class="text-control-title">table.setting.textControl.wrapTitle</div>
-            <div class="text-control-desc">table.setting.textControl.wrapDesc</div>
+            <div class="text-control-title">自动换行</div>
+            <div class="text-control-desc">超出单元格宽度的内容将在单元格内自动换行显示，不被省略</div>
           </Radio>
           <Radio value="ellipsis" class="text-control-item">
-            <div class="text-control-title">table.setting.textControl.ellipsisTitle</div>
-            <div class="text-control-desc">table.setting.textControl.ellipsisTitle</div>
+            <div class="text-control-title">内容溢出省略</div>
+            <div class="text-control-desc">超出单元格宽度的内容将以省略号代替</div>
           </Radio>
         </RadioGroup>
       </div>
@@ -51,7 +51,7 @@
 
     <div class="table-setting__right-section">
       <div class="table-columns-sort-wrapper">
-        <div class="wrapper-title">table.setting.sort.title</div>
+        <div class="wrapper-title">字段显示设置</div>
         <Tree
           draggable
           :data="sortedColumns

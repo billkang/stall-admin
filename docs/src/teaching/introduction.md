@@ -17,11 +17,11 @@
 | CSS | [PostCSS中文文档](https://www.postcss.com.cn/) | ⭐⭐⭐ |
 | JS | [JavaScript教程](https://www.runoob.com/js/js-tutorial.html) | ⭐ |
 | JS | [HTML DOM 教程](https://www.runoob.com/htmldom/htmldom-tutorial.html) | ⭐ |
-| JS | [es6（阮一峰）](https://es6.ruanyifeng.com/)）| ⭐⭐ |
+| JS | [es6（阮一峰）](https://es6.ruanyifeng.com/)| ⭐⭐ |
 | JS | [深入理解JavaScript系列](https://www.cnblogs.com/TomXu/archive/2011/12/15/2288411.html) | ⭐⭐⭐⭐⭐ |
 | JS | [你不知道的js](https://github.com/getify/You-Dont-Know-JS) | ⭐⭐⭐⭐⭐ |
-| TS | [TypeScript教程](https://www.runoob.com/typescript/ts-tutorial.html)）| ⭐⭐ |
-| TS | [深入理解 TypeScript](https://jkchao.github.io/typescript-book-chinese/)）| ⭐⭐⭐⭐⭐ |
+| TS | [TypeScript教程](https://www.runoob.com/typescript/ts-tutorial.html)| ⭐⭐ |
+| TS | [深入理解 TypeScript](https://jkchao.github.io/typescript-book-chinese/)| ⭐⭐⭐⭐⭐ |
 | Vue | [Vue3教程](https://www.runoob.com/vue3/vue3-tutorial.html) | ⭐⭐ |
 | Vue | [Vue3官网](https://cn.vuejs.org/guide/introduction) | ⭐⭐⭐ |
 | Vue | [Pinia](https://pinia.vuejs.org/zh/introduction.html) | ⭐⭐ |

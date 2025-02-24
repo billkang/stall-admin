@@ -1,7 +1,7 @@
 @import './token.less';
 
-.dcp-galaxy-table__setting {
-  .dcp-drawer {
+.stall-galaxy-table__setting {
+  .arco-drawer {
     height: calc(100vh - 64px);
     bottom: 8px;
     border-radius: 8px 0 0 8px;
@@ -9,7 +9,7 @@
     box-shadow: -16px 0 16px 0 rgba(0, 0, 0, 0.08);
   }
 
-  .dcp-drawer-header {
+  .arco-drawer-header {
     display: flex;
     flex: 0;
     align-items: center;
@@ -19,7 +19,7 @@
     box-shadow: inset 0 -1px 0 0 #f0f0f0;
     border: none;
 
-    .dcp-drawer-title {
+    .arco-drawer-title {
       flex-direction: row-reverse;
       flex: 1;
       margin: 0;
@@ -29,13 +29,13 @@
       color: @color-text-1;
     }
 
-    .dcp-drawer-close-btn {
+    .arco-drawer-close-btn {
       width: 24px;
       height: 24px;
       border-radius: 4px;
       font-size: 16px;
 
-      .dcp-icon-hover {
+      .stall-icon-hover {
         &::before {
           width: 24px;
           height: 24px;
@@ -45,7 +45,7 @@
     }
   }
 
-  .dcp-drawer-body {
+  .arco-drawer-body {
     display: flex;
     justify-content: space-between;
     padding: 0 24px 20px;
@@ -75,7 +75,7 @@
         border-right: 1px solid @color-border-1;
       }
 
-      .dcp-divider {
+      .stall-divider {
         margin: 20px 0;
         border-bottom: 1px solid #f0f1f3;
       }
@@ -135,13 +135,13 @@
             position: relative;
             margin-bottom: 12px;
 
-            .dcp-icon-hover {
+            .stall-icon-hover {
               position: absolute;
               top: 4px;
               left: 0;
             }
 
-            .dcp-radio-label {
+            .stall-radio-label {
               margin-left: 22px;
             }
 
@@ -168,8 +168,8 @@
       padding-left: 24px;
 
       .table-columns-sort-wrapper {
-        .dcp-tree-node,
-        .dcp-tree-node-selected {
+        .stall-tree-node,
+        .stall-tree-node-selected {
           display: flex;
           justify-content: space-between;
           padding: 5px 8px;
@@ -183,12 +183,12 @@
             background: #f0f0f0;
           }
 
-          .dcp-tree-node-indent,
-          .dcp-tree-node-switcher {
+          .stall-tree-node-indent,
+          .stall-tree-node-switcher {
             display: none;
           }
 
-          .dcp-tree-node-title {
+          .stall-tree-node-title {
             padding: 0;
             margin: 0;
             width: 100%;
@@ -200,23 +200,23 @@
               width: 100%;
               justify-content: space-between;
 
-              .dcp-icon {
+              .stall-icon {
                 margin-right: 8px;
               }
 
-              .dcp-tree-node-drag-icon {
+              .stall-tree-node-drag-icon {
                 display: none;
               }
             }
 
-            .dcp-switch {
+            .stall-switch {
               margin: 8px 0;
 
-              &.dcp-switch-checked {
+              &.stall-switch-checked {
                 background: #07c160;
               }
 
-              &.dcp-switch-disabled {
+              &.stall-switch-disabled {
                 opacity: 0.65;
               }
             }

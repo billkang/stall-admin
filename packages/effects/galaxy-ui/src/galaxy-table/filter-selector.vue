@@ -1,12 +1,12 @@
 <template>
-  <div class="dcp-galaxy-table-filter__select" :class="{ 'focused-filter': focusedFilter === column.dataIndex }">
+  <div class="stall-galaxy-table-filter__select" :class="{ 'focused-filter': focusedFilter === column.dataIndex }">
     <span class="option-title">{{ column.title }}</span>
     <Select
       v-model="formData[column.dataIndex]"
       :multiple="column.filterable.multiple === true"
       :filter-option="false"
       allow-clear
-      placeholder="table.filter.all"
+      placeholder="全部"
       @click.stop="handleFocus(column.dataIndex)"
       @search="handleCustomSearch(column.dataIndex, $event)"
       @change="handleChange">

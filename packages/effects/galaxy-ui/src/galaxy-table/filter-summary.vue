@@ -1,14 +1,14 @@
 <template>
-  <div v-if="visible" class="dcp-galaxy-table-filter__summary">
-    <div class="label">table.filter.summaryLabel</div>
+  <div v-if="visible" class="stall-galaxy-table-filter__summary">
+    <div class="label">筛选结果</div>
 
     <Space class="tag-list">
       <Tag v-for="tag in tagList" :key="tag.key" closable @close="handleClose(tag)">
-        table.filter.summaryTag
+        包含
       </Tag>
     </Space>
 
-    <div class="clear-all" @click="handleClear">table.filter.summaryClear</div>
+    <div class="clear-all" @click="handleClear">清空条件</div>
   </div>
 </template>
 

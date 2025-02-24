@@ -167,7 +167,7 @@ export function useTable({
 
   const handleSelectionChange = (keys: RowKey[]) => {
     if (keys.length > props.maxSelectedKeysCount) {
-      Message.warning("table.maxSelectedKeysCount");
+      Message.warning(`最大允许选中 ${props.maxSelectedKeysCount} 条数据`);
       return;
     }
 
@@ -185,10 +185,10 @@ export function useTable({
 
     if (deleteBatch) {
       Modal.confirm({
-        title: `table.deleteConfirm.batchTitle`,
-        content: `table.deleteConfirm.content`,
-        okText: `table.deleteConfirm.ok`,
-        cancelText: `table.deleteConfirm.cancel`,
+        title: `确定删除勾选的数据吗？`,
+        content: `删除后不可恢复，请谨慎操作。`,
+        okText: `删除`,
+        cancelText: `取消`,
         onOk() {
           emit('delete-batch', [...selectedRowKeys.value]);
           selectedRowKeys.value = [];
@@ -208,12 +208,14 @@ export function useTable({
 
     if (_delete) {
       Modal.confirm({
-        title: `table.deleteConfirm.singleTitle`,
-        content: `table.deleteConfirm.content`,
-        okText: `table.deleteConfirm.ok`,
-        cancelText: `table.deleteConfirm.cancel`,
+        title: `确定删除当前数据吗？`,
+        content: `删除后不可恢复，请谨慎操作。`,
+        okText: `删除`,
+        cancelText: `取消`,
         onOk() {
-          selectedRowKeys.value = selectedRowKeys.value.filter(key => key !== record[props.rowKey]);
+          selectedRowKeys.value = selectedRowKeys.value.filter(
+            (key) => key !== record[props.rowKey],
+          );
 
           emit('delete', record);
         },

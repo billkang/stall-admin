@@ -1,6 +1,6 @@
 <template>
   <div
-    class="dcp-galaxy-table__filter"
+    class="stall-galaxy-table__filter"
     :class="{ disabled }"
     v-if="filterableColumns.length > 0 || inputSearchColumns.length > 0">
     <Space :size="8">

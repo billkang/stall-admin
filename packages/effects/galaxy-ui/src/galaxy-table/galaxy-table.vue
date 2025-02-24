@@ -1,5 +1,5 @@
 <template>
-  <div class="dcp-galaxy-table-container" ref="tableContainerRef">
+  <div class="stall-galaxy-table-container" ref="tableContainerRef">
     <header>
       <div class="table-header__left-section">
         <Filter
@@ -83,10 +83,6 @@
         </template>
         <template #pagination-total="slotProps">
           <slot name="pagination-total" :total="slotProps.total">
-            <span v-if="selectedRowKeys.length > 0">
-              {{ `table.pagination.selected` }}
-            </span>
-            <span v-else>{{ `table.pagination.total` }}</span>
           </slot>
         </template>
       </Table>
@@ -278,6 +274,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less" scoped>
-@import url('@arco-design/web-vue/es/table/style/index.less');
+<style lang="less">
+@import '@arco-design/web-vue/es/index.less';
+@import url('./style/index.less');
 </style>

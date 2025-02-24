@@ -8,7 +8,7 @@
 @import './filter.less';
 @import './setting.less';
 
-.dcp-galaxy-table-container {
+.stall-galaxy-table-container {
   display: flex;
   flex-direction: column;
   position: relative;
@@ -17,9 +17,10 @@
   max-height: 100%;
   overflow-x: auto;
   overflow-y: auto;
+  background: @color-bg-white;
 
   &.pagination-top {
-    .dcp-table-container {
+    .arco-table-container {
       margin-bottom: 0 !important;
     }
   }
@@ -31,13 +32,13 @@
 
     .table-header__left-section,
     .table-header__right-section {
-      .dcp-space {
+      .stall-space {
         flex-wrap: wrap;
       }
     }
 
     .right-section {
-      .dcp-btn {
+      .arco-btn {
         padding: 5px 12px;
         margin-right: 4px;
 
@@ -60,7 +61,7 @@
           background: @color-text-1;
 
           &:disabled {
-            background: @color-border-5;
+            background: @color-border-4;
           }
         }
 
@@ -73,36 +74,35 @@
   }
 
   main {
-    background: @color-bg-white;
     flex: 1;
     max-height: calc(100% - 68px);
 
-    .dcp-table {
+    .arco-table {
       height: 100%;
 
-      .dcp-table-container {
+      .arco-table-container {
         margin-bottom: 52px;
         height: 100%;
         border: 1px solid @color-border-1;
 
-        .dcp-table-content-scroll-x {
+        .arco-table-content-scroll-x {
           overflow-x: auto;
           overflow-y: auto;
         }
 
-        .dcp-virtual-list {
-          .dcp-table-element {
+        .stall-virtual-list {
+          .arco-table-element {
             width: 100%;
           }
         }
 
-        .dcp-table-element {
-          .dcp-table-th {
-            .dcp-table-cell {
+        .arco-table-element {
+          .arco-table-th {
+            .arco-table-cell {
               padding: 7px 12px;
               line-height: 20px;
 
-              .dcp-table-th-title {
+              .arco-table-th-title {
                 .header-cell-action {
                   display: flex;
                   justify-content: space-between;
@@ -129,7 +129,7 @@
         }
       }
 
-      .dcp-table-pagination {
+      .arco-table-pagination {
         position: absolute;
         left: 0;
         right: 0;
@@ -138,20 +138,20 @@
         background: @color-bg-white;
         z-index: 10;
 
-        &.dcp-table-pagination-top {
+        &.arco-table-pagination-top {
           position: absolute;
           top: -60px;
           left: unset;
           bottom: unset;
         }
 
-        .dcp-pagination {
+        .stall-pagination {
           width: 100%;
           justify-content: flex-end;
           font-size: 14px;
           line-height: 22px;
 
-          .dcp-pagination-total {
+          .stall-pagination-total {
             flex: 1;
             color: @color-text-3;
           }
@@ -164,17 +164,17 @@
             color: @color-text-1;
 
             &-active {
-              background: @color-fill-5;
-              border: 1px solid @color-border-5;
+              background: @color-fill-4;
+              border: 1px solid @color-border-4;
             }
 
             &-disabled {
-              color: var(~'@{dcp-cssvars-prefix}-color-text-4');
+              color: @color-text-4;
             }
           }
 
-          .dcp-pagination-options {
-            .dcp-select-view-single {
+          .stall-pagination-options {
+            .arco-select-view-single {
               height: 32px;
               border-radius: 4px;
               background: @color-bg-white;
@@ -183,8 +183,8 @@
             }
           }
 
-          .dcp-pagination-jumper {
-            .dcp-input-wrapper {
+          .stall-pagination-jumper {
+            .arco-input-wrapper {
               height: 32px;
               border-radius: 2px;
               border: 1px solid @color-border-2;

@@ -8,47 +8,34 @@ import { getExampleTableApi } from '#/api';
 import { GalaxyTable } from '@stall/galaxy-ui';
 
 const columns = [
-  { title: '序号', type: 'seq', width: 50 },
-  { field: 'category', title: 'Category', width: 100 },
   {
-    field: 'imageUrl',
-    slots: { default: 'image-url' },
-    title: 'Image',
+    title: '序号',
+    dataIndex: 'seq',
+    width: 50,
+  },
+  {
+    dataIndex: 'category',
+    title: 'Category',
     width: 100,
+    filterable: {
+      componentType: 'input',
+      visible: true,
+    },
   },
   {
-    cellRender: { name: 'CellImage' },
-    field: 'imageUrl2',
-    title: 'Render Image',
-    width: 130,
-  },
-  {
-    field: 'open',
-    slots: { default: 'open' },
+    dataIndex: 'open',
     title: 'Open',
-    width: 100,
   },
   {
-    field: 'status',
-    slots: { default: 'status' },
+    dataIndex: 'status',
     title: 'Status',
-    width: 100,
   },
-  { field: 'color', title: 'Color', width: 100 },
-  { field: 'productName', title: 'Product Name', width: 200 },
-  { field: 'price', title: 'Price', width: 100 },
+  { dataIndex: 'color', title: 'Color' },
+  { dataIndex: 'productName', title: 'Product Name' },
+  { dataIndex: 'price', title: 'Price' },
   {
-    field: 'releaseDate',
-    formatter: 'formatDateTime',
+    dataIndex: 'releaseDate',
     title: 'Date',
-    width: 200,
-  },
-  {
-    cellRender: { name: 'CellLink', props: { text: '编辑' } },
-    field: 'action',
-    fixed: 'right',
-    title: '操作',
-    width: 120,
   },
 ];
 
@@ -60,15 +47,15 @@ onMounted(async () => {
   memberDataList.value = items;
 });
 
-async function queryByPage(page: any) {
+async function queryByPage({ page, pageSize }: any) {
   const res = await getExampleTableApi({
-    page: page.currentPage,
-    pageSize: page.pageSize,
+    page,
+    pageSize,
   });
   return res;
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 @import url('@stall/galaxy-ui/dist/galaxy-ui.css');
 </style>

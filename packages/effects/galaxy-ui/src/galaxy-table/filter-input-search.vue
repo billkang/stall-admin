@@ -1,9 +1,9 @@
 <template>
-  <div class="dcp-galaxy-table-filter__input-search" :class="{ 'focused-filter': focusedFilter === 'inputSearch' }">
+  <div class="stall-galaxy-table-filter__input-search" :class="{ 'focused-filter': focusedFilter === 'inputSearch' }">
     <Input
       v-if="visible"
       v-model="formData[column.dataIndex]"
-      placeholder="table.filter.inputPlaceholder"
+      placeholder="请输入"
       allow-clear
       @clear="handleClear"
       @press-enter="handleSearch">
@@ -57,7 +57,7 @@ export default defineComponent({
 
     const handleToggleVisible = (e: Event) => {
       if (!props.expand) {
-        const found = recursiveCheckNodeClass(e.target as any, 'dcp-galaxy-table-filter__input-search');
+        const found = recursiveCheckNodeClass(e.target as any, 'stall-galaxy-table-filter__input-search');
         if (!found) {
           visible.value = false;
         }

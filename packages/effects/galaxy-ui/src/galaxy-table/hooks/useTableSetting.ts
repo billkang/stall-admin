@@ -129,7 +129,7 @@ function initTableSetting(uuid: string, columns: any[], optional?: { visible: bo
 
       if (optional?.visible) {
         mergedColumns.push({
-          title: 'table.column.optional',
+          title: '操作',
           dataIndex: 'optional',
           slotName: 'optional',
           titleSlotName: 'optional-title',
@@ -237,7 +237,7 @@ function initTableSetting(uuid: string, columns: any[], optional?: { visible: bo
   // 保存自定义筛选
   function saveCustomFilter(name: string, formData: FormData) {
     if (customFilters.has(name)) {
-      const text = `table.filter.existSameNameFilter`;
+      const text = `已存在同名筛选`;
       throw Error(text);
     }
 

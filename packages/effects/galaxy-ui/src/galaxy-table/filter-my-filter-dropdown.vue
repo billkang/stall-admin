@@ -1,16 +1,16 @@
 <template>
   <Dropdown position="bottom" trigger="click" @click.stop="handleToggle">
     <div
-      class="flex dcp-galaxy-table-filter__my-filter-overlay"
+      class="flex stall-galaxy-table-filter__my-filter-overlay"
       :class="{ 'focused-filter': focusedFilter === 'myFilter' }">
-      <span>{{ `table.filter.myConditions` }}</span>
+      <span>我的筛选</span>
       <IconUp v-if="isOpenOverlay" />
       <IconDown v-else />
     </div>
 
     <template #content>
-      <div class="dcp-galaxy-table-filter__my-filter">
-        <div v-if="customFilters.size === 0" class="empty">{{ `table.filter.noCustomFilterText` }}</div>
+      <div class="stall-galaxy-table-filter__my-filter">
+        <div v-if="customFilters.size === 0" class="empty">暂无自定义的筛选项</div>
         <ul v-else class="custom-filter-wrapper">
           <li class="item" v-for="key in customFilters.keys()" :key="key">
             <label @click="handleClickCustomFilter(key)">{{ key }}</label>

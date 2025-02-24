@@ -6,12 +6,12 @@
     @click.stop="handleToggle"
     @popup-visible-change="handlePopupVisibleChange">
     <div
-      class="flex dcp-galaxy-table-filter__more-filter"
+      class="flex stall-galaxy-table-filter__more-filter"
       :class="{ 'focused-filter': focusedFilter === 'moreFilter' }">
       <IconAlignCenter />
 
       <div class="dropdown-title">
-        table.filter.moreConditions
+        更多筛选
         <span v-if="filterCount > 0" class="filter-count">{{ filterCount }}</span>
       </div>
 
@@ -20,8 +20,8 @@
     </div>
 
     <template #content>
-      <div class="dcp-galaxy-table-filter__more-filter-overlay">
-        <Form :model="formData" layout="vertical" class="dcp-dropdown-menu">
+      <div class="stall-galaxy-table-filter__more-filter-overlay">
+        <Form :model="formData" layout="vertical" class="stall-dropdown-menu">
           <FormItem
             :class="{ 'grid-rang-picker': column.filterable?.componentType === 'rang-picker' }"
             v-for="column in filterableColumns"
@@ -83,23 +83,23 @@
           <div class="form-footer">
             <div class="left">
               <Checkbox class="checker" v-model="isOpenCustomFilterName" />
-              table.filter.saveText
-              <Tooltip content="table.filter.saveTooltip">
+              保存为常用筛选项
+              <Tooltip content="勾选后将保存已选择筛选项组合，以后可直接使用">
                 <IconQuestionCircle />
               </Tooltip>
               <Input
                 v-if="isOpenCustomFilterName"
                 class="custom-filter-input"
                 v-model="customFilterName"
-                placeholder="table.filter.enterCustomFilterName"
+                placeholder="请输入自定义筛选名称"
                 show-word-limit
                 :max-length="10"
                 allow-clear />
             </div>
             <div class="right">
               <Space :size="8">
-                <Button @click="handleReset">table.filter.resetText</Button>
-                <Button type="primary" @click="handleSubmit">table.filter.filterText</Button>
+                <Button @click="handleReset">重置</Button>
+                <Button type="primary" @click="handleSubmit">筛选</Button>
               </Space>
             </div>
           </div>
@@ -199,13 +199,13 @@ export default defineComponent({
       if (isOpenCustomFilterName.value) {
         const name = customFilterName.value;
         if (!name) {
-          Message.warning(`table.filter.enterFilterName`);
+          Message.warning(`自定义筛选名称不能为空`);
           return;
         }
 
         const hasValue = Object.values(formData).filter(v => !!v).length > 0;
         if (!hasValue) {
-          Message.warning(`table.filter.selectFilter`);
+          Message.warning(`请选择筛选项`);
           return;
         }
         handleCustomFilterName();
