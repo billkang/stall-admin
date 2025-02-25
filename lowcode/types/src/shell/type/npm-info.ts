@@ -38,11 +38,6 @@ export interface IPublicTypeNpmInfo {
   main?: string;
 
   /**
-   * 是否微组件，微组件会使用lowcode-micro-widget进行渲染
-   */
-  isMicroWidget?: boolean;
-
-  /**
    * 使用的前端框架：vue2，vue3，react
    */
   framework?: IPublicTypeFramework;

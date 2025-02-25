@@ -1,5 +1,5 @@
 <template>
-  <div class="stall-galaxy-table-container" ref="tableContainerRef">
+  <div class="stall-galaxy-table-container">
     <header>
       <div class="table-header__left-section">
         <Filter
@@ -38,8 +38,7 @@
       <Table
         v-bind="$props"
         :row-key="rowKey"
-        :default-selected-keys="defaultSelectedKeys"
-        :row-selection="showRowSelection ? { selectedRowKeys, showCheckedAll, type: rowSelectionType } : undefined"
+        :row-selection="showRowSelection ? { selectedRowKeys, showCheckedAll } : undefined"
         :loading="loading"
         :size="tableSize"
         :columns="sortedColumns.filter((c: any) => c.visible)"
@@ -92,7 +91,6 @@ import type { TableData, TableChangeExtra, PaginationProps } from '@arco-design/
 import { defineComponent, onBeforeUnmount } from 'vue';
 import { Space, Button, Table } from '@arco-design/web-vue';
 import { IconSettings } from '@arco-design/web-vue/es/icon';
-import { useTableInit } from './hooks/useTableInit';
 import { useTable } from './hooks/useTable';
 import { useTableSetting } from './hooks/useTableSetting';
 import Filter from './filter.vue';
@@ -113,10 +111,6 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    label: {
-      type: String,
-      default: '',
-    },
     rowKey: {
       type: String,
       default: 'id',
@@ -135,8 +129,6 @@ export default defineComponent({
     },
     /**
      * @zh 分页查询
-     * @type TablePagination
-     * @version 0.0.54
      */
     pagination: {
       type: [Boolean, Object] as PropType<boolean | PaginationProps>,
@@ -152,33 +144,6 @@ export default defineComponent({
     showRowSelection: {
       type: Boolean,
       default: true,
-    },
-    rowSelectionType: {
-      type: String as PropType<'checkbox' | 'radio'>,
-      default: 'checkbox',
-    },
-    /**
-     * @zh 表格行元素的类名
-     * @version 0.0.59
-     */
-    rowClass: {
-      type: [String, Array, Object, Function] as PropType<
-        string | any[] | Record<string, any> | ((record: TableData, rowIndex: number) => any)
-      >,
-    },
-    /**
-     * @zh 单元格合并方法（索引从数据项开始计数）
-     * @version 0.0.64
-     */
-    spanMethod: {
-      type: Function as PropType<
-        (data: {
-          record: TableData;
-          column: any;
-          rowIndex: number;
-          columnIndex: number;
-        }) => { rowspan?: number; colspan?: number } | void
-      >,
     },
     // 实现对操作栏的控制
     optional: {
@@ -207,26 +172,10 @@ export default defineComponent({
         summary: true,
       }),
     },
-    /**
-     * @zh 默认已选择的行（非受控模式）优先于 `rowSelection`
-     * @version 0.0.90
-     */
-    defaultSelectedKeys: {
-      type: Array as PropType<(string | number)[]>,
-    },
-    /**
-     * @zh 最大允许选中行数
-     * @version 0.0.91
-     */
-    maxSelectedKeysCount: {
-      type: Number,
-      default: 50,
-    },
   },
   emits: ['search', 'change', 'edit', 'delete', 'delete-batch', 'delete-cancel'],
   expose: ['formData', 'innerPagination', 'selectedRowKeys'],
   setup(props, { emit }) {
-    const { tableContainerRef } = useTableInit();
     const {
       openSetting,
       selectedRowKeys,
@@ -252,7 +201,6 @@ export default defineComponent({
     }
 
     return {
-      tableContainerRef,
       formData,
       sortedColumns,
       tableSize,

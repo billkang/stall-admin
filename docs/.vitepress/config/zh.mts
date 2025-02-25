@@ -100,12 +100,12 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时5',
       items: [
         {
-          link: 'lesson5_lowcode/renderer',
-          text: '低代码渲染器',
+          link: 'lesson5_micro-frontend/introduction',
+          text: '微前端：架构模式、技术实现与最佳实践',
         },
         {
-          link: 'lesson5_lowcode/how-to',
-          text: '使用低代码渲染器',
+          link: 'lesson5_micro-frontend/how-to',
+          text: '使用 micro-app 进行微前端接入',
         },
       ],
     },
@@ -114,12 +114,12 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时6',
       items: [
         {
-          link: 'lesson6_micro-frontend/introduction',
-          text: '微前端：架构模式、技术实现与最佳实践',
+          link: 'lesson6_lowcode/renderer',
+          text: '低代码渲染器',
         },
         {
-          link: 'lesson6_micro-frontend/how-to',
-          text: '使用 micro-app 进行微前端接入',
+          link: 'lesson6_lowcode/how-to',
+          text: '使用低代码渲染器',
         },
       ],
     },

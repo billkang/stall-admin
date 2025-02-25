@@ -53,14 +53,11 @@
       <div class="table-columns-sort-wrapper">
         <div class="wrapper-title">字段显示设置</div>
         <Tree
-          draggable
           :data="sortedColumns
             .filter((c: any) => !['id', 'uuid', 'optional'].includes(c.dataIndex))
-            .map((c: any) => ({ ...c, key: c.dataIndex }))"
-          @drop="handleDrop">
+            .map((c: any) => ({ ...c, key: c.dataIndex }))">
           <template #title="{ key, title, disabled }">
             <span>
-              <IconDragDotVertical />
               {{ title }}
             </span>
 
@@ -80,7 +77,7 @@ import type { PropType } from 'vue';
 import type { TreeNodeData } from '@arco-design/web-vue';
 import { defineComponent, ref, watch } from 'vue';
 import { Drawer, Divider, Tree, Radio, RadioGroup, Switch } from '@arco-design/web-vue';
-import { IconCheckCircleFill, IconDragDotVertical } from '@arco-design/web-vue/es/icon';
+import { IconCheckCircleFill } from '@arco-design/web-vue/es/icon';
 import { type TableSize, type TableTextControl, useTableSetting } from './hooks/useTableSetting';
 import sizeLarge from './assets/images/table-size-large.png';
 import sizeSmall from './assets/images/table-size-small.png';
@@ -94,7 +91,6 @@ export default defineComponent({
     Radio,
     Switch,
     IconCheckCircleFill,
-    IconDragDotVertical,
   },
   props: {
     modelValue: {
@@ -132,46 +128,6 @@ export default defineComponent({
       setTableSize(size);
     };
 
-    const handleDrop = ({
-      dragNode,
-      dropNode,
-      dropPosition,
-    }: {
-      dragNode: TreeNodeData;
-      dropNode: TreeNodeData;
-      dropPosition: number;
-    }) => {
-      const columns = [...sortedColumns.value];
-
-      const loop = (columns: any[], key: string, callback: (item: any, index: number, arr: any[]) => void) => {
-        columns.some((item, index, arr) => {
-          if (item.dataIndex === key) {
-            callback(item, index, arr);
-            return true;
-          }
-          return false;
-        });
-      };
-
-      loop(columns, dragNode.key as string, (_, index, arr) => {
-        arr.splice(index, 1);
-      });
-
-      if (dropPosition === 0) {
-        loop(columns, dropNode.key as string, (_item, _index, arr) => {
-          arr.unshift(dragNode);
-        });
-      } else {
-        loop(columns, dropNode.key as string, (_, index, arr) => {
-          arr.splice(dropPosition < 0 ? index : index + 1, 0, dragNode);
-        });
-      }
-
-      sortedColumns.value = [...columns];
-
-      saveSortedColumns(sortedColumns.value);
-    };
-
     const handleClose = () => {
       emit('update:modelValue', false);
     };
@@ -185,7 +141,6 @@ export default defineComponent({
       sizeSmall,
       handleChangeTextControl,
       handleSelectSize,
-      handleDrop,
       handleClose,
     };
   },

@@ -67,7 +67,6 @@ import { Live } from './live';
 import { ensureArray, getI18n, mergeScope, AccessTypes, addToScope } from '../utils';
 import { createDataSourceManager } from '../data-source';
 import { createHookCaller } from './lifecycles';
-import { MicroWidgetRenderer } from '../renderers/micro-widget';
 
 const currentNodeKey = getCurrentNodeKey();
 
@@ -237,18 +236,6 @@ export function useLeaf(
     const { componentName } = schema;
     if (!comp) {
       comp = renderContext.components[componentName];
-
-      // 处理微组件
-      if (comp && comp.isMicroWidget) {
-        // 把组件信息和schema信息挂载在MicroWidgetRenderer上面
-        // 因为用其他方式操作太麻烦
-        MicroWidgetRenderer.__metadata__ = {
-          component: comp,
-          schema,
-          packages: renderContext.packages,
-        };
-        comp = MicroWidgetRenderer;
-      }
 
       if (!comp) {
         if (componentName === 'Slot') {

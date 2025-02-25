@@ -8,9 +8,11 @@
       "default": "./src/index.ts"
     }
   },
+  "scripts": {
+    "build": "vite build"
+  },
   "dependencies": {
     "@stall-lowcode/hooks": "workspace:*",
-    "@stall-lowcode/micro-widget": "workspace:*",
     "@stall-lowcode/types": "workspace:*",
     "@stall-lowcode/utils": "workspace:*",
     "intl-messageformat": "catalog:",

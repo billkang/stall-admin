@@ -99,6 +99,106 @@
 - **Shadow DOM**：利用其封装特性，防止样式冲突。
 - **isolation 属性**：隔离混合模式的效果，保证样式独立。
 
+微前端中的 CSS 隔离是确保各微前端之间样式不冲突的关键。以下是常见的 CSS 隔离方式及其核心原理和实现示例：
+
+#### 1. Scoped CSS
+
+Scoped CSS 是一种通过 `scoped` 属性限制样式作用域的机制，确保样式仅应用于当前组件或模块。
+
+- **核心原理**：当在 `<style>` 标签中添加 `scoped` 属性时，Vue 会使用 PostCSS 对 CSS 进行转换。这个过程包括：
+  1. 为组件的元素添加一个唯一的 `data-*` 属性（例如 `data-v-f3f3eg9`）。
+  2. 重写 CSS 选择器，使其包含这个唯一属性。
+
+- **实现示例**：
+
+  ```html
+  <template>
+    <div class="example">Hello</div>
+  </template>
+  <style scoped>
+    .example { color: red; }
+  </style>
+  ```
+
+  编译后：
+
+  ```html
+  <div class="example" data-v-f3f3eg9>Hello</div>
+  ```
+
+  ```css
+  .example[data-v-f3f3eg9] { color: red; }
+  ```
+
+  在上述代码中，`.example` 的样式仅作用于带有 `data-v-f3f3eg9` 属性的元素。
+
+- **注意事项**：
+  1. **父子组件的 Scoped CSS 行为**：父组件的样式会影响子组件的根节点，但不会影响子组件内部的其他节点。
+  2. **样式覆盖问题**：由于 Scoped CSS 通过属性选择器限制作用域，类名仍然是全局的，因此在其他地方对相同类名设置样式仍可能造成污染。
+
+#### 2. Shadow DOM
+
+Shadow DOM 是一种浏览器内置技术，允许开发者创建封闭的 DOM 和样式作用域，从而实现样式隔离。
+
+- **核心原理**：通过 `attachShadow()` 方法创建一个独立的 DOM 树，样式仅作用于该树内的元素。
+- **实现示例**：
+
+  ```javascript
+  const shadowRoot = document.createElement('div').attachShadow({ mode: 'open' });
+  shadowRoot.innerHTML = `
+    <style>
+      :host .my-class {
+        color: red;
+      }
+    </style>
+    <div class="my-class">Hello</div>
+  `;
+  document.body.appendChild(shadowRoot);
+  ```
+
+  在上述代码中，`my-class` 的样式仅作用于 Shadow DOM 内的元素。
+
+#### 3. CSS 命名空间
+
+通过为每个微前端的样式添加唯一的命名空间前缀，避免样式冲突。
+
+- **核心原理**：在构建过程中，为每个微前端的 CSS 类名添加唯一标识符（如 `data-qiankun="appName"`）。
+- **实现示例**：
+
+  ```css
+  /* 子应用中 */
+  .my-class {
+    color: red;
+  }
+  ```
+
+  转换后：
+
+  ```css
+  div[data-qiankun="appName"] .my-class {
+    color: red;
+  }
+  ```
+
+  通过这种方式，样式仅作用于特定微前端的容器。
+
+#### 4. CSS Modules
+
+CSS Modules 是一种通过模块化方式管理样式的工具，确保样式仅作用于当前组件。
+
+- **核心原理**：在构建过程中，将 CSS 类名转换为唯一标识符，并生成映射表。
+- **实现示例**：
+
+  ```javascript
+  import styles from './Button.module.css';
+
+  function Button() {
+    return <button className={styles.button}>Click me</button>;
+  }
+  ```
+
+  在上述代码中，`styles.button` 是一个唯一标识符，避免了全局样式污染。
+
 ### （三）路由管理
 
 微前端通常需要一个中心化的路由系统来协调各个微前端之间的导航。这可以通过配置文件或动态加载的方式实现。

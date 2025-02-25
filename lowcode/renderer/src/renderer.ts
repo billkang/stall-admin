@@ -82,7 +82,7 @@ const vueRendererProps = {
 
 type VueRendererProps = ExtractPublicPropTypes<typeof vueRendererProps>;
 
-const splitOptions = createObjectSpliter(prop => !prop.match(/^[a-z]+([A-Z][a-z]+)*$/));
+const splitOptions = createObjectSpliter((prop: string) => !prop.match(/^[a-z]+([A-Z][a-z]+)*$/));
 
 const VueRenderer = defineComponent({
   props: vueRendererProps,
@@ -109,7 +109,7 @@ const VueRenderer = defineComponent({
       if (isBoolean(disableCompMock)) {
         needWrapComp = disableCompMock ? () => false : () => true;
       } else if (isArray(disableCompMock as string[])) {
-        needWrapComp = name => !disableCompMock.includes(name);
+        needWrapComp = (name) => !(disableCompMock as string[]).includes(name);
       }
     });
 

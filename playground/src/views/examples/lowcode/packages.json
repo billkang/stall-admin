@@ -1,0 +1,9 @@
+[
+  {
+    "package": "vue",
+    "version": "3.2.33",
+    "urls": ["https://unpkg.com/vue@3.2.37/dist/vue.runtime.global.js"],
+    "library": "Vue",
+    "isDefer": true
+  }
+]
