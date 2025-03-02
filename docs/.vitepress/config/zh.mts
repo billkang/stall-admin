@@ -217,16 +217,20 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           text: 'Vue3 模板编译原理详解',
         },
         {
-          link: 'vue/hooks',
-          text: 'Hooks 深入解析：从 React 到 Vue 3',
-        },
-        {
           link: 'vue/vue-router',
           text: 'Vue Router 深度解析与实现原理',
         },
         {
           link: 'vue/pinia',
           text: 'Pinia 深度解析',
+        },
+        {
+          link: 'vue/ssr',
+          text: 'Vue 3 SSR 深度解析：从原理到实战',
+        },
+        {
+          link: 'vue/hooks',
+          text: 'Hooks 深入解析：从 React 到 Vue 3',
         },
       ],
     },

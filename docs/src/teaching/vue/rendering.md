@@ -96,30 +96,7 @@ function trigger(target, key) {
 }
 ```
 
-### 3. 依赖收集和通知机制
-
-这里我们定义了一个简单的依赖收集器 Dep 和一个全局变量 activeEffect 来跟踪当前激活的效果函数（effect function），例如由 `watchEffect` 创建的函数。
-
-```javascript
-let activeEffect = null;
-const targetMap = new WeakMap();
-
-class Dep {
-  constructor() {
-    this.effects = new Set();
-  }
-
-  addEffect(effect) {
-    this.effects.add(effect);
-  }
-
-  trigger() {
-    this.effects.forEach(effect => effect());
-  }
-}
-```
-
-### 4. 渲染虚拟 DOM 到真实 DOM
+### 3. 渲染虚拟 DOM 到真实 DOM
 
 ![vdom-render](../../public/teaching/vue/vue-patch.png)
 
@@ -129,7 +106,8 @@ class Dep {
 function render(vnode, container) {
   if (!vnode) {
     if (container._vnode) {
-      container.innerHTML = '';
+      unmountVNode(container._vnode, container);
+      container._vnode = null;
     }
     return;
   }
@@ -142,7 +120,7 @@ function patch(oldVNode, newVNode, container) {
 
   if (newVNode == null) {
     // 卸载旧节点
-    container.removeChild(oldVNode.el);
+    unmountVNode(oldVNode, container);
   } else if (typeof newVNode.type === 'string') {
     // 处理普通元素节点
     processElement(oldVNode, newVNode, container);
@@ -255,6 +233,7 @@ function updateChildren(container, oldChildren, newChildren) {
       container.insertBefore(patch(null, newChild, container), container.childNodes[i] || null);
     }
   }
+
   // 移除多余的旧节点
   for (let i = newChildren.length; i < oldChildren.length; i++) {
     container.removeChild(oldChildren[i].el);
@@ -293,78 +272,193 @@ function processComponent(oldVNode, newVNode, container) {
 
 function mountComponent(initialVNode, container) {
   const instance = new initialVNode.type(initialVNode.props);
+
+  instance.beforeMount?.();
+
   const subTree = instance.render();
   patch(null, subTree, container);
+
+  instance.mounted?.();
+
   initialVNode.el = subTree.el;
 }
 
 function updateComponent(oldVNode, newVNode) {
   newVNode.el = oldVNode.el;
   const instance = newVNode.component = oldVNode.component;
+
+  instance.beforeUpdate?.();
+
   if (instance.props !== newVNode.props) {
     instance.props = newVNode.props;
     const subTree = instance.render();
     patch(oldVNode.component.subTree, subTree, oldVNode.el.parentNode);
     newVNode.component.subTree = subTree;
+
+    instance.updated?.();
   }
 }
 
 function isSameVNodeType(n1, n2) {
   return n1.type === n2.type && n1.key === n2.key;
 }
+
+function unmountVNode(vnode, container) {
+  if (vnode == null) return;
+
+  const parentNode = container;
+  const el = vnode.el;
+
+  if (parentNode && el) {
+    parentNode.removeChild(el);
+  }
+
+  if (vnode.type && typeof vnode.type === 'object' && vnode.component) {
+    unmountComponent(vnode);
+  }
+}
+
+function unmountComponent(vnode) {
+  const instance = vnode.component;
+
+  instance.beforeUnmount?.();
+
+  const subTree = instance.subTree;
+  if (subTree) {
+    unmountVNode(subTree, subTree.el.parentNode);
+  }
+
+  instance.unmounted?.();
+}
 ```
 
-### 5. 依赖收集和响应式更新
+### 4. Diffing 算法
 
-当我们在模板中使用响应式数据时，Vue 会自动创建一个副作用函数（side effect function），并通过 `watchEffect` 来追踪依赖关系。
+Vue 3 的 Diffing 算法考虑到了多种优化策略，比如 key 属性的支持、静态节点提升以及同层级比较等，以确保尽可能少地操作 DOM。
+
+以下是对用户代码逻辑的优化和完善后的完整文章：
+
+### 5. 响应式数据和视图更新
+
+Vue 3 通过响应式系统和高效的虚拟 DOM 渲染机制实现了视图的自动化更新。以下是核心逻辑的详细解释：
+
+#### 5.1 响应式数据的创建
 
 ```javascript
-function watchEffect(effectFn) {
-  activeEffect = effectFn;
-  activeEffect();
+import { reactive } from '@vue/reactivity';
+
+// 使用 reactive 创建一个响应式对象
+const state = reactive({
+  count: 0,
+  title: 'Hello Vue 3!'
+});
+```
+
+- `reactive` 是 Vue 3 核心响应式系统的关键函数，它基于 JavaScript 的 `Proxy` 对象实现，能够拦截数据对象属性的读取和设置操作。
+- 当你创建一个响应式对象（如 `state`），Vue 会自动追踪对该对象属性的所有访问和修改。
+- 数据变化时，Vue 能够精确地知道哪些组件依赖于这些数据，并仅重新渲染受影响的部分。
+
+#### 5.2 依赖收集与 `effect` 函数
+
+```javascript
+import { effect } from '@vue/reactivity';
+
+// 定义一个变量用于存储当前激活的 effect 函数
+let activeEffect = null;
+
+// 创建 effect 函数
+function effect(fn) {
+  activeEffect = fn;
+  fn();
   activeEffect = null;
 }
 ```
 
-### 6. Diffing 算法
+- `effect` 函数用于将需要自动响应数据变化的逻辑包裹起来，例如组件的渲染逻辑。
+- 在 `effect` 函数执行时，Vue 会自动收集依赖的响应式数据。这些依赖关系基于 `reactive` 对象的属性读取操作建立。
+- 当响应式数据发生变化时，`effect` 函数会自动重新执行。
 
-Vue 3 的 Diffing 算法考虑到了多种优化策略，比如 key 属性的支持、静态节点提升以及同层级比较等，以确保尽可能少地操作 DOM。
-
-### 7. 响应式数据和视图更新
-
-当响应式数据发生变化时，Vue 会自动触发相关的视图更新。下面是一个例子，展示了如何结合响应式数据和视图更新：
+#### 5.3 组件的渲染与更新
 
 ```javascript
-import { h, render, watchEffect } from 'vue';
+// 定义组件实例
+const instance = {
+  _vnode: null,
+  el: null,
+  state,
+  update: null,
+  render() {
+    return h('div', null, [
+      h('h1', null, this.state.title),
+      h('p', null, `Count: ${this.state.count}`),
+    ]);
+  },
+  setup() {
+    // 创建渲染函数
+    const componentUpdateFn = () => {
+      const vnode = this.render();
 
-// 响应式数据
-const state = reactive({
-  message: 'Hello, Vue 3!',
-  count: 0
-});
+      patch(this._vnode, vnode, this.el);
+    };
 
-// 创建应用
-function App() {
-  return h('div', { id: 'app' }, [
-    h('h1', {}, state.message),
-    h('p', {}, `Count: ${state.count}`)
-  ]);
-}
+    // 使用 effect 包装更新函数
+    this.update = effect(componentUpdateFn, {
+      scheduler: () => {
+        queueJob(this.update);
+      },
+    });
 
-// 挂载到 DOM
-const root = document.getElementById('root');
-render(h(App), root);
+    // 初始渲染
+    componentUpdateFn();
+  }
+};
 
-// 监听数据变化并更新视图
-watchEffect(() => {
-  render(h(App), root);
-});
-
-// 模拟数据变化
-setInterval(() => {
-  state.count++;
-}, 1000);
+// 调用组件的 setup 方法
+instance.setup();
 ```
+
+- `componentUpdateFn` 是组件的核心更新函数，负责根据当前状态生成视图。
+- 首次渲染时，`componentUpdateFn` 会调用组件的 `render` 方法，生成虚拟 DOM，并通过 `patch` 方法将其渲染到页面。
+- 当数据变化时，`componentUpdateFn` 会重新执行 `render` 方法生成新的虚拟 DOM，并通过 `patch` 方法比较新旧虚拟 DOM 的差异，更新视图。
+
+#### 5.4 响应式更新的触发
+
+```javascript
+// 调用 update 函数触发更新
+instance.update = effect(componentUpdateFn, {
+  scheduler: () => {
+    queueJob(instance.update);
+  },
+});
+```
+
+- `instance.update` 是一个包装了 `componentUpdateFn` 的 `effect` 函数。
+- 当响应式数据发生变化时，Vue 会调用 `instance.update` 来触发视图更新。
+- `scheduler` 是一个可选的调度函数，用于控制更新任务的执行时机。在这个例子中，更新任务被推入微任务队列，以优化性能。
+
+#### 5.5 微任务队列与批量更新
+
+```javascript
+// 创建微任务队列
+const queue = new Set();
+
+function queueJob(job) {
+  if (!queue.has(job)) {
+    queue.add(job);
+    // 使用 Promise 微任务队列批量执行任务
+    Promise.resolve().then(() => {
+      queue.forEach(job => job());
+      queue.clear();
+    });
+  }
+}
+```
+
+- `queueJob` 函数用于将更新任务推入微任务队列。
+- 通过 `Promise.resolve().then`，更新任务会在当前任务完成后统一执行，有效降低了页面刷新的频率。
+- `queue` 是一个集合，用于存储待处理的更新任务，避免重复任务的执行。
+
+Vue 3 的渲染原理基于虚拟 DOM、响应式系统和 Diffing 算法三大支柱。通过响应式系统，Vue 能够高效地追踪数据变化并自动更新视图；使用虚拟 DOM 和 Diffing 算法，Vue 能够最小化真实的 DOM 操作，提升性能。这些技术相结合，不仅提升了开发体验，还保证了应用的高效运行。
 
 ## 总结
 
