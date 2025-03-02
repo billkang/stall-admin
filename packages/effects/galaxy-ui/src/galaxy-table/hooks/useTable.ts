@@ -1,25 +1,8 @@
-import type {
-  PaginationProps,
-  TableData,
-} from '@arco-design/web-vue';
+import type { PaginationProps, TableData } from '@arco-design/web-vue';
 import { ref, watch } from 'vue';
 import { Modal, Message } from '@arco-design/web-vue';
 
 export type RowKey = string | number;
-
-function flatten(data: any[]) {
-  const ret: any[] = [];
-
-  data.forEach(d => {
-    ret.push(d);
-
-    if (d?.children?.length > 0) {
-      ret.push(...flatten(d?.children));
-    }
-  });
-
-  return ret;
-}
 
 export function useTable({
   props,
@@ -29,33 +12,26 @@ export function useTable({
   emit: any;
 }) {
   let formData: Record<string, string> = {};
-  const selectedRowKeys = ref<RowKey[]>(props.defaultSelectedKeys || []);
+  const selectedRowKeys = ref<RowKey[]>([]);
   const openSetting = ref<boolean>(false);
   const focusedFilter = ref<string>('');
 
   const pagination = ref<PaginationProps | boolean>(
     !!props.pagination
-      ? props.pagePosition === 'br'
-        ? {
-            current: 1,
-            pageSize: 15,
-            total: 0,
-            showTotal: true,
-            showPageSize: true,
-            showJumper: true,
-          }
-        : {
-            current: 1,
-            pageSize: 15,
-            total: 0,
-            simple: true,
-          }
+      ? {
+          current: 1,
+          pageSize: 15,
+          total: 0,
+          showTotal: true,
+          showPageSize: true,
+          showJumper: true,
+        }
       : false,
   );
 
   watch(
     () => props.pagination,
-    val => {
+    (val) => {
       if (val) {
         (pagination.value as PaginationProps).showTotal = val.showTotal;
         (pagination.value as PaginationProps).total = val.total;
@@ -66,17 +42,6 @@ export function useTable({
     {
       deep: true,
       immediate: true,
-    },
-  );
-
-  // 监听 defaultSelectedKeys 的变化，刷新内部 selectedRowKeys
-  watch(
-    () => props.defaultSelectedKeys,
-    keys => {
-      if (keys?.length > 0) {
-        const dataKeys = flatten(props.dataSource).map((col: TableData) => col[props.rowKey]);
-        selectedRowKeys.value = [...keys.filter((key: any) => dataKeys.includes(key))];
-      }
     },
   );
 
@@ -100,7 +65,7 @@ export function useTable({
 
     const extraData: Record<string, any> = {};
     (props.columns as any[])
-      .filter(col => !!col.extra)
+      .filter((col) => !!col.extra)
       .forEach(({ dataIndex, extra }) => {
         extraData[dataIndex!] = extra;
       });
@@ -128,14 +93,6 @@ export function useTable({
     }
   };
 
-  const handleSorterChange = (dataIndex: string, direction: string) => {
-    emit('search', {
-      ...formData,
-      dataIndex,
-      direction,
-    });
-  };
-
   const handlePageChange = (pageIndex: number) => {
     (pagination.value as PaginationProps).current = pageIndex;
 
@@ -157,7 +114,11 @@ export function useTable({
     });
   };
 
-  const handleSelect = (rowKeys: RowKey[], rowKey: string | number, record: TableData) => {
+  const handleSelect = (
+    rowKeys: RowKey[],
+    rowKey: string | number,
+    record: TableData,
+  ) => {
     emit('select', rowKeys, rowKey, record);
   };
 
@@ -232,7 +193,6 @@ export function useTable({
     focusedFilter,
     handleOpenSetting,
     handleSearch,
-    handleSorterChange,
     handlePageChange,
     handlePageSizeChange,
     handleSelect,

@@ -11,22 +11,20 @@ function initTableSetting(uuid: string, columns: any[], optional?: { visible: bo
   // localStorage-keys
   let SETTING_SIZE_KEY: string;
   let SETTING_TEXT_CONTROL_KEY: string;
-  let SETTING_SORT_KEY: string;
-  let SETTING_CUSTOM_FILTER_KEY: string;
+  let SETTING_COLUMNS_KEY: string;
 
   // filter-form data
   let formData: UnwrapNestedRefs<FormData> = {};
 
-  const sortedColumns = ref<any[]>([]);
+  const mergedColumns = ref<any[]>([]);
   const tableSize = ref<TableSize>('small');
   const textControl = ref<TableTextControl>('wrap');
-  const customFilters = reactive<Map<string, FormData>>(new Map());
 
   // 首先必须需要设置过滤条件配置项
   // 1. col.visible 为true，并且 filterable.visible 明确不为false
   // 2. filterable.visible 明确设置为true
   const filterableColumns = computed(() =>
-    sortedColumns.value.filter(
+    mergedColumns.value.filter(
       c =>
         (c.filterable?.componentType || c.filterable?.filters?.length) &&
         ((!!c.visible && c.filterable?.visible !== false) || !!c.filterable?.visible),
@@ -38,7 +36,7 @@ function initTableSetting(uuid: string, columns: any[], optional?: { visible: bo
 
   // 监听过滤列表的变化，当他们变的不可见时，不支持搜索
   watch(
-    () => sortedColumns,
+    () => mergedColumns,
     newColumns => {
       newColumns.value
         .filter(c => c.filterable?.visible !== false) // 首先过滤掉那些明确不能被筛选的 col
@@ -63,7 +61,7 @@ function initTableSetting(uuid: string, columns: any[], optional?: { visible: bo
   function getMergedColumns(columns: any[]) {
     let cachedColumns: any[] | undefined;
     try {
-      cachedColumns = JSON.parse(window.localStorage.getItem(SETTING_SORT_KEY) || '');
+      cachedColumns = JSON.parse(window.localStorage.getItem(SETTING_COLUMNS_KEY) || '');
     } catch {}
 
     let mergedColumns: any[];
@@ -147,15 +145,14 @@ function initTableSetting(uuid: string, columns: any[], optional?: { visible: bo
   function initSetting(uuid: string, columns: any[]) {
     SETTING_SIZE_KEY = `GTABLE__SETTING_SIZE__${uuid}`;
     SETTING_TEXT_CONTROL_KEY = `GTABLE__SETTING_TEXT_CONTROL__${uuid}`;
-    SETTING_SORT_KEY = `GTABLE__SETTING_SORT__${uuid}`;
-    SETTING_CUSTOM_FILTER_KEY = `GTABLE__SETTING_CUSTOM_FILTER__${uuid}`;
+    SETTING_COLUMNS_KEY = `GTABLE__SETTING_SORT__${uuid}`;
 
     // 设置 table-size table-text-control
     tableSize.value = (window.localStorage.getItem(SETTING_SIZE_KEY) as TableSize) || 'small';
     textControl.value = (window.localStorage.getItem(SETTING_TEXT_CONTROL_KEY) as TableTextControl) || 'wrap';
 
     // 初始化-列表项
-    sortedColumns.value = getMergedColumns(columns);
+    mergedColumns.value = getMergedColumns(columns);
 
     // 初始化formData
     const cols: FormData = {};
@@ -168,14 +165,14 @@ function initTableSetting(uuid: string, columns: any[], optional?: { visible: bo
   initSetting(uuid, columns);
 
   function saveSortedColumns(columns: any[]) {
-    window.localStorage.setItem(SETTING_SORT_KEY, JSON.stringify(columns));
+    window.localStorage.setItem(SETTING_COLUMNS_KEY, JSON.stringify(columns));
   }
 
   function setTextControl(type: TableTextControl) {
     textControl.value = type;
     window.localStorage.setItem(SETTING_TEXT_CONTROL_KEY, type);
 
-    sortedColumns.value
+    mergedColumns.value
       .filter(c => c.dataIndex !== 'optional')
       .forEach(col => {
         const original = columns.find(c => c.dataIndex === col.dataIndex);
@@ -206,55 +203,6 @@ function initTableSetting(uuid: string, columns: any[], optional?: { visible: bo
     });
   }
 
-  // 获取自定义筛选
-  function getCustomFilter() {
-    if (customFilters.size > 0) {
-      return customFilters;
-    } else {
-      const filterStr = window.localStorage.getItem(SETTING_CUSTOM_FILTER_KEY);
-
-      if (filterStr) {
-        const obj = JSON.parse(filterStr);
-        Object.keys(obj).forEach((key: string) => {
-          customFilters.set(key, obj[key]);
-        });
-      }
-
-      return customFilters;
-    }
-  }
-
-  // 刷新custom-filter在localStorage中的值
-  function refreshCustomFilterStorage() {
-    const ret: Record<string, FormData> = {};
-    customFilters.forEach((val: FormData, key: string) => {
-      ret[key] = val;
-    });
-
-    window.localStorage.setItem(SETTING_CUSTOM_FILTER_KEY, JSON.stringify(ret));
-  }
-
-  // 保存自定义筛选
-  function saveCustomFilter(name: string, formData: FormData) {
-    if (customFilters.has(name)) {
-      const text = `已存在同名筛选`;
-      throw Error(text);
-    }
-
-    customFilters.set(name, { ...formData });
-
-    refreshCustomFilterStorage();
-  }
-
-  // 删除自定义筛选
-  function deleteCustomFilter(name: string) {
-    if (customFilters.has(name)) {
-      customFilters.delete(name);
-
-      refreshCustomFilterStorage();
-    }
-  }
-
   function dispose() {
     CACHE_TABLE_SETTING[uuid] = null;
   }
@@ -270,14 +218,11 @@ function initTableSetting(uuid: string, columns: any[], optional?: { visible: bo
   return {
     resetFormData,
     cleanFormDataByKey,
-    getCustomFilter,
-    saveCustomFilter,
-    deleteCustomFilter,
     formData,
     filterableColumns,
     inputSearchColumns,
     saveSortedColumns,
-    sortedColumns,
+    mergedColumns,
     setTableSize,
     tableSize,
     setTextControl,

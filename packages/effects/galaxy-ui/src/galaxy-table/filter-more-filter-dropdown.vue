@@ -81,21 +81,7 @@
             </template>
           </FormItem>
           <div class="form-footer">
-            <div class="left">
-              <Checkbox class="checker" v-model="isOpenCustomFilterName" />
-              保存为常用筛选项
-              <Tooltip content="勾选后将保存已选择筛选项组合，以后可直接使用">
-                <IconQuestionCircle />
-              </Tooltip>
-              <Input
-                v-if="isOpenCustomFilterName"
-                class="custom-filter-input"
-                v-model="customFilterName"
-                placeholder="请输入自定义筛选名称"
-                show-word-limit
-                :max-length="10"
-                allow-clear />
-            </div>
+            <div class="left"></div>
             <div class="right">
               <Space :size="8">
                 <Button @click="handleReset">重置</Button>
@@ -153,7 +139,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { handleClickFilter, focusedFilter, handleClearFocusedFilter } = useTable({ props, emit });
 
-    const { formData, resetFormData, saveCustomFilter } = useTableSetting(props);
+    const { formData, resetFormData } = useTableSetting(props);
 
     const filterCount: ComputedRef<number> = computed(() => {
       return Object.values(formData).filter(v => !!v).length;
@@ -170,21 +156,6 @@ export default defineComponent({
       isOpenOverlay.value = val;
     };
 
-    const isOpenCustomFilterName = ref(false);
-    const customFilterName = ref();
-    const handleCustomFilterName = () => {
-      const name = customFilterName.value;
-
-      try {
-        saveCustomFilter(name, formData);
-
-        isOpenCustomFilterName.value = false;
-        customFilterName.value = null;
-      } catch (e: any) {
-        Message.error(e.message);
-      }
-    };
-
     onMounted(() => {
       handleClearFocusedFilter();
     });
@@ -196,21 +167,6 @@ export default defineComponent({
     };
 
     const handleSubmit = () => {
-      if (isOpenCustomFilterName.value) {
-        const name = customFilterName.value;
-        if (!name) {
-          Message.warning(`自定义筛选名称不能为空`);
-          return;
-        }
-
-        const hasValue = Object.values(formData).filter(v => !!v).length > 0;
-        if (!hasValue) {
-          Message.warning(`请选择筛选项`);
-          return;
-        }
-        handleCustomFilterName();
-      }
-
       isOpenOverlay.value = false;
 
       emit('submit', formData);
@@ -224,8 +180,6 @@ export default defineComponent({
       formData,
       filterCount,
       isOpenOverlay,
-      isOpenCustomFilterName,
-      customFilterName,
       focusedFilter,
       handleToggle,
       handlePopupVisibleChange,

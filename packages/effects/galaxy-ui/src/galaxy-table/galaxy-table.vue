@@ -41,11 +41,10 @@
         :row-selection="showRowSelection ? { selectedRowKeys, showCheckedAll } : undefined"
         :loading="loading"
         :size="tableSize"
-        :columns="sortedColumns.filter((c: any) => c.visible)"
+        :columns="mergedColumns.filter((c: any) => c.visible)"
         :data="dataSource"
         :pagination="innerPagination"
         @change="handleChange"
-        @sorter-change="handleSorterChange"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
         @select="handleSelect"
@@ -188,11 +187,10 @@ export default defineComponent({
       handleEdit,
       handleDeleteBatch,
       handleDelete,
-      handleSorterChange,
       handlePageChange,
       handlePageSizeChange,
     } = useTable({ props, emit });
-    const { formData, sortedColumns, tableSize, dispose, handleCustomSearch } = useTableSetting(props);
+    const { formData, mergedColumns, tableSize, dispose, handleCustomSearch } = useTableSetting(props);
 
     onBeforeUnmount(() => dispose());
 
@@ -202,7 +200,7 @@ export default defineComponent({
 
     return {
       formData,
-      sortedColumns,
+      mergedColumns,
       tableSize,
       openSetting,
       selectedRowKeys,
@@ -217,7 +215,6 @@ export default defineComponent({
       handleEdit,
       handleDeleteBatch,
       handleDelete,
-      handleSorterChange,
       handlePageSizeChange,
       handlePageChange,
     };

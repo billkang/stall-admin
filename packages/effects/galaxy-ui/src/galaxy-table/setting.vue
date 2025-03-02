@@ -53,7 +53,7 @@
       <div class="table-columns-sort-wrapper">
         <div class="wrapper-title">字段显示设置</div>
         <Tree
-          :data="sortedColumns
+          :data="mergedColumns
             .filter((c: any) => !['id', 'uuid', 'optional'].includes(c.dataIndex))
             .map((c: any) => ({ ...c, key: c.dataIndex }))">
           <template #title="{ key, title, disabled }">
@@ -62,7 +62,7 @@
             </span>
 
             <Switch
-              v-model="sortedColumns.find((c: any) => c.dataIndex === key)['visible']"
+              v-model="mergedColumns.find((c: any) => c.dataIndex === key)['visible']"
               :disabled="disabled"
               size="small" />
           </template>
@@ -110,8 +110,7 @@ export default defineComponent({
   emits: ['update:modelValue'],
   setup(props, { emit }) {
     const innerVisible = ref<boolean>(false);
-    const { sortedColumns, setTextControl, textControl, setTableSize, tableSize, saveSortedColumns } =
-      useTableSetting(props);
+    const { mergedColumns, setTextControl, textControl, setTableSize, tableSize } = useTableSetting(props);
 
     watch(
       () => props.modelValue,
@@ -136,7 +135,7 @@ export default defineComponent({
       innerVisible,
       textControl,
       tableSize,
-      sortedColumns,
+      mergedColumns,
       sizeLarge,
       sizeSmall,
       handleChangeTextControl,

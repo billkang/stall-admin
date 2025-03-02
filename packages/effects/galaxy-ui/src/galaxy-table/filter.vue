@@ -20,8 +20,6 @@
           @custom-search="handleCustomSearch"
           @reset="handleReset"
           @submit="handleSearch" />
-
-        <FilterMyFilterDropdown v-if="innerFilter.myFilter" :uuid="uuid" @search="handleSearch" />
       </template>
 
       <FilterInputSearch
@@ -44,7 +42,6 @@ import { Space } from '@arco-design/web-vue';
 import { type FormData, useTableSetting } from './hooks/useTableSetting';
 import FilterSelector from './filter-selector.vue';
 import FilterMoreFilterDropdown from './filter-more-filter-dropdown.vue';
-import FilterMyFilterDropdown from './filter-my-filter-dropdown.vue';
 import FilterInputSearch from './filter-input-search.vue';
 import FilterSummary from './filter-summary.vue';
 
@@ -53,7 +50,6 @@ export default defineComponent({
     Space,
     FilterSelector,
     FilterMoreFilterDropdown,
-    FilterMyFilterDropdown,
     FilterInputSearch,
     FilterSummary,
   },

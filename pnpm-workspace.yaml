@@ -109,6 +109,7 @@ catalog:
   html-minifier-terser: ^7.2.0
   husky: ^9.1.7
   is-ci: ^4.1.0
+  intl-messageformat: ^10.1.75
   jsonc-eslint-parser: ^2.4.0
   jsonwebtoken: ^9.0.2
   lint-staged: ^15.3.0
