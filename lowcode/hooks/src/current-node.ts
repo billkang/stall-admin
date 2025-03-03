@@ -1,6 +1,6 @@
 import type { InjectionKey } from 'vue';
 import type { Node } from '@stall-lowcode/types';
-import { DesignMode } from './renderer-context';
+import type { DesignMode } from './renderer-context';
 import { inject } from 'vue';
 
 export interface EnvNode {

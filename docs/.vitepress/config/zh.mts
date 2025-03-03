@@ -75,6 +75,10 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
           link: 'lesson3_table/how-to',
           text: 'Vue 3业务组件封装：从设计到开发',
         },
+        {
+          link: 'lesson3_table/galaxy-table',
+          text: '自定义 Galaxy Table 组件开发指南',
+        },
       ],
     },
     {
