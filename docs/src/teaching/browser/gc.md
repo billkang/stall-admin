@@ -651,6 +651,6 @@ testFunction();
 console.log(globalVar); // 抛出 ReferenceError
 ```
 
-## 参考
+## 7. 参考
 
 [高性能 JavaScript 引擎 V8 - 垃圾回收](https://mp.weixin.qq.com/s/TnaQRMpJaxxIUIZS2MK9-g)
