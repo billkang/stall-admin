@@ -310,15 +310,15 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
       items: [
         {
           link: 'performance/introduction',
-          text: '性能优化介绍',
-        },
-        {
-          link: 'performance/qa',
-          text: '前端性能优化常见问题汇总',
+          text: '前端性能优化的详细介绍',
         },
         {
           link: 'performance/indicator',
-          text: '前端性能优化通用指标及提升手段',
+          text: '前端性能优化通用指标与前端监控',
+        },
+        {
+          link: 'performance/qa',
+          text: '前端性能优化常见问题',
         },
       ],
     },

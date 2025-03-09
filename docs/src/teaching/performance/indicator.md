@@ -1,107 +1,872 @@
-# 前端性能优化通用指标及提升手段
+# 前端性能优化通用指标与前端监控
 
-## 一、前端性能优化通用指标
+## 前言
 
-### （一）FP（First Paint）
+在现代Web开发中，前端性能优化与监控是确保用户体验和应用稳定性的关键。性能优化可以提升页面加载速度和交互响应速度，而监控则能帮助我们实时了解应用的运行状态，及时发现并解决问题。本文将系统地介绍前端性能优化与监控的相关知识、实践方法以及业内标准。
 
-FP（首次绘制）标志着浏览器开始在屏幕上渲染任何内容，包括背景颜色改变。这是用户看到页面开始加载的第一个视觉反馈。尽管 FP 是一个相对宽泛的指标，但它能快速给出页面开始加载的初步指示。优化 FP 的手段包括减少初始 CSS 和 JavaScript 的体积，优先加载关键 CSS，使用 \<link rel="preload"\> 提前加载关键资源。
+## 一、前端性能优化通用指标及提升手段
 
-### （二）FCP（First Contentful Paint）
+### （一）性能指标及其优化手段
 
-FCP（首次内容绘制）衡量从网页开始加载到网页任何部分呈现在屏幕上所用的时间。这个指标关注的是用户看到的第一个内容，可以是文本、图片或其他媒体元素。优化 FCP 的手段包括减少关键路径的资源大小，优化图片和视频等大资源的加载，使用懒加载、图片压缩、现代格式（如 WebP）。
+1. **LCP（Largest Contentful Paint）**
 
-### （三）FMP（First Meaningful Paint）
+    **解释**：LCP衡量的是页面上最大的可见元素（如图像或文字块）变为可见所需的时间，这是用户感知页面加载完成的重要标志。
 
-FMP（首次有效绘制）是页面主要内容开始呈现给用户的时刻。这个指标更关注于用户感知，即用户开始看到页面上他们认为“有意义”的内容。FMP 已经被 LCP 所替代，因为 LCP 提供了更准确的度量标准。
+    **数据采集和计算方式**：
 
-### （四）LCP（Largest Contentful Paint）
+    ```javascript
+    const lcpObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntriesByType('largest-contentful-paint');
+        entries.forEach((entry) => {
+            console.log('LCP Element:', entry.element);
+            console.log('LCP Render Time:', entry.renderTime);
+            console.log('LCP Load Time:', entry.loadTime);
+        });
+    });
 
-LCP（最大内容绘制）衡量的是页面上最大的可见元素（文字块或图像）变为可见所需的时间。这是用户感知页面加载完成的重要标志，直接影响到用户感受到的速度。优化 LCP 的手段包括优化图片和视频等大资源的加载，使用懒加载、图片压缩、现代格式（如 WebP），确保关键路径资源优先加载，使用 \<link rel="preload"\> 或 \<img srcset\>。
+    lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
+    ```
 
-### （五）CLS（Cumulative Layout Shift）
+    **提升手段**：
+    - **优化图片和视频等大资源的加载**：
+        - **使用懒加载技术**：
 
-CLS（累计布局偏移）衡量的是页面在加载过程中元素意外移动的总量。这会导致糟糕的用户体验，比如用户点击错误的链接或阅读被打断。优化 CLS 的手段包括避免在页面加载期间修改已渲染元素的尺寸，确保所有元素尺寸提前计算好，使用 height 和 width 属性为图片和 iframe 等元素指定尺寸，动态插入内容时预留空间或使用 CSS 动画而非即时布局变化。
+            ```html
+            <img src="placeholder.jpg" data-src="real-image.jpg" loading="lazy" alt="Lazy-loaded image">
+            ```
 
-### （六）FID（First Input Delay）
+        - **压缩图片尺寸**：
 
-FID（首次输入延迟）衡量从用户首次与您的网站互动（点击链接、点按按钮或使用由 JavaScript 提供支持的自定义控件）到浏览器实际能够响应该互动的时间。优化 FID 的手段包括减少 JavaScript 的阻塞，使用代码拆分和异步加载，优化服务器响应时间和网络连接，使用 HTTP/2 和 CDN。
+            ```javascript
+            // 使用图像压缩工具，如imagemin
+            const imagemin = require('imagemin');
+            const imageminWebp = require('imagemin-webp');
 
-### （七）TTI（Time to Interactive）
+            (async () => {
+                const files = await imagemin(['images/*.jpg'], {
+                    destination: 'build/images',
+                    plugins: [
+                        imageminWebp({ quality: 75 })
+                    ]
+                });
 
-TTI（可交互时间）衡量的是从网页开始加载到视觉呈现、其初始脚本（若有）已加载且能够快速可靠地响应用户输入的时间。优化 TTI 的手段包括减少 JavaScript 的阻塞，使用代码拆分和异步加载，优化服务器响应时间和网络连接，使用 HTTP/2 和 CDN。
+                console.log('Images optimized:', files);
+            })();
+            ```
 
-### （八）TBT（Total Blocking Time）
+        - **使用现代图片格式（如WebP）**：
 
-TBT（总阻塞时间）测量 FCP 和 TTI 之间的总时间，在此期间，主线程处于屏蔽状态的时间够长，足以阻止输入响应。优化 TBT 的手段包括减少 JavaScript 的阻塞，使用代码拆分和异步加载，优化服务器响应时间和网络连接，使用 HTTP/2 和 CDN。
+            ```html
+            <picture>
+                <source srcset="image.webp" type="image/webp">
+                <img src="image.jpg" alt="Modern image format">
+            </picture>
+            ```
 
-### （九）INP（Interaction to Next Paint）
+    - **确保关键路径资源优先加载**：
+        - **使用`<link rel="preload">`提前加载关键资源**：
 
-INP（交互到下次绘制）衡量与网页进行每次点按、点击或键盘交互的延迟时间，并根据互动次数选择该网页最差的互动延迟时间（或接近最高延迟时间）作为单个代表性值，以描述网页的整体响应速度。优化 INP 的手段包括减少 JavaScript 的阻塞，使用代码拆分和异步加载，优化服务器响应时间和网络连接，使用 HTTP/2 和 CDN。
+            ```html
+            <link rel="preload" href="main.js" as="script">
+            ```
 
-### （十）FPS（Frames Per Second）
+        - **通过代码分割，按需加载非关键资源**：
 
-FPS（每秒帧率）表示的是每秒钟画面更新次数。当今大多数设备的屏幕刷新率都是 60 次/秒。帧率能够达到 50～60 FPS 的动画将会相当流畅，让人倍感舒适；帧率在 30～50 FPS 之间的动画，因各人敏感程度不同，舒适度因人而异；帧率在 30 FPS 以下的动画，让人感觉到明显的卡顿和不适感。优化 FPS 的手段包括减少 DOM 操作，避免频繁的重绘和回流，使用 CSS 动画和硬件加速。
+            ```javascript
+            // 使用Webpack进行代码分割
+            const mainModule = import('./main.js');
+            const featureModule = import('./feature.js');
+            ```
 
-## 二、提升手段
+    - **使用骨架屏或占位符元素**：
+        - **在资源加载完成前，显示骨架屏或占位符**：
 
-### （一）减少资源体积
+            ```html
+            <div class="skeleton-screen">
+                <!-- 骨架屏内容 -->
+            </div>
+            <script>
+                // 资源加载完成后隐藏骨架屏
+                window.addEventListener('load', function() {
+                    document.querySelector('.skeleton-screen').style.display = 'none';
+                });
+            </script>
+            ```
 
-* **清理冗余的代码、图片和视频等无效资源**：通过代码审查和工具检测，清理页面中不必要的代码和资源，减少文件大小。
-* **优化代码结构**：将重复的代码提炼为公共组件、公共样式、全局变量和函数等，减少代码冗余。使用路由懒加载和大组件异步加载，减少主包的体积。
-* **打包构建时，将代码和资源进行压缩**：使用打包工具（如 Webpack）的压缩功能，对代码和资源进行压缩，减少文件大小。
+2. **FID（First Input Delay）**
 
-### （二）减少访问服务器的次数
+    **解释**：FID衡量从用户首次与页面互动（如点击链接或按钮）到浏览器实际能够响应该互动的时间。
 
-* **合并代码，减少代码文件数量**：将多个小文件合并为一个文件，减少 HTTP 请求次数。
-* **使用 SSR 服务器渲染**：将网页和数据一起加载，一起渲染，减少页面加载时间。
+    **数据采集和计算方式**：
 
-### （三）优化资源加载
+    ```javascript
+    const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+            console.log('FID:', entry.processingStart - entry.startTime);
+        }
+    });
 
-* **优化图片加载**：使用现代图片格式（如 WebP），对图片进行压缩，使用懒加载技术，减少图片加载时间。
-* **使用 CDN**：利用内容分发网络（CDN）将资源分发到离用户最近的服务器，减少传输延迟。
-* **使用浏览器缓存**：合理设置缓存策略，利用浏览器缓存减少重复资源的加载。
+    observer.observe({ type: 'first-input', buffered: true });
+    ```
 
-### （四）优化代码执行
+    **提升手段**：
+    - **减少JavaScript的阻塞**：
+        - **使用代码拆分和异步加载**：
 
-* **减少 JavaScript 的阻塞**：使用代码拆分和异步加载，减少 JavaScript 的阻塞，提高页面响应速度。
-* **使用 Web Workers**：将耗时的计算任务移到工作线程，避免阻塞主线程，提升页面响应速度。
-* **优化 CSS 动画**：避免使用复杂的 CSS 动画，尽量使用简单的动画效果，减少重绘和回流。
+            ```javascript
+            // 使用Webpack进行代码分割
+            const mainModule = import('./main.js');
+            const featureModule = import('./feature.js');
+            ```
 
-### （五）优化页面渲染
+        - **使用Web Workers处理耗时任务**：
 
-* **减少 DOM 操作**：尽量减少对 DOM 元素的访问和操作，可以使用文档片段（DocumentFragment）或虚拟 DOM 减少重绘和回流。
-* **使用骨架屏或占位符元素**：在页面内容加载完成之前，显示骨架屏或占位符元素，提高用户体验。
+            ```javascript
+            const worker = new Worker('worker.js');
+            worker.postMessage('Start processing');
+            worker.onmessage = function(e) {
+                console.log('Result:', e.data);
+            };
+            ```
 
-## 三、业内比较好的数值
+    - **优化服务器响应时间和网络连接**：
+        - **使用CDN加速资源加载**：
 
-### （一）LCP（最大内容绘制）
+            ```html
+            <link rel="stylesheet" href="https://cdn.example.com/style.css">
+            <script src="https://cdn.example.com/script.js"></script>
+            ```
 
-* **目标值**：LCP 应该尽快发生，理想情况下在 2.5 秒内。
+        - **使用HTTP/2减少请求延迟**：
 
-### （二）CLS（累计布局偏移）
+            ```nginx
+            # Nginx配置示例
+            server {
+                listen 443 ssl http2;
+                server_name example.com;
+                # 其他配置...
+            }
+            ```
 
-* **目标值**：CLS 的目标值是小于 0.1，意味着布局偏移较小，用户体验较好。
+3. **CLS（Cumulative Layout Shift）**
 
-### （三）FID（首次输入延迟）
+    **解释**：CLS衡量页面在加载过程中元素意外移动的总量，可能导致用户点击错误的链接或阅读被打断。
 
-* **目标值**：FID 的目标值是小于 100 毫秒，确保用户在点击或交互时能够得到快速响应。
+    **数据采集和计算方式**：
 
-### （四）TTI（可交互时间）
+    ```javascript
+    const clsObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntriesByType('layout-shift');
+        let totalCLS = 0;
+        entries.forEach((entry) => {
+            if (!entry.hadRecentInput) {
+                totalCLS += entry.value;
+            }
+            console.log('CLS Value:', entry.value);
+            console.log('CLS Impact:', entry.hadRecentInput ? 'Low' : 'High');
+        });
+        console.log('Total CLS:', totalCLS);
+    });
 
-* **目标值**：TTI 的目标值是小于 10 秒，确保页面在合理的时间内可以交互。
+    clsObserver.observe({ type: 'layout-shift', buffered: true });
+    ```
 
-### （五）TBT（总阻塞时间）
+    **提升手段**：
+    - **避免在页面加载期间修改已渲染元素的尺寸**：
+        - **在CSS中提前定义好元素的尺寸**：
 
-* **目标值**：TBT 的目标值是小于 300 毫秒，确保页面在加载过程中不会长时间阻塞。
+            ```css
+            img {
+                width: 300px;
+                height: 200px;
+                object-fit: cover;
+            }
+            ```
 
-### （六）INP（交互到下次绘制）
+        - **使用固定尺寸或百分比布局**：
 
-* **目标值**：INP 的目标值是小于 200 毫秒，确保用户在交互时能够得到快速响应。
+            ```css
+            .container {
+                display: flex;
+                flex-direction: column;
+            }
+            .item {
+                flex: 1;
+                height: 100px;
+            }
+            ```
 
-### （七）FPS（每秒帧率）
+    - **动态插入内容时预留空间或使用CSS动画**：
+        - **在动态内容插入前预留空间**：
 
-* **目标值**：FPS 的目标值是达到 50～60 FPS，确保动画流畅，用户体验良好。
+            ```javascript
+            // 在插入内容前设置容器高度
+            const container = document.getElementById('content-container');
+            container.style.height = '300px'; // 预留高度
+            // 插入内容
+            container.innerHTML = '<div>Dynamic content</div>';
+            ```
 
-## 四、总结
+        - **使用CSS动画平滑过渡**：
 
-前端性能优化是提升用户体验和网站竞争力的重要手段。通过优化页面加载速度、渲染性能和交互响应速度，可以提高用户满意度和留存率。在实际项目中，可以通过减少资源大小、优化代码、使用缓存和延迟加载等方式进行性能优化。同时，利用性能优化工具进行分析和优化，可以更有效地提升前端性能。
+            ```css
+            .content-container {
+                transition: height 0.3s ease;
+            }
+            ```
+
+4. **TTI（Time to Interactive）**
+
+    **解释**：TTI衡量从页面开始加载到能够快速可靠地响应用户输入的时间。
+
+    **数据采集和计算方式**：
+
+    ```javascript
+    const ttiObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntriesByType('longtask');
+        entries.forEach((entry) => {
+            console.log('TTI:', entry.startTime);
+        });
+    });
+
+    ttiObserver.observe({ entryTypes: ['longtask'] });
+    ```
+
+    **提升手段**：
+    - **减少JavaScript的阻塞**：
+        - **使用代码拆分和异步加载**：
+
+            ```javascript
+            // 使用Webpack进行代码分割
+            const mainModule = import('./main.js');
+            const featureModule = import('./feature.js');
+            ```
+
+        - **使用Web Workers处理耗时任务**：
+
+            ```javascript
+            const worker = new Worker('worker.js');
+            worker.postMessage('Start processing');
+            worker.onmessage = function(e) {
+                console.log('Result:', e.data);
+            };
+            ```
+
+    - **优化服务器响应时间和网络连接**：
+        - **使用CDN加速资源加载**：
+
+            ```html
+            <link rel="stylesheet" href="https://cdn.example.com/style.css">
+            <script src="https://cdn.example.com/script.js"></script>
+            ```
+
+        - **使用HTTP/2减少请求延迟**：
+
+            ```nginx
+            # Nginx配置示例
+            server {
+                listen 443 ssl http2;
+                server_name example.com;
+                # 其他配置...
+            }
+            ```
+
+5. **TBT（Total Blocking Time）**
+
+    **解释**：TBT测量FCP和TTI之间的总时间，主线程处于屏蔽状态的时间足以阻止输入响应。
+
+    **数据采集和计算方式**：
+
+    ```javascript
+    const tbtObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntriesByType('longtask');
+        let totalTBT = 0;
+        entries.forEach((entry) => {
+            totalTBT += entry.duration;
+        });
+        console.log('TBT:', totalTBT);
+    });
+
+    tbtObserver.observe({ entryTypes: ['longtask'] });
+    ```
+
+    **提升手段**：
+    - **减少JavaScript的阻塞**：
+        - **使用代码拆分和异步加载**：
+
+            ```javascript
+            // 使用Webpack进行代码分割
+            const mainModule = import('./main.js');
+            const featureModule = import('./feature.js');
+            ```
+
+        - **使用Web Workers处理耗时任务**：
+
+            ```javascript
+            const worker = new Worker('worker.js');
+            worker.postMessage('Start processing');
+            worker.onmessage = function(e) {
+                console.log('Result:', e.data);
+            };
+            ```
+
+    - **优化服务器响应时间和网络连接**：
+        - **使用CDN加速资源加载**：
+
+            ```html
+            <link rel="stylesheet" href="https://cdn.example.com/style.css">
+            <script src="https://cdn.example.com/script.js"></script>
+            ```
+
+        - **使用HTTP/2减少请求延迟**：
+
+            ```nginx
+            # Nginx配置示例
+            server {
+                listen 443 ssl http2;
+                server_name example.com;
+                # 其他配置...
+            }
+            ```
+
+6. **INP（Interaction to Next Paint）**
+
+    **解释**：INP衡量用户与页面交互后的延迟时间，选择最差的互动延迟时间作为代表性值。
+
+    **数据采集和计算方式**：
+
+    ```javascript
+    const inpObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntriesByType('interaction');
+        entries.forEach((entry) => {
+            console.log('INP:', entry.interactionId, entry.startTime, entry.duration);
+        });
+    });
+
+    inpObserver.observe({ entryTypes: ['interaction'] });
+    ```
+
+    **提升手段**：
+    - **减少JavaScript的阻塞**：
+        - **使用代码拆分和异步加载**：
+
+            ```javascript
+            // 使用Webpack进行代码分割
+            const mainModule = import('./main.js');
+            const featureModule = import('./feature.js');
+            ```
+
+        - **使用Web Workers处理耗时任务**：
+
+            ```javascript
+            const worker = new Worker('worker.js');
+            worker.postMessage('Start processing');
+            worker.onmessage = function(e) {
+                console.log('Result:', e.data);
+            };
+            ```
+
+    - **优化服务器响应时间和网络连接**：
+        - **使用CDN加速资源加载**：
+
+            ```html
+            <link rel="stylesheet" href="https://cdn.example.com/style.css">
+            <script src="https://cdn.example.com/script.js"></script>
+            ```
+
+        - **使用HTTP/2减少请求延迟**：
+
+            ```nginx
+            # Nginx配置示例
+            server {
+                listen 443 ssl http2;
+                server_name example.com;
+                # 其他配置...
+            }
+            ```
+
+7. **FPS（Frames Per Second）**
+
+    **解释**：FPS表示每秒钟画面更新次数，影响动画的流畅度。
+
+    **数据采集和计算方式**：
+
+    ```javascript
+    let frameCount = 0;
+    let lastTime = 0;
+
+    function countFrames(timestamp) {
+        if (timestamp < lastTime) {
+            console.log('FPS:', frameCount);
+            frameCount = 0;
+        } else {
+            frameCount++;
+        }
+        lastTime = timestamp;
+        requestAnimationFrame(countFrames);
+    }
+
+    requestAnimationFrame(countFrames);
+    ```
+
+    **提升手段**：
+    - **减少DOM操作**：
+        - **避免频繁的重绘和回流**：
+
+            ```javascript
+            // 使用DocumentFragment减少DOM操作
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < items.length; i++) {
+                const item = document.createElement('div');
+                item.textContent = items[i];
+                fragment.appendChild(item);
+            }
+            document.getElementById('container').appendChild(fragment);
+            ```
+
+        - **使用CSS动画和硬件加速**：
+
+            ```css
+            .slide-in {
+                animation: slideIn 0.5s ease-out;
+                will-change: transform;
+            }
+            @keyframes slideIn {
+                from {
+                    transform: translateX(-100%);
+                }
+                to {
+                    transform: translateX(0);
+                }
+            }
+            ```
+
+8. **FP（First Paint）**
+
+    **解释**：FP标志着浏览器开始在屏幕上渲染任何内容，包括背景颜色改变。
+
+    **数据采集和计算方式**：
+
+    ```javascript
+    const fpObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntriesByType('paint');
+        entries.forEach((entry) => {
+            if (entry.name === 'first-paint') {
+                console.log('FP:', entry.startTime);
+            }
+        });
+    });
+
+    fpObserver.observe({ entryTypes: ['paint'] });
+    ```
+
+    **提升手段**：
+    - **减少初始CSS和JavaScript的体积**：
+        - **通过压缩、合并文件，减少代码冗余**：
+
+            ```javascript
+            // 使用Webpack进行代码压缩
+            const TerserPlugin = require('terser-webpack-plugin');
+
+            module.exports = {
+                optimization: {
+                    minimize: true,
+                    minimizer: [new TerserPlugin()],
+                },
+            };
+            ```
+
+        - **使用代码分割，按需加载非关键资源**：
+
+            ```javascript
+            // 使用Webpack进行代码分割
+            const mainModule = import('./main.js');
+            const featureModule = import('./feature.js');
+            ```
+
+    - **优先加载关键CSS**：
+        - **将首屏需要的CSS提前加载，非关键CSS可以异步加载**：
+
+            ```html
+            <link rel="stylesheet" href="critical.css">
+            <link rel="preload" href="non-critical.css" as="style">
+            ```
+
+        - **使用`<link rel="preload">`提前加载关键资源**：
+
+            ```html
+            <link rel="preload" href="critical.css" as="style">
+            ```
+
+9. **FCP（First Contentful Paint）**
+
+    **解释**：FCP衡量从网页开始加载到任何部分呈现在屏幕上所用的时间。
+
+    **数据采集和计算方式**：
+
+    ```javascript
+    const fcpObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntriesByType('paint');
+        entries.forEach((entry) => {
+            if (entry.name === 'first-contentful-paint') {
+                console.log('FCP:', entry.startTime);
+            }
+        });
+    });
+
+    fcpObserver.observe({ entryTypes: ['paint'] });
+    ```
+
+    **提升手段**：
+    - **减少关键路径的资源大小**：
+        - **压缩CSS、JavaScript文件，减少代码冗余**：
+
+            ```javascript
+            // 使用Webpack进行代码压缩
+            const TerserPlugin = require('terser-webpack-plugin');
+
+            module.exports = {
+                optimization: {
+                    minimize: true,
+                    minimizer: [new TerserPlugin()],
+                },
+            };
+            ```
+
+        - **使用图片压缩工具，减少图片文件大小**：
+
+            ```javascript
+            // 使用图像压缩工具，如imagemin
+            const imagemin = require('imagemin');
+            const imageminWebp = require('imagemin-webp');
+
+            (async () => {
+                const files = await imagemin(['images/*.jpg'], {
+                    destination: 'build/images',
+                    plugins: [
+                        imageminWebp({ quality: 75 })
+                    ]
+                });
+
+                console.log('Images optimized:', files);
+            })();
+            ```
+
+    - **优化图片和视频等大资源的加载**：
+        - **使用懒加载技术，减少初始加载时间**：
+
+            ```html
+            <img src="placeholder.jpg" data-src="real-image.jpg" loading="lazy" alt="Lazy-loaded image">
+            ```
+
+        - **使用现代图片格式（如WebP），提高加载效率**：
+
+            ```html
+            <picture>
+                <source srcset="image.webp" type="image/webp">
+                <img src="image.jpg" alt="Modern image format">
+            </picture>
+            ```
+
+    - **使用`<link rel="preload">`提前加载关键资源**：
+
+        ```html
+        <link rel="preload" href="critical.css" as="style">
+        ```
+
+## 二、前端监控：关注内容与日常实践
+
+### （一）什么是前端监控，其意义和目的
+
+前端监控是指在前端应用中实施的一系列监测和分析机制，用于实时收集和分析应用的性能数据、错误信息以及用户体验相关数据。其主要意义在于：
+
+1. **提升用户体验**：通过实时监测和优化应用性能，确保用户获得流畅、高效的交互体验。
+2. **快速定位和解决问题**：及时发现并解决应用中的性能瓶颈、错误和异常情况，减少对用户的影响。
+3. **优化应用性能**：基于监控数据进行针对性的性能优化，提高应用的整体性能和稳定性。
+4. **保障业务稳定性**：确保前端应用在各种环境下稳定运行，支持业务的持续发展。
+
+### （二）前端监控需要监控什么内容
+
+前端监控主要关注以下几个方面：
+
+1. **性能指标**：包括FP、FCP、LCP、CLS、FID等，用于评估页面加载和交互性能。
+2. **错误监控**：捕获JavaScript错误、资源加载失败、网络请求错误等，及时发现和修复问题。
+3. **用户体验监控**：收集用户行为数据，如点击、滚动、停留时间等，了解用户对页面的使用情况和满意度。
+4. **网络请求监控**：监测API请求的响应时间、成功率，优化后端服务和网络配置。
+5. **资源加载监控**：跟踪CSS、JavaScript、图片等资源的加载时间、加载顺序，确保资源高效加载。
+6. **业务指标监控**：跟踪PV、UV等流量指标，以及业务数据埋点，确保业务流程的顺畅。
+
+### （三）前端监控的核心技术要点
+
+1. **性能监控技术**：
+   - **Performance API**：使用浏览器提供的Performance API收集性能数据。
+   - **Resource Timing API**：收集资源加载性能数据。
+2. **错误监控技术**：
+   - **window.onerror**：捕获全局JavaScript错误。
+   - **Promise.catch**：捕获异步操作中的错误。
+3. **用户体验监控技术**：
+   - **事件监听**：捕获用户交互事件，如点击、滚动等。
+   - **用户行为分析**：通过分析用户行为数据，了解用户需求和偏好。
+4. **网络请求监控技术**：
+   - **Fetch API 和 XMLHttpRequest**：监听网络请求的发送和响应，捕获错误和性能数据。
+   - **Service Workers**：拦截和处理网络请求，实现缓存策略和离线支持。
+5. **资源加载监控技术**：
+   - **Resource Timing API**：收集资源加载性能数据。
+   - **懒加载和预加载**：优化资源加载策略，提升性能。
+6. **业务指标监控技术**：
+   - **分析工具集成**：使用Google Analytics、百度统计等工具跟踪PV、UV等指标。
+   - **自定义埋点**：通过编写埋点代码收集特定的用户行为数据。
+
+### （四）实践示例：前端监控的实现
+
+#### 1. 性能监控示例
+
+```javascript
+// 收集性能数据
+const performanceData = window.performance.getEntriesByType('navigation')[0];
+console.log('Performance Data:', performanceData);
+
+// 监听性能指标变化
+new PerformanceObserver((list) => {
+    list.getEntries().forEach((entry) => {
+        console.log('Performance Entry:', entry);
+        // 将性能数据发送到服务器
+        sendPerformanceData(entry);
+    });
+}).observe({ entryTypes: ['largest-contentful-paint', 'layout-shift', 'first-input'] });
+```
+
+#### 2. 错误监控示例
+
+```javascript
+// 全局错误处理
+window.onerror = function(message, source, lineno, colno, error) {
+    console.error('JavaScript Error:', message, error);
+    // 将错误信息发送到服务器
+    sendErrorToServer({ message, source, lineno, colno, stack: error?.stack });
+    return true;
+};
+
+// 捕获Promise拒绝错误
+window.addEventListener('unhandledrejection', function(event) {
+    console.error('Unhandled Promise Rejection:', event.reason);
+    sendErrorToServer({ message: event.reason.message, stack: event.reason.stack });
+    event.preventDefault();
+});
+```
+
+#### 3. 用户体验监控示例
+
+```javascript
+// 监听用户交互事件
+document.addEventListener('click', function(event) {
+    console.log('User Click:', event.target);
+    // 记录点击事件，可发送到服务器
+    sendUserInteraction({ type: 'click', target: event.target.tagName, time: new Date().toISOString() });
+});
+
+document.addEventListener('scroll', function() {
+    console.log('Scroll Position:', window.scrollY);
+    // 记录滚动位置，可发送到服务器
+    sendUserInteraction({ type: 'scroll', position: window.scrollY, time: new Date().toISOString() });
+}, { passive: true });
+```
+
+#### 4. 业务指标监控示例
+
+```javascript
+// 使用分析工具（如Google Analytics）跟踪PV和UV
+ga('send', 'pageview'); // 发送页面浏览数据
+
+// 自定义埋点示例
+document.getElementById('submit-btn').addEventListener('click', function() {
+    // 发送埋点数据到服务器
+    sendAnalyticsData({
+        eventType: 'button_click',
+        elementId: 'submit-btn',
+        page: window.location.pathname,
+        timestamp: new Date().toISOString()
+    });
+});
+```
+
+## 三、业务自定义埋点，数据上报的核心技术方案和示例代码
+
+### （一）业务自定义埋点
+
+业务自定义埋点是前端监控的重要组成部分，用于收集特定的用户行为数据，以支持业务分析和优化。以下是业务自定义埋点的核心技术方案和示例代码。
+
+### （二）核心技术方案
+
+1. **手动埋点**：在关键业务逻辑中手动插入埋点代码，适用于需要精确控制的场景。
+2. **自动埋点**：通过重写DOM事件处理函数或使用Proxy等技术，自动捕获用户交互事件，适用于大规模的用户行为收集。
+3. **可视化埋点**：通过可视化工具配置埋点规则，减少手动编码的工作量，适用于需要快速迭代的项目。
+
+### （三）示例代码
+
+#### 1. 手动埋点示例
+
+```javascript
+// 定义埋点数据结构
+const analyticsData = {
+    eventType: 'button_click', // 事件类型
+    elementId: 'submit-btn', // 元素ID
+    page: window.location.pathname, // 当前页面路径
+    timestamp: new Date().toISOString() // 事件发生时间
+};
+
+// 发送埋点数据到服务器
+function sendAnalyticsData(data) {
+    // 使用fetch API发送POST请求
+    fetch('/api/analytics', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Analytics data sent successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error sending analytics data:', error);
+    });
+}
+
+// 在业务代码中手动调用埋点
+document.getElementById('submit-btn').addEventListener('click', function() {
+    sendAnalyticsData(analyticsData);
+});
+```
+
+#### 2. 自动埋点示例
+
+```javascript
+// 重写click事件处理函数
+const originalAddEventListener = EventTarget.prototype.addEventListener;
+EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (type === 'click') {
+        const wrappedListener = function(event) {
+            // 收集埋点数据
+            const analyticsData = {
+                eventType: 'click',
+                target: event.target.tagName,
+                page: window.location.pathname,
+                timestamp: new Date().toISOString()
+            };
+            // 发送埋点数据
+            sendAnalyticsData(analyticsData);
+            // 调用原始事件处理函数
+            listener.call(this, event);
+        };
+        // 使用wrappedListener替代原始listener
+        originalAddEventListener.call(this, type, wrappedListener, options);
+        // 返回wrappedListener以便后续操作
+        return wrappedListener;
+    } else {
+        // 其他事件类型保持不变
+        originalAddEventListener.call(this, type, listener, options);
+    }
+};
+```
+
+#### 3. 可视化埋点示例
+
+```javascript
+// 定义埋点规则配置
+const埋点规则配置 = {
+    'button#submit-btn': {
+        eventType: 'button_click',
+        elementId: 'submit-btn',
+        page: window.location.pathname,
+        timestamp: new Date().toISOString()
+    },
+    'a[href="/checkout"]': {
+        eventType: 'checkout_click',
+        elementId: 'checkout-link',
+        page: window.location.pathname,
+        timestamp: new Date().toISOString()
+    }
+};
+
+// 遍历埋点规则配置，为匹配的元素添加事件监听器
+for (const selector in埋点规则配置) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(element => {
+        element.addEventListener('click', function(event) {
+            const analyticsData =埋点规则配置[selector];
+            sendAnalyticsData(analyticsData);
+        });
+    });
+}
+```
+
+### （四）数据上报
+
+数据上报是将收集到的监控数据发送到服务器的过程，确保数据的完整性和及时性是关键。以下是数据上报的核心技术方案和示例代码。
+
+### （一）核心技术方案
+
+1. **批量上报**：将多条数据打包成一个请求发送，减少网络请求数。
+2. **使用Beacon API**：在页面卸载时确保数据上报完成，避免数据丢失。
+3. **延迟上报**：对于非关键数据，可以延迟上报，减少对用户交互的影响。
+
+### （二）示例代码
+
+```javascript
+// 批量上报示例
+const analyticsDataBatch = [];
+
+function sendAnalyticsDataBatch() {
+    if (analyticsDataBatch.length > 0) {
+        fetch('/api/analytics/batch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ data: analyticsDataBatch })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Batch analytics data sent successfully:', data);
+            // 清空数据批
+            analyticsDataBatch.length = 0;
+        })
+        .catch(error => {
+            console.error('Error sending batch analytics data:', error);
+        });
+    }
+}
+
+// 定时发送数据批
+setInterval(sendAnalyticsDataBatch, 30000);
+
+// 使用Beacon API在页面卸载时上报数据
+window.addEventListener('beforeunload', function() {
+    if (analyticsDataBatch.length > 0) {
+        navigator.sendBeacon('/api/analytics/batch', JSON.stringify({ data: analyticsDataBatch }));
+    }
+});
+```
+
+## 四、业内比较好的数值
+
+### （一）性能指标目标值
+
+1. **LCP（Largest Contentful Paint）**：目标值在2.5秒内，确保用户快速看到页面主要内容。
+2. **FID（First Input Delay）**：目标值小于100毫秒，保证用户交互的即时响应。
+3. **CLS（Cumulative Layout Shift）**：目标值小于0.1，减少页面加载过程中的布局跳动。
+4. **TTI（Time to Interactive）**：目标值小于10秒，确保页面在合理时间内可交互。
+5. **TBT（Total Blocking Time）**：目标值小于300毫秒，减少主线程阻塞。
+6. **INP（Interaction to Next Paint）**：目标值小于200毫秒，提升用户交互体验。
+7. **FPS（Frames Per Second）**：目标值达到50-60 FPS，确保动画流畅。
+
+### （二）业务指标目标值
+
+1. **PV（Page View）**：根据业务目标设定，通常追求持续增长，表明内容吸引力和用户活跃度提升。
+2. **UV（Unique Visitor）**：根据业务规模和市场定位设定，目标是稳定增长，反映用户群体的扩大。
+
+## 五、总结
+
+前端性能优化与监控是提升用户体验、保障应用稳定性和实现业务目标的关键手段。通过优化页面加载速度、渲染性能和交互响应速度，结合全面的性能监控、异常捕获和业务指标跟踪，可以全面了解应用的运行状态，及时发现并解决问题。在实际项目中，应综合运用各种优化技术和监控手段，确保应用在性能、稳定性和业务表现上达到最佳状态，从而提升用户满意度和业务成功率。
