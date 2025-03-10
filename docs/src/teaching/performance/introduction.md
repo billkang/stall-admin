@@ -58,13 +58,13 @@ React、Vue等前端框架的兴起，使得单页应用成为主流开发模式
 
 聚焦于浏览器的渲染过程，通过优化DOM操作、CSS选择器、JavaScript执行等，减少重绘和回流，提升页面渲染性能。
 
-### 4. 首屏加载优化
-
-专门针对用户首次访问网页时的首屏内容加载，目标是尽快展示有价值的内容，吸引用户留存。
-
-### 5. 代码和资源优化
+### 4. 代码和资源优化
 
 对代码本身进行优化，如压缩、丑化、Tree Shaking等，移除未使用的代码和资源，减小文件体积。
+
+### 5. 首屏加载优化
+
+专门针对用户首次访问网页时的首屏内容加载，目标是尽快展示有价值的内容，吸引用户留存。
 
 ### 6. 性能监控与度量
 
@@ -74,11 +74,11 @@ React、Vue等前端框架的兴起，使得单页应用成为主流开发模式
 
 ### （一）资源加载优化
 
-#### 1. 减少HTTP请求数
+#### 1. 减少 HTTP 请求数
 
 **合并文件**
 
-将多个CSS或JavaScript文件合并成一个文件，减少请求次数。例如，使用Webpack等构建工具进行代码分割和打包。
+将多个 CSS 或 JavaScript 文件合并成一个文件，减少请求次数。例如，使用 Webpack 等构建工具进行代码分割和打包。
 
 ```javascript
 // Webpack配置示例
@@ -86,14 +86,28 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        app: './src/index.js'
+        app: './src/index.js',
+        vendor: ['react', 'lodash'] // 第三方库
     },
     output: {
-        filename: 'bundle.js',
+        filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist')
+    },
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    test: /node_modules/,
+                    name: 'vendor',
+                    chunks: 'all'
+                }
+            }
+        }
     }
 };
 ```
+
+在这个示例中，我们将应用代码和第三方库分开打包。`app` 入口是应用代码的入口，`vendor` 入口包含第三方库。通过 `optimization.splitChunks` 配置，我们可以将第三方库打包成一个单独的文件（`vendor.bundle.js`），而应用代码则被打包成另一个文件（`app.bundle.js`）。这样可以减少 HTTP 请求数，并提高缓存效率。
 
 **使用雪碧图**
 
@@ -182,6 +196,22 @@ import('./module').then((module) => {
 });
 ```
 
+通过使用 import() 函数，可以在运行时动态加载模块。这对于按需加载路由或功能模块非常有用。
+
+```JavaScript
+// 路由配置示例
+const routes = [
+    {
+        path: '/',
+        component: () => import('./components/Home.vue')
+    },
+    {
+        path: '/about',
+        component: () => import('./components/About.vue')
+    }
+];
+```
+
 #### 4. CDN（内容分发网络）
 
 使用CDN可以加快静态资源的加载速度，因为CDN会将资源缓存到离用户最近的服务器节点上。
@@ -246,13 +276,42 @@ module.exports = {
 通过Webpack等工具实现按需加载。
 
 ```javascript
-// Webpack代码分割配置
+// Webpack 配置示例
+const path = require('path');
+
 module.exports = {
+    entry: {
+        app: './src/index.js'
+    },
+    output: {
+        filename: '[name].bundle.js',
+        chunkFilename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    },
     optimization: {
         splitChunks: {
             chunks: 'all',
-        },
-    },
+            minSize: 30000,
+            maxSize: 0,
+            minChunks: 1,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            automaticNameDelimiter: '~',
+            name: true,
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10,
+                    filename: 'vendors.bundle.js'
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
+            }
+        }
+    }
 };
 ```
 
@@ -347,6 +406,15 @@ server {
 <link rel="dns-prefetch" href="//example.com">
 ```
 
+#### 6. 为静态资源设置独立二级域名
+
+为静态资源设置独立的二级域名可以禁用Cookie，加速资源下载，并且可以提高并发数。这是因为Cookie信息通常会随着HTTP请求一起发送，而静态资源通常不需要这些Cookie信息。通过将静态资源放在独立的二级域名下，可以避免发送不必要的Cookie数据，从而减少请求大小并加快传输速度。此外，浏览器对同域名下的并发请求数量有限制，而使用独立的二级域名可以增加并发请求数量，进一步提升加载效率。
+
+```html
+<!-- 静态资源使用独立二级域名 -->
+<img src="https://static.example.com/image.jpg" alt="Static image">
+```
+
 ### （三）DOM操作和渲染优化
 
 #### 1. 减少重绘和回流
@@ -409,7 +477,102 @@ function App() {
 }
 ```
 
-### （四）首屏加载优化
+#### 4. 事件委托
+
+事件委托是一种优化DOM事件处理的技术，通过将事件监听器附加到父元素上，利用事件冒泡机制来处理子元素的事件。这样可以减少事件监听器的数量，提高内存使用效率，并且在动态添加子元素时无需重新绑定事件。
+
+```html
+<!-- 事件委托示例 -->
+<ul id="list">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+</ul>
+```
+
+```javascript
+// JavaScript实现事件委托
+document.getElementById('list').addEventListener('click', function(event) {
+    if (event.target.tagName === 'LI') {
+        console.log('List item clicked:', event.target.textContent);
+    }
+});
+```
+
+### （四）代码和资源优化
+
+#### 1. 防抖（Debouncing）与节流（Throttling）
+
+防抖和节流是用来限制事件触发频率的技术，例如在窗口调整大小或滚动等频繁发生的事件中非常有用。
+
+```javascript
+// 防抖函数
+function debounce(fn, delay) {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => fn.apply(this, args), delay);
+    };
+}
+
+// 节流函数
+function throttle(fn, limit) {
+    let inThrottle;
+    return function (...args) {
+        if (!inThrottle) {
+            fn.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+window.addEventListener('resize', debounce(() => {
+    console.log('Window resized');
+}, 300));
+
+window.addEventListener('scroll', throttle(() => {
+    console.log('Window scrolled');
+}, 1000));
+```
+
+#### 2. 移除未使用的代码和资源
+
+使用Tree Shaking等技术移除未使用的CSS规则和JavaScript代码。
+
+```javascript
+// Webpack配置中的Tree Shaking
+module.exports = {
+    mode: 'production',
+    optimization: {
+        usedExports: true,
+    },
+};
+```
+
+#### 3. 优化第三方脚本
+
+对非必要的第三方脚本进行延迟加载，减少对主线程的阻塞。
+
+```html
+<!-- 延迟加载第三方脚本 -->
+<script defer src="third-party-script.js"></script>
+```
+
+#### 4. 使用性能更好的API
+
+例如，使用 `requestAnimationFrame` 进行动画，而不是 `setTimeout` 或 `setInterval`。
+
+```javascript
+// 使用requestAnimationFrame进行动画
+function animate() {
+    // 动画逻辑
+    requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+```
+
+### （五）首屏加载优化
 
 #### 1. 优先加载关键资源
 
@@ -546,79 +709,6 @@ document.getElementById('load-more').addEventListener('click', () => {
 <link rel="preload" href="logo.png" as="image">
 ```
 
-### （五）代码和资源优化
-
-#### 1. 防抖（Debouncing）与节流（Throttling）
-
-防抖和节流是用来限制事件触发频率的技术，例如在窗口调整大小或滚动等频繁发生的事件中非常有用。
-
-```javascript
-// 防抖函数
-function debounce(fn, delay) {
-    let timeoutId;
-    return function (...args) {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => fn.apply(this, args), delay);
-    };
-}
-
-// 节流函数
-function throttle(fn, limit) {
-    let inThrottle;
-    return function (...args) {
-        if (!inThrottle) {
-            fn.apply(this, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    };
-}
-
-window.addEventListener('resize', debounce(() => {
-    console.log('Window resized');
-}, 300));
-
-window.addEventListener('scroll', throttle(() => {
-    console.log('Window scrolled');
-}, 1000));
-```
-
-#### 2. 移除未使用的代码和资源
-
-使用Tree Shaking等技术移除未使用的CSS规则和JavaScript代码。
-
-```javascript
-// Webpack配置中的Tree Shaking
-module.exports = {
-    mode: 'production',
-    optimization: {
-        usedExports: true,
-    },
-};
-```
-
-#### 3. 优化第三方脚本
-
-对非必要的第三方脚本进行延迟加载，减少对主线程的阻塞。
-
-```html
-<!-- 延迟加载第三方脚本 -->
-<script defer src="third-party-script.js"></script>
-```
-
-#### 4. 使用性能更好的API
-
-例如，使用 `requestAnimationFrame` 进行动画，而不是 `setTimeout` 或 `setInterval`。
-
-```javascript
-// 使用requestAnimationFrame进行动画
-function animate() {
-    // 动画逻辑
-    requestAnimationFrame(animate);
-}
-requestAnimationFrame(animate);
-```
-
 ### （六）性能监控与度量
 
 #### 1. 使用性能分析工具
@@ -650,7 +740,7 @@ const observer = new PerformanceObserver((list) => {
         console.log(`CLS value: ${entry.value}`);
     }
 });
-observer.observe({ type: 'layout-shift', buffered: true });
+observer.observe({ entryTypes: 'layout-shift', buffered: true });
 ```
 
 ## 五、总结

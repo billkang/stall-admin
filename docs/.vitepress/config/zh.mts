@@ -314,7 +314,11 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         },
         {
           link: 'performance/indicator',
-          text: '前端性能优化通用指标与前端监控',
+          text: '前端性能优化与监控',
+        },
+        {
+          link: 'performance/api',
+          text: 'PerformanceObserver 和 Performance API 的区别与应用场景',
         },
         {
           link: 'performance/qa',
