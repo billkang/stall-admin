@@ -145,6 +145,10 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           text: 'TypeScript：从基础到进阶的系统性介绍',
         },
         {
+          link: 'fe/typescript-advanced',
+          text: 'TypeScript 高级编程：面向对象与高级特性详解',
+        },
+        {
           link: 'fe/typescript-qa',
           text: 'TypeScript 面试常见问题汇总',
         },

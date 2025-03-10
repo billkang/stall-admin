@@ -18,11 +18,11 @@ TypeScript 最初由 Anders Hejlsberg 和他的团队在微软开发，于 2012 
 
 ### （一）类型系统
 
-TypeScript 的类型系统是其核心特性之一。通过静态类型检查，TypeScript 能够在编译阶段发现潜在的类型错误，从而提高代码的可靠性。TypeScript 支持多种类型，包括基本类型（如 boolean、number、string）、复杂类型（如数组、元组、对象）以及高级类型（如泛型、联合类型、交叉类型等）
-。
+TypeScript 的类型系统是其核心特性之一。通过静态类型检查，TypeScript 能够在编译阶段发现潜在的类型错误，从而提高代码的可靠性。TypeScript 支持多种类型，包括基本类型（如 boolean、number、string）、复杂类型（如数组、元组、对象）以及高级类型（如泛型、联合类型、交叉类型等）。
+
 **示例代码**
 
-```TypeScript
+```typescript
 let isDone: boolean = false;
 let count: number = 42;
 let name: string = "TypeScript";
@@ -37,7 +37,7 @@ let tuple: [string, number] = ["TypeScript", 2012];
 
 **示例代码**
 
-```TypeScript
+```typescript
 interface Person {
   firstName: string;
   lastName: string;
@@ -58,7 +58,7 @@ TypeScript 支持基于类的面向对象编程。通过类（Classes），可�
 
 **示例代码**
 
-```TypeScript
+```typescript
 class Animal {
   constructor(public name: string) {}
   move(distance: number = 0) {
@@ -85,7 +85,7 @@ dog.bark();
 
 mathUtils.ts
 
-```TypeScript
+```typescript
 export function add(a: number, b: number): number {
   return a + b;
 }
@@ -97,7 +97,7 @@ export function subtract(a: number, b: number): number {
 
 app.ts
 
-```TypeScript
+```typescript
 import { add, subtract } from "./mathUtils";
 
 console.log(add(5, 3)); // 输出: 8
@@ -110,7 +110,7 @@ console.log(subtract(5, 3)); // 输出: 2
 
 在 TypeScript 中，可以使用 let 和 const 关键字来声明变量，并指定其类型。例如：
 
-```TypeScript
+```typescript
 let message: string = "Hello, TypeScript!";
 const pi: number = 3.14;
 ```
@@ -119,7 +119,7 @@ const pi: number = 3.14;
 
 函数可以有参数类型和返回类型注解。例如：
 
-```TypeScript
+```typescript
 function add(a: number, b: number): number {
   return a + b;
 }
@@ -133,7 +133,7 @@ function greet(name: string): void {
 
 TypeScript 支持类型推断，编译器可以根据赋值语句推断变量的类型。例如：
 
-```TypeScript
+```typescript
 let message = "Hello, TypeScript!"; // 类型推断为 string
 let count = 42; // 类型推断为 number
 ```
@@ -142,14 +142,14 @@ let count = 42; // 类型推断为 number
 
 数组类型可以通过在元素类型后面加上 [] 来表示。例如：
 
-```TypeScript
+```typescript
 let numbers: number[] = [1, 2, 3];
 let strings: string[] = ["TypeScript", "JavaScript"];
 ```
 
 元组是具有固定类型的数组。例如：
 
-```TypeScript
+```typescript
 let tuple: [string, number] = ["TypeScript", 2012];
 ```
 
@@ -157,7 +157,7 @@ let tuple: [string, number] = ["TypeScript", 2012];
 
 枚举（Enums）是 TypeScript 中的一种特殊数据类型，用于定义一组命名的常量。例如：
 
-```TypeScript
+```typescript
 enum Direction {
   Up,
   Down,
@@ -174,7 +174,7 @@ let direction: Direction = Direction.Up;
 
 泛型（Generics）是 TypeScript 中一种强大的类型系统特性，允许在函数、接口和类中使用类型参数。泛型使得代码更加灵活和可复用。例如：
 
-```TypeScript
+```typescript
 function identity<T>(arg: T): T {
   return arg;
 }
@@ -187,7 +187,7 @@ console.log(output); // 输出: TypeScript
 
 TypeScript 提供了多种高级类型，如联合类型、交叉类型、类型别名等。这些类型使得 TypeScript 的类型系统更加强大和灵活。例如：
 
-```TypeScript
+```typescript
 type Point = { x: number; y: number };
 type Point3D = Point & { z: number };
 
@@ -198,7 +198,7 @@ let point: Point3D = { x: 1, y: 2, z: 3 };
 
 装饰器（Decorators）是 TypeScript 中一种实验性特性，用于在类、方法、属性和参数上添加元数据和行为。装饰器通过在代码中添加注解的方式，使得代码更加简洁和易于维护。例如：
 
-```TypeScript
+```typescript
 function logClass(target: Function) {
   console.log(`Logging class: ${target.name}`);
 }
@@ -226,7 +226,7 @@ tsconfig.json 是 TypeScript 项目的核心配置文件，用于指定编译器
 
 **示例代码**
 
-```JSON
+```json
 {
   "compilerOptions": {
     "target": "ES6",
@@ -253,7 +253,7 @@ TypeScript 得到了广泛的支持，包括 Visual Studio Code、WebStorm 等�
 
 App.tsx
 
-```TypeScript
+```typescript
 import React, { useState } from "react";
 
 interface CounterProps {
@@ -282,7 +282,7 @@ export default Counter;
 
 server.ts
 
-```TypeScript
+```typescript
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 
