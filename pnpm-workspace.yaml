@@ -2,7 +2,6 @@ packages:
   - internal/*
   - internal/lint-configs/*
   - jssdk/*
-  - lowcode/*
   - packages/*
   - packages/@core/base/*
   - packages/@core/ui-kit/*

@@ -61,22 +61,6 @@
       "path": "jssdk/core",
     },
     {
-      "name": "@stall-lowcode/hooks",
-      "path": "lowcode/hooks",
-    },
-    {
-      "name": "@stall-lowcode/renderer",
-      "path": "lowcode/renderer",
-    },
-    {
-      "name": "@stall-lowcode/types",
-      "path": "lowcode/types",
-    },
-    {
-      "name": "@stall-lowcode/utils",
-      "path": "lowcode/utils",
-    },
-    {
       "name": "@stall-core/design",
       "path": "packages/@core/base/design",
     },
