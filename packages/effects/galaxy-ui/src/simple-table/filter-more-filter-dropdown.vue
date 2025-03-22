@@ -124,7 +124,6 @@ import {
 } from '@arco-design/web-vue/es/icon';
 import { useTableSetting } from './hooks/useTableSetting';
 import { useTable } from './hooks/useTable';
-import FilterCustomRender from './filter-custom-render.vue';
 
 export default defineComponent({
   components: {
@@ -144,7 +143,6 @@ export default defineComponent({
     IconDown,
     IconQuestionCircle,
     Tooltip,
-    FilterCustomRender,
   },
   props: {
     uuid: {

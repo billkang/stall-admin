@@ -12,6 +12,10 @@ const columns = [
     title: '序号',
     dataIndex: 'seq',
     width: 50,
+    filterable: {
+      componentType: 'input',
+      visible: true,
+    },
   },
   {
     dataIndex: 'category',
@@ -29,6 +33,24 @@ const columns = [
   {
     dataIndex: 'status',
     title: 'Status',
+    filterable: {
+      componentType: 'select',
+      filters: [
+        {
+          text: '1',
+          value: 1,
+        },
+        {
+          text: '2',
+          value: 2,
+        },
+        {
+          text: '3',
+          value: 3,
+        },
+      ],
+      visible: true,
+    },
   },
   { dataIndex: 'color', title: 'Color' },
   { dataIndex: 'productName', title: 'Product Name' },
