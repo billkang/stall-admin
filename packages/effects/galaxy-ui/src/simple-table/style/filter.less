@@ -1,0 +1,32 @@
+@import './token.less';
+
+.stall-galaxy-table__filter {
+  color: @color-text-1;
+
+  .arco-icon {
+    margin: 0 4px;
+    color: #808080;
+  }
+
+  &.disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
+  .arco-dropdown-trigger {
+    padding: 5px 8px;
+    font-size: 14px;
+    line-height: 22px;
+    color: @color-text-1;
+    background: #fff;
+    border: 1px solid @color-border-2;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+}
+
+.stall-galaxy-table-filter__select {
+  .option-title::after {
+    margin: 0 8px 0 2px;
+  }
+}

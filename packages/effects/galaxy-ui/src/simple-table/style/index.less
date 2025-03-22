@@ -1,0 +1,197 @@
+@import './token.less';
+@import './filter-input-search.less';
+@import './filter-more-filter-dropdown.less';
+@import './filter-selector.less';
+@import './filter-summary.less';
+@import './filter.less';
+@import './setting.less';
+
+.stall-galaxy-table-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 0;
+  flex: 1;
+  max-height: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  background: @color-bg-white;
+
+  &.pagination-top {
+    .arco-table-container {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  header {
+    margin: 16px 5px;
+    display: flex;
+    justify-content: space-between;
+
+    .table-header__left-section,
+    .table-header__right-section {
+      .arco-space {
+        flex-wrap: wrap;
+      }
+    }
+
+    .right-section {
+      .arco-btn {
+        padding: 5px 12px;
+        margin-right: 4px;
+
+        &:disabled {
+          color: @color-text-4;
+          background: @color-fill-1;
+          border: 1px solid @color-border-2;
+        }
+
+        &-default {
+          font-size: 14px;
+          line-height: 22px;
+          color: @color-text-1;
+          background: @color-bg-white;
+          border: 1px solid @color-border-2;
+        }
+
+        &-primary {
+          color: @color-bg-white;
+          background: @color-text-1;
+
+          &:disabled {
+            background: @color-border-4;
+          }
+        }
+
+        &-dangerous {
+          color: @red-6;
+          border: 1px solid #fbaca3;
+        }
+      }
+    }
+  }
+
+  main {
+    flex: 1;
+    margin: 0 5px;
+    max-height: calc(100% - 68px);
+
+    .arco-table {
+      height: 100%;
+
+      .arco-table-container {
+        margin-bottom: 52px;
+        height: 100%;
+        border: 1px solid @color-border-1;
+
+        .arco-table-content-scroll-x {
+          overflow-x: auto;
+          overflow-y: auto;
+        }
+
+        .arco-virtual-list {
+          .arco-table-element {
+            width: 100%;
+          }
+        }
+
+        .arco-table-element {
+          .arco-table-th {
+            .arco-table-cell {
+              padding: 7px 12px;
+              line-height: 20px;
+
+              .arco-table-th-title {
+                .header-cell-action {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  line-height: 22px;
+                  margin-right: 20px;
+                  min-width: 80px;
+                }
+
+                .table__setting {
+                  position: absolute;
+                  top: 12px;
+                  right: 12px;
+                  cursor: pointer;
+                  z-index: 999;
+                }
+              }
+
+              &::before {
+                display: none;
+              }
+            }
+          }
+        }
+      }
+
+      .arco-table-pagination {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 9px 0 7px;
+        background: @color-bg-white;
+        z-index: 10;
+
+        &.arco-table-pagination-top {
+          position: absolute;
+          top: -60px;
+          left: unset;
+          bottom: unset;
+        }
+
+        .arco-pagination {
+          width: 100%;
+          justify-content: flex-end;
+          font-size: 14px;
+          line-height: 22px;
+
+          .arco-pagination-total {
+            flex: 1;
+            color: @color-text-3;
+          }
+
+          &-item {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            border: 1px solid @color-border-2;
+            color: @color-text-1;
+
+            &-active {
+              background: @color-fill-4;
+              border: 1px solid @color-border-4;
+            }
+
+            &-disabled {
+              color: @color-text-4;
+            }
+          }
+
+          .arco-pagination-options {
+            .arco-select-view-single {
+              height: 32px;
+              border-radius: 4px;
+              background: @color-bg-white;
+              box-sizing: border-box;
+              border: 1px solid @color-border-2;
+            }
+          }
+
+          .arco-pagination-jumper {
+            .arco-input-wrapper {
+              height: 32px;
+              border-radius: 2px;
+              border: 1px solid @color-border-2;
+              background: @color-bg-white;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,8 +1,10 @@
-import { type Ref, ref, unref } from 'vue';
+import type { Ref } from 'vue';
+
+import { ref, unref } from 'vue';
 
 type TablePagination = {
-  total: number;
   showTotal: boolean;
+  total: number;
 };
 
 /*
@@ -31,7 +33,8 @@ export function useTableFetchData(fn: Function, tableRef?: Ref<any>) {
       // 开始加载数据，将 loading 状态设置为 true
       loading.value = true;
       // 从 tableRef 中获取当前页码和每页显示数量，如果 tableRef 不存在则使用默认值
-      const { current, pageSize } = (tableRef && unref(tableRef)?.innerPagination) || { current: 1, pageSize: 15 };
+      const { current, pageSize } = (tableRef &&
+        unref(tableRef)?.innerPagination) || { current: 1, pageSize: 15 };
       // 从 tableRef 中获取表单数据，如果 tableRef 不存在则使用空对象
       const formData = (tableRef && unref(tableRef)?.formData) || {};
 
