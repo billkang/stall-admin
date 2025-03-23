@@ -118,8 +118,8 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时6',
       items: [
         {
-          link: 'lesson6_gig-file/how-to',
-          text: '大文件上传',
+          link: 'lesson6_big-file-upload/how-to',
+          text: '大文件分片上传实现指南',
         },
       ],
     },
