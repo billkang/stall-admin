@@ -84,7 +84,7 @@ HTML 模板允许开发者定义可复用的 HTML 片段，这些片段在页面
 使用 npm 安装 Vue 和 Web Components 相关的依赖。
 
 ```bash
-npm install vue custom-elements
+npm install vue
 ```
 
 ### 2. 创建 Vue 组件

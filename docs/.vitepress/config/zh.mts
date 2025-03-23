@@ -118,12 +118,8 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时6',
       items: [
         {
-          link: 'lesson6_lowcode/renderer',
-          text: '低代码渲染器',
-        },
-        {
-          link: 'lesson6_lowcode/how-to',
-          text: '使用低代码渲染器',
+          link: 'lesson6_big-file-upload/how-to',
+          text: '大文件分片上传实现指南',
         },
       ],
     },

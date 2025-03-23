@@ -52,13 +52,6 @@ function initTableSetting(
     ),
   );
 
-  // 计算属性：过滤输入框搜索的列
-  const inputSearchColumns = computed(() =>
-    filterableColumns.value.filter(
-      (c) => c.filterable?.componentType === 'input',
-    ),
-  );
-
   // 监听列配置的变化
   watch(
     () => mergedColumns,
@@ -287,33 +280,18 @@ function initTableSetting(
     CACHE_TABLE_SETTING[uuid] = null;
   }
 
-  /**
-   * 处理自定义搜索
-   * @param data 搜索数据
-   */
-  async function handleCustomSearch(data: Record<string, any>) {
-    const { key, value } = data;
-    const col = filterableColumns.value.find((col) => col.dataIndex === key);
-    if (col?.filterable?.customSearch) {
-      await col.filterable.customSearch(value, col);
-    }
-  }
-
   // 返回表格设置的 API
   return {
     resetFormData,
     cleanFormDataByKey,
     formData,
     filterableColumns,
-    inputSearchColumns,
-    saveSortedColumns,
     mergedColumns,
     setTableSize,
     tableSize,
     setTextControl,
     textControl,
     dispose,
-    handleCustomSearch,
   };
 }
 

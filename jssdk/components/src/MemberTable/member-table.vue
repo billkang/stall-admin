@@ -1,12 +1,8 @@
-<template>
-  <div class="jssdk-member-table-container">
-    <Table :dataSource="memberDataList" :columns="columns"></Table>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref, inject, onMounted } from 'vue';
+import { inject, onMounted, ref } from 'vue';
+
 import { Table } from '@arco-design/web-vue';
+
 import { columns } from './columns';
 
 const request = inject('request') as any;
@@ -26,6 +22,12 @@ async function queryByPage(params: any) {
   return res;
 }
 </script>
+
+<template>
+  <div class="jssdk-member-table-container">
+    <Table :data-source="memberDataList" :columns="columns" />
+  </div>
+</template>
 
 <style lang="less" scoped>
 @import url('@arco-design/web-vue/es/table/style/index.less');
