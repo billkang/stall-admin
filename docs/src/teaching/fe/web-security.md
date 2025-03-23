@@ -31,6 +31,7 @@ XSS 是指攻击者通过注入恶意脚本到网页中，当受害者访问该�
 **引起的原因**：当应用程序未经充分验证和编码就将用户输入存储并展示给其他用户时，就可能存在存储型 XSS 漏洞。
 
 **示例代码**：
+
 ```html
 <textarea id="userInput"></textarea>
 <button onclick="saveInput()">提交</button>
@@ -46,6 +47,7 @@ function saveInput() {
 **解决方案原理**：对用户输入进行严格的验证和编码，确保特殊字符不会被解释为 HTML 或 JavaScript 代码。
 
 **示例代码**：
+
 ```javascript
 function escapeHtml(text) {
     const div = document.createElement('div');
@@ -67,6 +69,7 @@ function saveInput() {
 **引起的原因**：当应用程序将用户输入未经处理地反射回响应页面时，就可能存在反射型 XSS 漏洞。
 
 **示例代码**：
+
 ```html
 <a href="https://example.com/search?query=<script>alert('XSS')</script>">点击这里</a>
 
@@ -81,6 +84,7 @@ function renderSearchResults() {
 **解决方案原理**：对用户输入进行严格的验证和编码，确保特殊字符不会被解释为 HTML 或 JavaScript 代码。
 
 **示例代码**：
+
 ```javascript
 function escapeHtml(text) {
     const div = document.createElement('div');
@@ -102,6 +106,7 @@ function renderSearchResults() {
 **引起的原因**：当应用程序使用不安全的方式操作 DOM，且用户输入未经过充分验证和编码时，就可能存在 DOM 型 XSS 漏洞。
 
 **示例代码**：
+
 ```html
 <input type="text" id="userInput">
 <button onclick="updateContent()">更新内容</button>
@@ -117,6 +122,7 @@ function updateContent() {
 **解决方案原理**：避免直接使用不安全的 DOM 操作方法，如 `innerHTML`，并对用户输入进行严格的验证和编码。
 
 **示例代码**：
+
 ```javascript
 function updateContent() {
     const userInput = document.getElementById('userInput').value;
@@ -134,12 +140,14 @@ function updateContent() {
 **示例代码**：
 
 1. **使用 `textContent` 替代 `innerHTML`**：
+
 ```javascript
 const userInput = "<script>alert('XSS')</script>";
 element.textContent = userInput; // 安全输出，不会执行脚本
 ```
 
 2. **手动替换特殊字符**：
+
 ```javascript
 function escapeHtml(text) {
   const map = {
@@ -158,6 +166,7 @@ document.getElementById('content').innerHTML = safeOutput;
 ```
 
 3. **使用第三方库（如 DOMPurify）**：
+
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.3/purify.min.js"></script>
 ```
@@ -170,12 +179,14 @@ document.getElementById('content').innerHTML = clean;
 ```
 
 4. **使用模板引擎的转义功能**：
+
 ```html
 <!-- 在模板中使用转义语法 -->
 <div>{{ userInput }}</div>
 ```
 
 5. **使用 `encodeURI` 和 `encodeURIComponent` 对 URL 进行编码**：
+
 ```javascript
 const userInput = "http://example.com?param=<script>alert('XSS')</script>";
 const encodedUrl = encodeURIComponent(userInput);
@@ -186,6 +197,7 @@ const encodedUrl = encodeURIComponent(userInput);
 **原理**：对用户提交的数据实施严格的白名单验证，阻止非法字符和潜在的恶意输入。
 
 **示例代码**：
+
 ```javascript
 function validateInput(input) {
     const allowedChars = /^[a-zA-Z0-9\s]+$/;
@@ -204,6 +216,7 @@ if (validateInput(userInput)) {
 **原理**：对于重要的 Cookie，启用 HTTPOnly 属性以禁止 JavaScript 访问，并使用 Secure 属性确保仅通过 HTTPS 发送。
 
 **示例代码**：
+
 ```javascript
 // 在服务器端设置 Cookie
 res.cookie('session', 'abc123', { httpOnly: true, secure: true });
@@ -214,6 +227,7 @@ res.cookie('session', 'abc123', { httpOnly: true, secure: true });
 **原理**：通过配置 CSP 来限制哪些来源的资源可以加载，从而减少外部恶意脚本的风险。
 
 **示例代码**：
+
 ```nginx
 server {
     listen 443 ssl;
@@ -253,6 +267,7 @@ SQL注入是一种常见的网络安全漏洞攻击手段，攻击者通过在�
 使用预处理语句是防止SQL注入的最有效方法之一。预处理语句将SQL查询和用户输入分开，避免了直接将用户输入拼接到SQL语句中的情况。
 
 **示例代码**：
+
 ```java
 String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
 PreparedStatement preState = conn.prepareStatement(sql);
@@ -266,6 +281,7 @@ ResultSet rs = preState.executeQuery();
 对用户输入进行严格的验证和过滤，只允许合法的字符进入SQL语句。
 
 **示例代码**：
+
 ```java
 private static final Pattern SAFE_PATTERN = Pattern.compile("^[a-zA-Z0-9\\s]+$");
 
@@ -298,8 +314,9 @@ CSRF（跨站请求伪造）攻击利用了浏览器自动携带用户认证信�
 
 ##### （1）攻击者准备阶段
 
-  * **确定目标网站的敏感操作接口**：攻击者分析目标网站（站点A）的功能，找到敏感操作的接口，例如银行转账接口 `https://bank.com/transfer`，该接口可能通过 POST 请求实现转账功能，请求参数包含转账金额、收款人账户等信息。
-  * **构造恶意请求**：根据目标接口的请求格式，攻击者构造一个恶意的 HTTP 请求。例如，构造一个表单提交请求，用于从用户的账户向攻击者指定的账户转账：
+* **确定目标网站的敏感操作接口**：攻击者分析目标网站（站点A）的功能，找到敏感操作的接口，例如银行转账接口 `https://bank.com/transfer`，该接口可能通过 POST 请求实现转账功能，请求参数包含转账金额、收款人账户等信息。
+* **构造恶意请求**：根据目标接口的请求格式，攻击者构造一个恶意的 HTTP 请求。例如，构造一个表单提交请求，用于从用户的账户向攻击者指定的账户转账：
+
     ```html
     <form action="https://bank.com/transfer" method="POST">
         <input type="hidden" name="amount" value="1000">
@@ -309,19 +326,19 @@ CSRF（跨站请求伪造）攻击利用了浏览器自动携带用户认证信�
 
 ##### （2）诱使用户阶段
 
-  * **创建恶意页面或链接**：攻击者将构造好的恶意请求嵌入到一个网页（站点B）中，这个网页可能是攻击者自己搭建的，或者是在其他有漏洞的网站上插入恶意代码。例如，在站点B的页面中嵌入上述表单，并通过 JavaScript 自动提交表单，或者伪装成一个正常的链接，诱使用户点击。
-  * **引用户诱访问恶意页面**：攻击者通过邮件、社交媒体、即时通讯工具等方式，向用户发送包含恶意页面链接的消息，诱导用户点击。例如，发送一条消息：“您好，这里有份重要的文件需要您查看，请点击链接查看详情：[恶意页面链接]”。
+* **创建恶意页面或链接**：攻击者将构造好的恶意请求嵌入到一个网页（站点B）中，这个网页可能是攻击者自己搭建的，或者是在其他有漏洞的网站上插入恶意代码。例如，在站点B的页面中嵌入上述表单，并通过 JavaScript 自动提交表单，或者伪装成一个正常的链接，诱使用户点击。
+* **引用户诱访问恶意页面**：攻击者通过邮件、社交媒体、即时通讯工具等方式，向用户发送包含恶意页面链接的消息，诱导用户点击。例如，发送一条消息：“您好，这里有份重要的文件需要您查看，请点击链接查看详情：[恶意页面链接]”。
 
 ##### （3）用户受骗阶段
 
-  * **用户登录目标网站（站点A）**：用户在正常情况下登录了目标网站（站点A，如银行网站），并完成了身份认证，此时浏览器中存储了站点A的认证 Cookie。
-  * **用户访问恶意页面（站点B）**：用户在未退出站点A的情况下，点击了攻击者发送的恶意链接，进入了站点B的页面。
-  * **恶意请求发送与执行**：当用户访问站点B的页面时，页面中的恶意代码（如自动提交的表单）被触发，浏览器向站点A的转账接口发送了恶意构造的请求。由于浏览器自动携带了站点A的认证 Cookie，站点A认为这是一个合法的用户请求，从而执行了转账操作，将用户的 1000 元转账到攻击者指定的账户。
+* **用户登录目标网站（站点A）**：用户在正常情况下登录了目标网站（站点A，如银行网站），并完成了身份认证，此时浏览器中存储了站点A的认证 Cookie。
+* **用户访问恶意页面（站点B）**：用户在未退出站点A的情况下，点击了攻击者发送的恶意链接，进入了站点B的页面。
+* **恶意请求发送与执行**：当用户访问站点B的页面时，页面中的恶意代码（如自动提交的表单）被触发，浏览器向站点A的转账接口发送了恶意构造的请求。由于浏览器自动携带了站点A的认证 Cookie，站点A认为这是一个合法的用户请求，从而执行了转账操作，将用户的 1000 元转账到攻击者指定的账户。
 
 ##### （4）攻击完成阶段
 
-  * **目标网站执行操作**：站点A接收到来自用户浏览器的请求后，验证请求中的认证信息（Cookie）无误，按照正常的业务逻辑执行转账操作，用户的账户余额减少，攻击者指定账户余额增加。
-  * **用户察觉异常（可能）**：用户可能在一段时间后发现账户异常，如余额减少，但此时攻击已经完成，资金可能已经被转移。
+* **目标网站执行操作**：站点A接收到来自用户浏览器的请求后，验证请求中的认证信息（Cookie）无误，按照正常的业务逻辑执行转账操作，用户的账户余额减少，攻击者指定账户余额增加。
+* **用户察觉异常（可能）**：用户可能在一段时间后发现账户异常，如余额减少，但此时攻击已经完成，资金可能已经被转移。
 
 ### （三）防御方法
 
@@ -330,6 +347,7 @@ CSRF（跨站请求伪造）攻击利用了浏览器自动携带用户认证信�
 引入一次性令牌机制，要求每个表单提交或 AJAX 请求携带一个唯一的 CSRF Token，服务器端验证此令牌的有效性。
 
 **示例代码**：
+
 ```javascript
 // 生成 CSRF Token
 const csrf = require('csurf');
@@ -354,6 +372,7 @@ app.post('/submit', (req, res) => {
 在 Cookie 设置中添加 SameSite 属性，限制第三方站点发起的请求是否能携带该 Cookie。
 
 **示例代码**：
+
 ```javascript
 // 设置 SameSite 属性
 res.cookie('session', 'abc123', { sameSite: 'Strict', secure: true });
@@ -364,6 +383,7 @@ res.cookie('session', 'abc123', { sameSite: 'Strict', secure: true });
 检查 HTTP 请求头中的 Referer 字段，确认请求来源合法。
 
 **示例代码**：
+
 ```javascript
 app.use((req, res, next) => {
     const referer = req.get('Referer');
@@ -385,10 +405,11 @@ Clickjacking 是一种攻击手段，攻击者通过将恶意链接或按钮隐�
 
 #### 1\. 攻击者准备阶段
 
-  * **确定目标网站的敏感操作界面**：攻击者分析目标网站（站点A）的功能，找到具有敏感操作的界面，例如社交媒体网站的 “发布状态” 按钮，或者在线购物网站的 “删除商品” 按钮。
-  * **创建恶意框架页面**：攻击者创建一个包含框架（iframe）的恶意页面（站点B）。在这个页面中，攻击者将目标网站的敏感操作界面嵌套在一个透明的或半透明的框架中，并在其上方叠加一个伪装的元素，如一个吸引用户的按钮（如 “点击领取优惠券”）。
+* **确定目标网站的敏感操作界面**：攻击者分析目标网站（站点A）的功能，找到具有敏感操作的界面，例如社交媒体网站的 “发布状态” 按钮，或者在线购物网站的 “删除商品” 按钮。
+* **创建恶意框架页面**：攻击者创建一个包含框架（iframe）的恶意页面（站点B）。在这个页面中，攻击者将目标网站的敏感操作界面嵌套在一个透明的或半透明的框架中，并在其上方叠加一个伪装的元素，如一个吸引用户的按钮（如 “点击领取优惠券”）。
 
     例如，恶意页面的代码可能如下：
+
     ```html
     <iframe src="https://socialmedia.com/post-status" style="opacity: 0;"></iframe>
     <button style="position: absolute; top: 100px; left: 200px;">点击领取优惠券</button>
@@ -399,18 +420,18 @@ Clickjacking 是一种攻击手段，攻击者通过将恶意链接或按钮隐�
 
 #### 2\. 诱使用户阶段
 
-  * **引诱用户访问恶意页面**：攻击者通过邮件、社交媒体、即时通讯工具等方式，向用户发送包含恶意页面链接的消息，诱导用户点击。例如，发送一条消息：“您好，这里有份独家优惠活动，点击链接查看详情：[恶意页面链接]”。
+* **引诱用户访问恶意页面**：攻击者通过邮件、社交媒体、即时通讯工具等方式，向用户发送包含恶意页面链接的消息，诱导用户点击。例如，发送一条消息：“您好，这里有份独家优惠活动，点击链接查看详情：[恶意页面链接]”。
 
 #### 3\. 用户受骗阶段
 
-  * **用户登录目标网站（站点A）**：用户在正常情况下登录了目标网站（站点A，如社交媒体网站），并完成了身份认证，此时浏览器中存储了站点A的认证 Cookie。
-  * **用户访问恶意页面（站点B）**：用户在未退出站点A的情况下，点击了攻击者发送的恶意链接，进入了站点B的页面。
-  * **用户点击恶意元素**：用户在站点B的页面中看到一个吸引人的按钮（如 “点击领取优惠券”），并点击了它。由于按钮的位置与框架中目标网站的敏感操作按钮（如 “发布状态”）的位置对应，用户的点击操作实际上被劫持，触发了目标网站中的敏感操作。
+* **用户登录目标网站（站点A）**：用户在正常情况下登录了目标网站（站点A，如社交媒体网站），并完成了身份认证，此时浏览器中存储了站点A的认证 Cookie。
+* **用户访问恶意页面（站点B）**：用户在未退出站点A的情况下，点击了攻击者发送的恶意链接，进入了站点B的页面。
+* **用户点击恶意元素**：用户在站点B的页面中看到一个吸引人的按钮（如 “点击领取优惠券”），并点击了它。由于按钮的位置与框架中目标网站的敏感操作按钮（如 “发布状态”）的位置对应，用户的点击操作实际上被劫持，触发了目标网站中的敏感操作。
 
 #### 4\. 攻击完成阶段
 
-  * **目标网站执行操作**：站点A接收到来自用户浏览器的请求后，验证请求中的认证信息（Cookie）无误，按照正常的业务逻辑执行操作，例如发布一条状态或者删除某个商品。
-  * **用户察觉异常（可能）**：用户可能在一段时间后发现异常，如自己的社交媒体账户发布了奇怪的内容，或者购物车中的商品被删除，但此时攻击已经完成。
+* **目标网站执行操作**：站点A接收到来自用户浏览器的请求后，验证请求中的认证信息（Cookie）无误，按照正常的业务逻辑执行操作，例如发布一条状态或者删除某个商品。
+* **用户察觉异常（可能）**：用户可能在一段时间后发现异常，如自己的社交媒体账户发布了奇怪的内容，或者购物车中的商品被删除，但此时攻击已经完成。
 
 ### （三）防御方法
 
@@ -419,6 +440,7 @@ Clickjacking 是一种攻击手段，攻击者通过将恶意链接或按钮隐�
 通过设置 X-Frame-Options HTTP 头部，控制浏览器是否允许将页面嵌套在框架中。
 
 **示例代码**：
+
 ```nginx
 server {
     listen 443 ssl;
@@ -440,6 +462,7 @@ server {
 通过配置 CSP 来限制框架的使用。
 
 **示例代码**：
+
 ```nginx
 server {
     listen 443 ssl;
@@ -483,43 +506,47 @@ add_header Content-Security-Policy "
 
 ### （三）CSP 关键指令
 
-  * `default-src`：设定默认资源加载源。
-  * `script-src`：限定脚本资源的加载源。
-  * `style-src`：控制样式资源的加载。
-  * `img-src`：规定图片资源的来源。
-  * `object-src`：管理插件对象的加载。
-  * `upgrade-insecure-requests`：自动将 HTTP 请求转换为 HTTPS。
-  * `block-all-mixed-content`：阻止任何形式的混合内容加载。
+* `default-src`：设定默认资源加载源。
+* `script-src`：限定脚本资源的加载源。
+* `style-src`：控制样式资源的加载。
+* `img-src`：规定图片资源的来源。
+* `object-src`：管理插件对象的加载。
+* `upgrade-insecure-requests`：自动将 HTTP 请求转换为 HTTPS。
+* `block-all-mixed-content`：阻止任何形式的混合内容加载。
 
 ## 七、React 和 Vue 中的 XSS 防御
 
 ### （一）React 的防御措施
 
-  * **自动转义输出**：React 默认会对组件属性中的文本值进行 HTML 转义，避免直接插入未处理的用户输入。
-  * **技术原理**：内部使用 `createTextNode()` 方法创建文本节点，并使用 `appendChild()` 方法将文本节点添加到 DOM 中。
+* **自动转义输出**：React 默认会对组件属性中的文本值进行 HTML 转义，避免直接插入未处理的用户输入。
+* **技术原理**：内部使用 `createTextNode()` 方法创建文本节点，并使用 `appendChild()` 方法将文本节点添加到 DOM 中。
+
     ```jsx
     const name = "<script>alert('XSS')</script>";
     return <div>{name}</div>; // 输出为 &lt;script&gt;alert('XSS')&lt;/script&gt;
     ```
-  * **谨慎使用 `dangerouslySetInnerHTML`**：尽管 React 提供了此 API 用于插入原始 HTML，但应尽量避免使用，除非绝对必要并且已经对内容进行了充分净化。
+
+* **谨慎使用 `dangerouslySetInnerHTML`**：尽管 React 提供了此 API 用于插入原始 HTML，但应尽量避免使用，除非绝对必要并且已经对内容进行了充分净化。
 
 ### （二）Vue 的防御措施
 
-  * **自动转义输出**：类似于 React，Vue 也会自动转义模板中的表达式，防止它们作为实际 HTML 或 JavaScript 解析。
-  * **技术原理**：内部使用 `createTextNode()` 方法创建文本节点，并使用 `appendChild()` 方法将文本节点添加到 DOM 中。
+* **自动转义输出**：类似于 React，Vue 也会自动转义模板中的表达式，防止它们作为实际 HTML 或 JavaScript 解析。
+* **技术原理**：内部使用 `createTextNode()` 方法创建文本节点，并使用 `appendChild()` 方法将文本节点添加到 DOM 中。
+
     ```html
     <div>{{ userInput }}</div>
     ```
-  * **审慎使用 `v-html` 指令**：虽然 Vue 允许通过 `v-html` 渲染未经编译的 HTML 内容，但在使用前务必确保内容是安全可靠的。
+
+* **审慎使用 `v-html` 指令**：虽然 Vue 允许通过 `v-html` 渲染未经编译的 HTML 内容，但在使用前务必确保内容是安全可靠的。
 
 ## 八、总结
 
 通过对 XSS、CSRF 和 Clickjacking 的详细了解和正确配置，我们可以构建更加安全的 Web 应用程序。以下是简要总结：
 
-  * **XSS 防御**：结合输出编码、输入验证、Cookie 安全标志和 CSP 策略，形成多层防御体系。
-  * **CSRF 防御**：采用 CSRF Token、SameSite Cookie 属性和 Referer 验证等技术，保护用户免受未经授权的操作影响。
-  * **Clickjacking 防御**：使用 X-Frame-Options 和 CSP 策略，防止页面被嵌套在恶意框架中。
-  * **CSP 配置**：精心设计 CSP 策略，严格控制资源加载源，提高整体安全性。
-  * **前端框架的安全实践**：充分利用 React 和 Vue 的内置安全特性，如自动转义输出，同时遵循最佳实践，避免不必要的风险。
+* **XSS 防御**：结合输出编码、输入验证、Cookie 安全标志和 CSP 策略，形成多层防御体系。
+* **CSRF 防御**：采用 CSRF Token、SameSite Cookie 属性和 Referer 验证等技术，保护用户免受未经授权的操作影响。
+* **Clickjacking 防御**：使用 X-Frame-Options 和 CSP 策略，防止页面被嵌套在恶意框架中。
+* **CSP 配置**：精心设计 CSP 策略，严格控制资源加载源，提高整体安全性。
+* **前端框架的安全实践**：充分利用 React 和 Vue 的内置安全特性，如自动转义输出，同时遵循最佳实践，避免不必要的风险。
 
 通过实施这些防御措施，您可以有效地提升 Web 应用的安全性，防范常见的安全漏洞，并为用户提供更可靠的服务。

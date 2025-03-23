@@ -311,6 +311,6 @@ Axios.prototype.request = function request(config) {
 
 综上所述，Axios 通过强大的设计模式和技术实现，确保了其在不同环境下的高效工作，并提供了简单易用的 API 接口。希望这篇文档能帮助你在项目中更好地理解和运用 Axios。
 
-## 5. 参考
+## 五、参考
 
 [77.9K Star 的 Axios 项目有哪些值得借鉴的地方](https://juejin.cn/post/6885471967714115597)
