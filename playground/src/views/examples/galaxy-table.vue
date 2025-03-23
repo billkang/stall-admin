@@ -1,10 +1,12 @@
 <template>
+  <!-- <SimpleTable uuid="test" :dataSource="memberDataList" :columns="columns" /> -->
   <GalaxyTable uuid="test" :dataSource="memberDataList" :columns="columns" />
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { getExampleTableApi } from '#/api';
+// import { SimpleTable } from '@stall/galaxy-ui';
 import { GalaxyTable } from '@stall/galaxy-ui';
 
 const columns = [

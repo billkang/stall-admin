@@ -1,6 +1,8 @@
 @import './token.less';
+@import './filter-mode.less';
 @import './filter-input-search.less';
 @import './filter-more-filter-dropdown.less';
+@import './filter-my-filter-dropdown.less';
 @import './filter-selector.less';
 @import './filter-summary.less';
 @import './filter.less';
@@ -18,25 +20,25 @@
   background: @color-bg-white;
 
   &.pagination-top {
-    .arco-table-container {
+    .stall-table-container {
       margin-bottom: 0 !important;
     }
   }
 
   header {
-    margin: 16px 5px;
+    margin: 16px 0;
     display: flex;
     justify-content: space-between;
 
     .table-header__left-section,
     .table-header__right-section {
-      .arco-space {
+      .stall-space {
         flex-wrap: wrap;
       }
     }
 
     .right-section {
-      .arco-btn {
+      .stall-btn {
         padding: 5px 12px;
         margin-right: 4px;
 
@@ -72,36 +74,36 @@
   }
 
   main {
+    background: @color-bg-white;
     flex: 1;
-    margin: 0 5px;
     max-height: calc(100% - 68px);
 
-    .arco-table {
+    .stall-table {
       height: 100%;
 
-      .arco-table-container {
+      .stall-table-container {
         margin-bottom: 52px;
         height: 100%;
         border: 1px solid @color-border-1;
 
-        .arco-table-content-scroll-x {
+        .stall-table-content-scroll-x {
           overflow-x: auto;
           overflow-y: auto;
         }
 
-        .arco-virtual-list {
-          .arco-table-element {
+        .stall-virtual-list {
+          .stall-table-element {
             width: 100%;
           }
         }
 
-        .arco-table-element {
-          .arco-table-th {
-            .arco-table-cell {
+        .stall-table-element {
+          .stall-table-th {
+            .stall-table-cell {
               padding: 7px 12px;
               line-height: 20px;
 
-              .arco-table-th-title {
+              .stall-table-th-title {
                 .header-cell-action {
                   display: flex;
                   justify-content: space-between;
@@ -128,7 +130,7 @@
         }
       }
 
-      .arco-table-pagination {
+      .stall-table-pagination {
         position: absolute;
         left: 0;
         right: 0;
@@ -137,20 +139,20 @@
         background: @color-bg-white;
         z-index: 10;
 
-        &.arco-table-pagination-top {
+        &.stall-table-pagination-top {
           position: absolute;
           top: -60px;
           left: unset;
           bottom: unset;
         }
 
-        .arco-pagination {
+        .stall-pagination {
           width: 100%;
           justify-content: flex-end;
           font-size: 14px;
           line-height: 22px;
 
-          .arco-pagination-total {
+          .stall-pagination-total {
             flex: 1;
             color: @color-text-3;
           }
@@ -172,8 +174,8 @@
             }
           }
 
-          .arco-pagination-options {
-            .arco-select-view-single {
+          .stall-pagination-options {
+            .stall-select-view-single {
               height: 32px;
               border-radius: 4px;
               background: @color-bg-white;
@@ -182,8 +184,8 @@
             }
           }
 
-          .arco-pagination-jumper {
-            .arco-input-wrapper {
+          .stall-pagination-jumper {
+            .stall-input-wrapper {
               height: 32px;
               border-radius: 2px;
               border: 1px solid @color-border-2;

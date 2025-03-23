@@ -3,26 +3,20 @@
     class="stall-galaxy-table__filter"
     :class="{ disabled }"
     v-if="filterableColumns.length > 0 || inputSearchColumns.length > 0">
-    <!-- 自定义插槽：过滤器前置内容 -->
     <Space :size="8">
       <slot name="filter-before"></slot>
 
-      <!-- 筛选器选择器 -->
+      <template v-if="multiMode">
+        <FilterMode @change-mode="handleChangeMode" />
+      </template>
+
       <template v-if="innerFilter.selector">
-        <!-- 遍历可筛选的列 -->
         <span v-for="column in selectorColumns" :key="column.dataIndex">
-          <!-- 渲染筛选器选择器组件 -->
-          <FilterSelector
-            :uuid="uuid"
-            :column="column"
-            @custom-search="handleCustomSearch"
-            @search="handleSearch" />
+          <FilterSelector :uuid="uuid" :column="column" @custom-search="handleCustomSearch" @search="handleSearch" />
         </span>
       </template>
 
-      <!-- 更多筛选器 -->
       <template v-if="displayMoreFilter">
-        <!-- 渲染更多筛选器的下拉菜单 -->
         <FilterMoreFilterDropdown
           v-if="innerFilter.moreFilter"
           :uuid="uuid"
@@ -30,133 +24,145 @@
           @custom-search="handleCustomSearch"
           @reset="handleReset"
           @submit="handleSearch" />
+
+        <FilterMyFilterDropdown v-if="innerFilter.myFilter" :uuid="uuid" @search="handleSearch" />
       </template>
 
-      <!-- 输入搜索 -->
-      <template v-if="innerFilter.inputSearch && inputSearchColumns.length > 0">
-        <!-- 渲染输入搜索组件 -->
-        <FilterInputSearch
-          :uuid="uuid"
-          :expand="selectorColumns.length === 0"
-          :column="inputSearchColumns[0]"
-          @search="handleSearch" />
-      </template>
+      <FilterInputSearch
+        v-if="innerFilter.inputSearch && inputSearchColumns.length > 0"
+        :uuid="uuid"
+        :expand="selectorColumns.length === 0"
+        :column="inputSearchColumns[0]"
+        @search="handleSearch" />
 
-      <!-- 自定义插槽：过滤器后置内容 -->
       <slot name="filter-after"></slot>
     </Space>
   </div>
 
-  <!-- 筛选结果摘要 -->
-  <FilterSummary
-    v-if="innerFilter.summary"
-    :uuid="uuid"
-    :columns="columns"
-    @search="handleSearch" />
+  <FilterSummary v-if="innerFilter.summary" :uuid="uuid" :columns="columns" @search="handleSearch" />
 </template>
 
 <script lang="ts">
+import type { TableColumnData } from '@arco-design/web-vue';
 import { computed, defineComponent, type PropType } from 'vue';
-import { Space } from '@arco-design/web-vue';
 import { type FormData, useTableSetting } from './hooks/useTableSetting';
+import { Space } from '@arco-design/web-vue';
+import FilterMode from './filter-mode.vue';
 import FilterSelector from './filter-selector.vue';
 import FilterMoreFilterDropdown from './filter-more-filter-dropdown.vue';
+import FilterMyFilterDropdown from './filter-my-filter-dropdown.vue';
 import FilterInputSearch from './filter-input-search.vue';
 import FilterSummary from './filter-summary.vue';
 
 export default defineComponent({
   components: {
     Space,
+    FilterMode,
     FilterSelector,
     FilterMoreFilterDropdown,
+    FilterMyFilterDropdown,
     FilterInputSearch,
     FilterSummary,
   },
   props: {
     uuid: {
       type: String,
-      required: true, // 必须传入 uuid
+      required: true,
     },
     disabled: {
       type: Boolean,
-      default: false, // 默认不禁用
+      default: false,
     },
     columns: {
       type: Array as PropType<any[]>,
-      required: true, // 必须传入列配置
+      required: true,
     },
+    /**
+     * @zh 实现对搜索栏的控制
+     * @version 0.0.100
+     */
     filter: {
       type: Object as PropType<{
         selector: boolean;
         moreFilter: boolean;
+        myFilter: boolean;
         inputSearch: boolean;
         summary: boolean;
       }>,
       default: () => ({
-        selector: true, // 默认显示选择器
-        moreFilter: true, // 默认显示更多筛选
-        inputSearch: true, // 默认显示输入搜索
-        summary: true, // 默认显示筛选结果摘要
+        selector: true,
+        moreFilter: true,
+        myFilter: true,
+        inputSearch: true,
+        summary: true,
       }),
     },
+    /**
+     * @zh 多模式 支持 table/card 模式
+     * @version 0.0.118
+     *
+     */
+    multiMode: {
+      type: Boolean,
+      default: false,
+    },
   },
-  emits: ['custom-search', 'search'], // 定义组件触发的事件
+  emits: ['custom-search', 'search', 'change-mode'],
   setup(props, { emit }) {
-    // 获取可筛选的列和输入搜索的列
     const { filterableColumns, inputSearchColumns } = useTableSetting(props);
 
-    // 计算属性：选择器列
     const selectorColumns = computed(() => {
       return filterableColumns.value
-        .filter((col: any) => col.filterable?.componentType === 'select' || col.filterable?.filters)
-        .slice(0, 2); // 最多显示两个选择器
+        .filter((col: TableColumnData) => col.filterable?.componentType === 'select' || col.filterable?.filters)
+        .slice(0, 2);
     });
 
-    // 计算属性：内部筛选器配置
     const innerFilter = computed(() => {
-      const { selector = true, moreFilter = true, inputSearch = true, summary = true } = props.filter;
+      const { selector = true, moreFilter = true, myFilter = true, inputSearch = true, summary = true } = props.filter;
 
       return {
         selector,
         moreFilter,
+        myFilter,
         inputSearch,
         summary,
       };
     });
 
-    // 计算属性：是否显示更多筛选器
     const displayMoreFilter = computed(() => {
       return (
         filterableColumns.value.filter(
-          (col: any) => col.filterable?.componentType !== 'input' || col.filterable?.filters,
+          (col: TableColumnData) => col.filterable?.componentType !== 'input' || col.filterable?.filters,
         ).length > 0 || inputSearchColumns.value.length > 1
       );
     });
 
-    // 处理搜索事件
+    const handleChangeMode = (mode: 'table' | 'card') => {
+      emit('change-mode', mode);
+    };
+
     const handleSearch = (data: FormData) => {
-      emit('search', data); // 触发 search 事件
+      emit('search', data);
     };
 
-    // 处理重置事件
     const handleReset = () => {
-      emit('search', null); // 触发 search 事件，传入 null 表示重置
+      emit('search', null);
     };
 
-    // 处理自定义搜索事件
     const handleCustomSearch = (data: Record<string, any>) => {
-      emit('custom-search', data); // 触发 custom-search 事件
+      emit('custom-search', data);
     };
 
     return {
-      innerFilter, // 内部筛选器配置
-      selectorColumns, // 选择器列
-      displayMoreFilter, // 是否显示更多筛选器
-      filterableColumns, // 可筛选的列
-      inputSearchColumns, // 输入搜索的列
-      handleCustomSearch, // 处理自定义搜索事件
-      handleReset, // 处理重置事件
-      handleSearch, // 处理搜索事件
+      innerFilter,
+      selectorColumns,
+      displayMoreFilter,
+      filterableColumns,
+      inputSearchColumns,
+      handleChangeMode,
+      handleCustomSearch,
+      handleReset,
+      handleSearch,
     };
   },
 });

@@ -1,178 +1,136 @@
 import type { UnwrapNestedRefs } from 'vue';
+import type { TableColumnData } from '@arco-design/web-vue';
+import { ref, reactive, computed, watch } from 'vue';
 
-import { computed, reactive, ref, watch } from 'vue';
-
-// 定义表格文本控制方式的类型
-export type TableTextControl = 'ellipsis' | 'wrap';
-
-// 定义表格尺寸的类型
+export type TableTextControl = 'wrap' | 'ellipsis';
 export type TableSize = 'large' | 'small';
+export type FormData = Record<string, string | number | boolean | null>;
 
-// 定义表单数据的类型
-export type FormData = Record<string, boolean | null | number | string>;
+// 兼容 0.0.82 版本之前 的col.filters, col.filterSearch 和 col.filterType 字段
+type TableColumnDataOld = TableColumnData & { filters?: any[]; filterSearch?: boolean; filterType?: string };
 
-// 缓存表格设置的全局对象
 const CACHE_TABLE_SETTING: Record<string, any> = {};
 
-/**
- * 初始化表格设置
- * @param uuid 表格的唯一标识符
- * @param columns 表格的列配置
- * @param optional 可选的配置项，包括是否可见和宽度
- */
-function initTableSetting(
-  uuid: string,
-  columns: any[],
-  optional?: { visible: boolean; width: number },
-) {
-  // 定义 localStorage 的 key
+function initTableSetting(uuid: string, columns: TableColumnDataOld[], optional?: { visible: boolean; width: number }) {
+  // localStorage-keys
   let SETTING_SIZE_KEY: string;
   let SETTING_TEXT_CONTROL_KEY: string;
-  let SETTING_COLUMNS_KEY: string;
+  let SETTING_SORT_KEY: string;
+  let SETTING_CUSTOM_FILTER_KEY: string;
 
-  // 定义表单数据
+  // filter-form data
   let formData: UnwrapNestedRefs<FormData> = {};
 
-  // 定义合并后的列配置
-  const mergedColumns = ref<any[]>([]);
-
-  // 定义表格尺寸
+  const sortedColumns = ref<TableColumnDataOld[]>([]);
   const tableSize = ref<TableSize>('small');
-
-  // 定义文本控制方式
   const textControl = ref<TableTextControl>('wrap');
+  const customFilters = reactive<Map<string, FormData>>(new Map());
 
-  // 计算属性：过滤可搜索的列
+  // 首先必须需要设置过滤条件配置项
+  // 1. col.visible 为true，并且 filterable.visible 明确不为false
+  // 2. filterable.visible 明确设置为true
   const filterableColumns = computed(() =>
-    mergedColumns.value.filter(
-      (c) =>
+    sortedColumns.value.filter(
+      c =>
         (c.filterable?.componentType || c.filterable?.filters?.length) &&
-        ((!!c.visible && c.filterable?.visible !== false) ||
-          !!c.filterable?.visible),
+        ((!!c.visible && c.filterable?.visible !== false) || !!c.filterable?.visible),
     ),
   );
-
-  // 计算属性：过滤输入框搜索的列
   const inputSearchColumns = computed(() =>
-    filterableColumns.value.filter(
-      (c) => c.filterable?.componentType === 'input',
-    ),
+    filterableColumns.value.filter(c => c.filterable?.componentType === 'input'),
   );
 
-  // 监听列配置的变化
+  // 监听过滤列表的变化，当他们变的不可见时，不支持搜索
   watch(
-    () => mergedColumns,
-    (newColumns) => {
-      // 当列配置变化时，更新表单数据
+    () => sortedColumns,
+    newColumns => {
       newColumns.value
-        .filter((c) => c.filterable?.visible !== false) // 过滤掉不可见的列
-        .forEach((c) => {
+        .filter(c => c.filterable?.visible !== false) // 首先过滤掉那些明确不能被筛选的 col
+        .forEach(c => {
+          // 如果 col 变为不可见，也不需要出现在最终的 search 事件返回的 data 中
           if (c.dataIndex && !c.visible) {
-            formData[c.dataIndex] = null; // 如果列不可见，清空对应的表单数据
+            formData[c.dataIndex] = null;
           }
         });
 
-      saveSortedColumns(newColumns.value); // 保存排序后的列配置
+      saveSortedColumns(newColumns.value);
     },
     {
-      deep: true, // 深度监听
+      deep: true,
     },
   );
 
-  /**
-   * 合并用户传入的列配置和缓存的列配置
-   * @param columns 用户传入的列配置
-   * @returns 合并后的列配置
-   */
-  function getMergedColumns(columns: any[]) {
-    let cachedColumns: any[] | undefined;
+  // columns 用户侧和hooks分别会进行配置，会添加很多属性
+  // 导致无法很好很好的判断column是否进行了更改
+  // 所以每次都对用户传入的columns和缓存的cachedColumns进行合并操作
+  // 各配置项的优先级：新传入的 > 缓存的 > 默认值
+  function getMergedColumns(columns: TableColumnDataOld[]) {
+    let cachedColumns: TableColumnData[] | undefined;
     try {
-      // 从 localStorage 中读取缓存的列配置
-      cachedColumns = JSON.parse(
-        window.localStorage.getItem(SETTING_COLUMNS_KEY) || '',
-      );
+      cachedColumns = JSON.parse(window.localStorage.getItem(SETTING_SORT_KEY) || '');
     } catch {}
 
     let mergedColumns: any[];
 
-    // 如果列长度没有变化，则以缓存的列配置为主
+    // 如果 columns 长度没有变化（cachedColumns包含一个optional列，所以长度多1），则以缓存的columns为主
     if (
       cachedColumns &&
-      (optional?.visible
-        ? cachedColumns.length === columns.length + 1
-        : cachedColumns.length === columns.length)
+      (optional?.visible ? cachedColumns.length === columns.length + 1 : cachedColumns.length === columns.length)
     ) {
-      mergedColumns = cachedColumns.map((col: any) => {
-        if (col.dataIndex === 'optional') {
-          return col; // 如果是可选列，直接返回
-        }
+      mergedColumns = [
+        ...cachedColumns.map((col: TableColumnData) => {
+          if (col.dataIndex === 'optional') {
+            return col;
+          }
 
-        const newCol = columns.find((c: any) => c.dataIndex === col.dataIndex);
+          const newCol = columns.find((c: TableColumnDataOld) => c.dataIndex === col.dataIndex);
 
-        const _ellipsis =
-          !!newCol?.ellipsis ||
-          col.ellipsis ||
-          textControl.value === 'ellipsis';
-        const _filterable =
-          newCol?.filterable ||
-          newCol?.filters ||
-          newCol?.filterSearch ||
-          newCol?.filterType
-            ? {
-                ...newCol?.filterable,
-                filters: newCol?.filters || newCol?.filterable?.filters,
-                componentType: newCol?.filterSearch
-                  ? 'input'
-                  : newCol?.filterType || newCol?.filterable?.componentType,
-              }
-            : col.filterable;
+          const _ellipsis = !!newCol?.ellipsis || col.ellipsis || textControl.value === 'ellipsis';
+          const _filterable =
+            newCol?.filterable || newCol?.filters || newCol?.filterSearch || newCol?.filterType
+              ? {
+                  ...newCol?.filterable,
+                  filters: newCol?.filters || newCol?.filterable?.filters,
+                  componentType: !!newCol?.filterSearch
+                    ? 'input'
+                    : newCol?.filterType || newCol?.filterable?.componentType,
+                }
+              : col.filterable;
 
-        return {
-          visible:
-            newCol?.visible !== undefined && newCol?.visible !== null
-              ? newCol?.visible
-              : true,
-          ...col,
-          ...newCol,
-          ellipsis: _ellipsis,
-          filterable: _filterable,
-        };
-      });
+          return {
+            visible: newCol?.visible !== undefined && newCol?.visible !== null ? newCol?.visible : true,
+            ...col,
+            ...newCol,
+            ellipsis: _ellipsis,
+            filterable: _filterable,
+          };
+        }),
+      ];
     } else {
-      // 如果列长度发生变化，则以用户传入的列配置为主
-      mergedColumns = columns.map((col: any) => {
-        const cachedCol = cachedColumns?.find(
-          (c: any) => c.dataIndex === col.dataIndex,
-        );
+      mergedColumns = [
+        ...columns.map((col: TableColumnDataOld) => {
+          const cachedCol = cachedColumns?.find((c: TableColumnData) => c.dataIndex === col.dataIndex);
 
-        const _ellipsis =
-          !!col.ellipsis ||
-          cachedCol?.ellipsis ||
-          textControl.value === 'ellipsis';
-        const _filterable =
-          col.filterable || col.filters || col.filterSearch || col.filterType
-            ? {
-                ...col.filterable,
-                filters: col.filters || col.filterable?.filters,
-                componentType: col.filterSearch
-                  ? 'input'
-                  : col.filterType || col.filterable?.componentType,
-              }
-            : cachedCol?.filterable;
+          const _ellipsis = !!col.ellipsis || cachedCol?.ellipsis || textControl.value === 'ellipsis';
+          const _filterable =
+            col.filterable || col.filters || col.filterSearch || col.filterType
+              ? {
+                  ...col.filterable,
+                  filters: col.filters || col.filterable?.filters,
+                  componentType: !!col.filterSearch ? 'input' : col.filterType || col.filterable?.componentType,
+                }
+              : cachedCol?.filterable;
 
-        return {
-          visible:
-            col.visible !== undefined && col.visible !== null
-              ? col.visible
-              : true,
-          ...cachedCol,
-          ...col,
-          ellipsis: _ellipsis,
-          filterable: _filterable,
-        };
-      });
+          return {
+            visible: col.visible !== undefined && col.visible !== null ? col.visible : true,
+            ...cachedCol,
+            ...col,
+            ellipsis: _ellipsis,
+            filterable: _filterable,
+          };
+        }),
+      ];
 
-      // 如果有可选列，添加到合并后的列配置中
       if (optional?.visible) {
         mergedColumns.push({
           title: '操作',
@@ -189,125 +147,141 @@ function initTableSetting(
     return mergedColumns;
   }
 
-  /**
-   * 初始化表格设置
-   * @param uuid 表格的唯一标识符
-   * @param columns 表格的列配置
-   */
-  function initSetting(uuid: string, columns: any[]) {
-    // 定义 localStorage 的 key
+  // 初始化
+  function initSetting(uuid: string, columns: TableColumnDataOld[]) {
     SETTING_SIZE_KEY = `GTABLE__SETTING_SIZE__${uuid}`;
     SETTING_TEXT_CONTROL_KEY = `GTABLE__SETTING_TEXT_CONTROL__${uuid}`;
-    SETTING_COLUMNS_KEY = `GTABLE__SETTING_SORT__${uuid}`;
+    SETTING_SORT_KEY = `GTABLE__SETTING_SORT__${uuid}`;
+    SETTING_CUSTOM_FILTER_KEY = `GTABLE__SETTING_CUSTOM_FILTER__${uuid}`;
 
-    // 从 localStorage 中读取表格尺寸和文本控制方式
-    tableSize.value =
-      (window.localStorage.getItem(SETTING_SIZE_KEY) as TableSize) || 'small';
-    textControl.value =
-      (window.localStorage.getItem(
-        SETTING_TEXT_CONTROL_KEY,
-      ) as TableTextControl) || 'wrap';
+    // 设置 table-size table-text-control
+    tableSize.value = (window.localStorage.getItem(SETTING_SIZE_KEY) as TableSize) || 'small';
+    textControl.value = (window.localStorage.getItem(SETTING_TEXT_CONTROL_KEY) as TableTextControl) || 'wrap';
 
-    // 初始化列配置
-    mergedColumns.value = getMergedColumns(columns);
+    // 初始化-列表项
+    sortedColumns.value = getMergedColumns(columns);
 
-    // 初始化表单数据
-    const data: FormData = {};
-    filterableColumns.value.forEach((c) => {
-      data[`${c.dataIndex}`] = null;
+    // 初始化formData
+    const cols: FormData = {};
+    filterableColumns.value.forEach(c => {
+      cols[`${c.dataIndex}`] = null;
     });
-    formData = reactive(data);
+    formData = reactive(cols);
   }
 
-  // 初始化表格设置
   initSetting(uuid, columns);
 
-  /**
-   * 保存排序后的列配置
-   * @param columns 排序后的列配置
-   */
-  function saveSortedColumns(columns: any[]) {
-    window.localStorage.setItem(SETTING_COLUMNS_KEY, JSON.stringify(columns));
+  function saveSortedColumns(columns: TableColumnData[]) {
+    window.localStorage.setItem(SETTING_SORT_KEY, JSON.stringify(columns));
   }
 
-  /**
-   * 设置文本控制方式
-   * @param type 文本控制方式
-   */
   function setTextControl(type: TableTextControl) {
     textControl.value = type;
     window.localStorage.setItem(SETTING_TEXT_CONTROL_KEY, type);
 
-    // 更新列配置中的文本控制方式
-    mergedColumns.value
-      .filter((c) => c.dataIndex !== 'optional')
-      .forEach((col) => {
-        const original = columns.find((c) => c.dataIndex === col.dataIndex);
+    sortedColumns.value
+      .filter(c => c.dataIndex !== 'optional')
+      .forEach(col => {
+        const original = columns.find(c => c.dataIndex === col.dataIndex);
         col.ellipsis = !!original?.ellipsis || type === 'ellipsis';
       });
   }
 
-  /**
-   * 设置表格尺寸
-   * @param size 表格尺寸
-   */
   function setTableSize(size: TableSize) {
     tableSize.value = size;
     window.localStorage.setItem(SETTING_SIZE_KEY, size);
   }
 
-  /**
-   * 重置表单数据
-   * @param newData 可选的新表单数据
-   */
+  // 重置formData
   function resetFormData(newData?: FormData) {
-    Object.keys(formData).forEach((key) => (formData[key] = null));
+    Object.keys(formData).forEach(key => (formData[key] = null));
 
     if (newData) {
-      Object.keys(newData).forEach((key) => (formData[key] = newData[key]!));
+      Object.keys(newData).forEach(key => (formData[key] = newData[key]));
     }
   }
 
-  /**
-   * 清空指定字段的表单数据
-   * @param key 字段名称
-   */
+  // 重置formData
   function cleanFormDataByKey(key: string) {
-    Object.keys(formData).forEach((_key) => {
+    Object.keys(formData).forEach(_key => {
       if (_key === key) {
         formData[key] = null;
       }
     });
   }
 
-  /**
-   * 销毁表格设置
-   */
+  // 获取自定义筛选
+  function getCustomFilter() {
+    if (customFilters.size > 0) {
+      return customFilters;
+    } else {
+      const filterStr = window.localStorage.getItem(SETTING_CUSTOM_FILTER_KEY);
+
+      if (filterStr) {
+        const obj = JSON.parse(filterStr);
+        Object.keys(obj).forEach((key: string) => {
+          customFilters.set(key, obj[key]);
+        });
+      }
+
+      return customFilters;
+    }
+  }
+
+  // 刷新custom-filter在localStorage中的值
+  function refreshCustomFilterStorage() {
+    const ret: Record<string, FormData> = {};
+    customFilters.forEach((val: FormData, key: string) => {
+      ret[key] = val;
+    });
+
+    window.localStorage.setItem(SETTING_CUSTOM_FILTER_KEY, JSON.stringify(ret));
+  }
+
+  // 保存自定义筛选
+  function saveCustomFilter(name: string, formData: FormData) {
+    if (customFilters.has(name)) {
+      const text = '已存在同名筛选';
+      throw Error(text);
+    }
+
+    customFilters.set(name, { ...formData });
+
+    refreshCustomFilterStorage();
+  }
+
+  // 删除自定义筛选
+  function deleteCustomFilter(name: string) {
+    if (customFilters.has(name)) {
+      customFilters.delete(name);
+
+      refreshCustomFilterStorage();
+    }
+  }
+
   function dispose() {
     CACHE_TABLE_SETTING[uuid] = null;
   }
 
-  /**
-   * 处理自定义搜索
-   * @param data 搜索数据
-   */
   async function handleCustomSearch(data: Record<string, any>) {
     const { key, value } = data;
-    const col = filterableColumns.value.find((col) => col.dataIndex === key);
+    const col = filterableColumns.value.find(col => col.dataIndex === key);
     if (col?.filterable?.customSearch) {
       await col.filterable.customSearch(value, col);
     }
   }
 
-  // 返回表格设置的 API
   return {
     resetFormData,
     cleanFormDataByKey,
+    getCustomFilter,
+    saveCustomFilter,
+    deleteCustomFilter,
     formData,
     filterableColumns,
     inputSearchColumns,
     saveSortedColumns,
-    mergedColumns,
+    sortedColumns,
     setTableSize,
     tableSize,
     setTextControl,
@@ -317,30 +291,23 @@ function initTableSetting(
   };
 }
 
-/**
- * 使用表格设置
- * @param props 配置项，包括 uuid、columns 和 optional
- * @returns 表格设置的 API
- */
 export function useTableSetting(props: {
-  columns?: any[];
-  optional?: { visible: boolean; width: number };
   uuid: string;
+  columns?: TableColumnDataOld[];
+  optional?: { visible: boolean; width: number };
 }) {
   const { uuid, columns, optional } = props;
   const cacheSetting = CACHE_TABLE_SETTING[uuid];
 
   if (columns) {
     if (!cacheSetting) {
-      // 如果缓存中没有设置，则初始化并缓存
       CACHE_TABLE_SETTING[uuid] = initTableSetting(uuid, columns, optional);
     }
 
     return CACHE_TABLE_SETTING[uuid];
   } else {
     if (!cacheSetting) {
-      // 如果缓存中没有设置且没有传入 columns，则抛出错误
-      throw new Error(`unknow table_setting for: ${uuid}`);
+      throw Error(`unknow table_setting for: ${uuid}`);
     }
 
     return cacheSetting;

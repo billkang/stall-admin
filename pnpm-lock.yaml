@@ -1066,6 +1066,9 @@ importers:
       '@stall-jssdk/core':
         specifier: workspace:*
         version: link:../core
+      '@stall/galaxy-ui':
+        specifier: workspace:*
+        version: link:../../packages/effects/galaxy-ui
       '@stall/vite-config':
         specifier: workspace:*
         version: link:../../internal/vite-config

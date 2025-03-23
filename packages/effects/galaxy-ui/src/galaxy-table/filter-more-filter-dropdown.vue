@@ -5,31 +5,23 @@
     trigger="click"
     @click.stop="handleToggle"
     @popup-visible-change="handlePopupVisibleChange">
-    <!-- 触发器内容 -->
     <div
       class="flex stall-galaxy-table-filter__more-filter"
       :class="{ 'focused-filter': focusedFilter === 'moreFilter' }">
-      <!-- 图标 -->
       <IconAlignCenter />
 
-      <!-- 标题 -->
       <div class="dropdown-title">
         更多筛选
-        <!-- 筛选数量 -->
         <span v-if="filterCount > 0" class="filter-count">{{ filterCount }}</span>
       </div>
 
-      <!-- 箭头图标 -->
       <IconUp v-if="isOpenOverlay" />
       <IconDown v-else />
     </div>
 
-    <!-- 弹出内容 -->
     <template #content>
       <div class="stall-galaxy-table-filter__more-filter-overlay">
-        <!-- 表单 -->
         <Form :model="formData" layout="vertical" class="stall-dropdown-menu">
-          <!-- 表单项 -->
           <FormItem
             :class="{ 'grid-rang-picker': column.filterable?.componentType === 'rang-picker' }"
             v-for="column in filterableColumns"
@@ -37,13 +29,11 @@
             :name="column.dataIndex"
             :label="`${column.title || ''}`"
             label-col-flex="30px">
-            <!-- 自定义渲染 -->
+            <!-- 根据column类型，展示不同组件 -->
             <template v-if="column.filterable?.render">
               <FilterCustomRender :render="column.filterable.render" />
             </template>
-            <!-- 默认渲染 -->
             <template v-else>
-              <!-- 根据 componentType 渲染不同组件 -->
               <template v-if="column.filterable?.componentType">
                 <Input
                   v-if="column.filterable.componentType === 'input'"
@@ -76,7 +66,7 @@
                   </SelectOption>
                 </Select>
               </template>
-              <!-- 兼容没有设置 componentType 的情况 -->
+              <!-- 兼容 没有设置componentType -->
               <template v-else-if="column.filterable?.filters">
                 <Select
                   v-model="formData[column.dataIndex!]"
@@ -90,14 +80,25 @@
               </template>
             </template>
           </FormItem>
-          <!-- 表单底部 -->
           <div class="form-footer">
-            <div class="left"></div>
+            <div class="left">
+              <Checkbox class="checker" v-model="isOpenCustomFilterName" />
+              保存为常用筛选项
+              <Tooltip content="勾选后将保存已选择筛选项组合，以后可直接使用">
+                <IconQuestionCircle />
+              </Tooltip>
+              <Input
+                v-if="isOpenCustomFilterName"
+                class="custom-filter-input"
+                v-model="customFilterName"
+                placeholder="请输入自定义筛选名称"
+                show-word-limit
+                :max-length="10"
+                allow-clear />
+            </div>
             <div class="right">
               <Space :size="8">
-                <!-- 重置按钮 -->
                 <Button @click="handleReset">重置</Button>
-                <!-- 筛选按钮 -->
                 <Button type="primary" @click="handleSubmit">筛选</Button>
               </Space>
             </div>
@@ -110,6 +111,7 @@
 
 <script lang="ts">
 import type { PropType, ComputedRef } from 'vue';
+import type { TableColumnData } from '@arco-design/web-vue';
 import { defineComponent, ref, computed, onMounted } from 'vue';
 import {
   Dropdown,
@@ -122,18 +124,16 @@ import {
   DatePicker,
   RangePicker,
   TimePicker,
+  Checkbox,
   Button,
+  Message,
   Tooltip
 } from '@arco-design/web-vue';
-import {
-  IconAlignCenter,
-  IconUp,
-  IconDown,
-  IconQuestionCircle
-} from '@arco-design/web-vue/es/icon';
+import { IconAlignCenter, IconUp, IconDown, IconQuestionCircle } from '@arco-design/web-vue/es/icon';
 import { useTableSetting } from './hooks/useTableSetting';
 import { useTable } from './hooks/useTable';
 import FilterCustomRender from './filter-custom-render.vue';
+import { isValidValue } from './utils';
 
 export default defineComponent({
   components: {
@@ -147,6 +147,7 @@ export default defineComponent({
     DatePicker,
     RangePicker,
     TimePicker,
+    Checkbox,
     Button,
     IconAlignCenter,
     IconUp,
@@ -158,74 +159,98 @@ export default defineComponent({
   props: {
     uuid: {
       type: String,
-      required: true, // 必须传入 uuid
+      required: true,
     },
     filterableColumns: {
-      type: Array as PropType<any[]>,
-      required: true, // 必须传入可筛选的列
+      type: Array as PropType<TableColumnData[]>,
+      required: true,
     },
   },
-  emits: ['reset', 'custom-search', 'submit'], // 定义组件触发的事件
+  emits: ['reset', 'custom-search', 'submit'],
   setup(props, { emit }) {
-    // 获取表格的聚焦过滤器状态和相关方法
     const { handleClickFilter, focusedFilter, handleClearFocusedFilter } = useTable({ props, emit });
 
-    // 获取表单数据和重置方法
-    const { formData, resetFormData } = useTableSetting(props);
+    const { formData, resetFormData, saveCustomFilter } = useTableSetting(props);
 
-    // 计算属性：筛选条件的数量
     const filterCount: ComputedRef<number> = computed(() => {
-      return Object.values(formData).filter(v => !!v).length; // 统计非空值的数量
+      return Object.values(formData).filter(v => isValidValue(v)).length;
     });
 
     // 控制【更多筛选】菜单是否可见
     const isOpenOverlay = ref<boolean>(false);
-
-    // 切换菜单显示状态
     const handleToggle = () => {
-      handleClickFilter('moreFilter'); // 触发聚焦过滤器事件
-      isOpenOverlay.value = !isOpenOverlay.value; // 切换菜单显示状态
+      handleClickFilter('moreFilter');
+      isOpenOverlay.value = !isOpenOverlay.value;
     };
 
-    // 监听菜单显示状态变化
     const handlePopupVisibleChange = (val: boolean) => {
       isOpenOverlay.value = val;
     };
 
-    // 组件挂载时
+    const isOpenCustomFilterName = ref(false);
+    const customFilterName = ref();
+    const handleCustomFilterName = () => {
+      const name = customFilterName.value;
+
+      try {
+        saveCustomFilter(name, formData);
+
+        isOpenCustomFilterName.value = false;
+        customFilterName.value = null;
+      } catch (e: any) {
+        Message.error(e.message);
+      }
+    };
+
     onMounted(() => {
-      handleClearFocusedFilter(); // 清空聚焦过滤器
+      handleClearFocusedFilter();
     });
 
-    // 重置表单
     const handleReset = () => {
-      resetFormData(); // 重置表单数据
-      emit('reset'); // 触发 reset 事件
+      resetFormData();
+
+      emit('reset');
     };
 
-    // 提交筛选
     const handleSubmit = () => {
-      isOpenOverlay.value = false; // 关闭菜单
-      emit('submit', formData); // 触发 submit 事件
+      if (isOpenCustomFilterName.value) {
+        const name = customFilterName.value;
+        if (!name) {
+          Message.warning('自定义筛选名称不能为空');
+          return;
+        }
+
+        const hasValue = Object.values(formData).filter(v => isValidValue(v)).length > 0;
+        if (!hasValue) {
+          Message.warning('请选择筛选项');
+          return;
+        }
+        handleCustomFilterName();
+      }
+
+      isOpenOverlay.value = false;
+
+      emit('submit', formData);
     };
 
-    // 自定义搜索
     const handleCustomSearch = (key: string, value: string) => {
-      emit('custom-search', { key, value }); // 触发 custom-search 事件
+      emit('custom-search', { key, value });
     };
 
     return {
-      formData, // 表单数据
-      filterCount, // 筛选条件数量
-      isOpenOverlay, // 菜单显示状态
-      focusedFilter, // 聚焦过滤器状态
-      handleToggle, // 切换菜单显示状态
-      handlePopupVisibleChange, // 监听菜单显示状态变化
-      handleReset, // 重置表单
-      handleSubmit, // 提交筛选
-      handleClearFocusedFilter, // 清空聚焦过滤器
-      handleClickFilter, // 点击过滤器
-      handleCustomSearch, // 自定义搜索
+      formData,
+      filterCount,
+      isOpenOverlay,
+      isOpenCustomFilterName,
+      customFilterName,
+      focusedFilter,
+      handleToggle,
+      handlePopupVisibleChange,
+      handleReset,
+      handleSubmit,
+      handleClearFocusedFilter,
+      handleClickFilter,
+      handleCustomSearch,
     };
   },
 });

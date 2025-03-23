@@ -1,109 +1,107 @@
 <template>
-  <div class="stall-galaxy-table-container">
-    <!-- 表格头部 -->
+  <div class="stall-galaxy-table-container" :class="{ 'pagination-top': pagePosition === 'tr' }" ref="tableContainerRef">
     <header>
-      <!-- 左侧区域 -->
       <div class="table-header__left-section">
-        <!-- 筛选器组件 -->
         <Filter
+          v-if="permission.filter"
           :disabled="loading"
           :uuid="uuid"
           :columns="columns"
           :filter="filter"
+          :multiMode="multiMode"
+          @change-mode="handleChangeMode"
           @custom-search="handleCustomSearch"
           @search="handleSearch">
-          <!-- 自定义插槽：筛选器前置内容 -->
           <template #filter-before>
             <slot name="filter-before"></slot>
           </template>
-          <!-- 自定义插槽：筛选器后置内容 -->
           <template #filter-after>
             <slot name="filter-after"></slot>
           </template>
         </Filter>
       </div>
-
-      <!-- 右侧区域 -->
       <div class="table-header__right-section">
-        <!-- 按钮组 -->
         <Space :size="8">
-          <!-- 自定义插槽：头部按钮前置内容 -->
           <slot name="header-btns-before"></slot>
 
-          <!-- 删除按钮 -->
           <Button
+            v-if="showRowSelection && optional?.visible && !!permission.delete"
             :disabled="loading || selectedRowKeys.length < 1"
             @click="handleDeleteBatch">
-            删除
+            {{ textReplacement?.btn?.deleteBatch || '删除' }}
           </Button>
 
-          <!-- 自定义插槽：头部按钮后置内容 -->
           <slot name="header-btns-after"></slot>
         </Space>
       </div>
     </header>
 
-    <!-- 表格主体 -->
     <main>
-      <!-- 表格设置组件 -->
-      <Setting v-model="openSetting" :uuid="uuid" :columns="columns" />
+      <Setting v-if="optional?.visible" v-model="openSetting" :uuid="uuid" :columns="columns" />
 
-      <!-- 表格组件 -->
       <Table
         v-bind="$props"
         :row-key="rowKey"
-        :row-selection="showRowSelection ? { selectedRowKeys, showCheckedAll } : undefined"
+        :mode="mode"
+        :default-selected-keys="defaultSelectedKeys"
+        :row-selection="showRowSelection ? { selectedRowKeys, showCheckedAll, type: rowSelectionType } : undefined"
         :loading="loading"
         :size="tableSize"
-        :columns="mergedColumns.filter((c: any) => c.visible)"
+        :columns="sortedColumns.filter((c: any) => c.visible)"
         :data="dataSource"
         :pagination="innerPagination"
+        :page-position="pagePosition"
+        :virtualListProps="virtualListProps"
+        :draggable="draggable"
+        :scroll="scroll"
+        :loadMore="loadMore"
+        :stripe="stripe"
+        :column-resizable="columnResizable"
         @change="handleChange"
+        @sorter-change="handleSorterChange"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
         @select="handleSelect"
         @select-all="handleSelectAll"
         @selection-change="handleSelectionChange">
-        <!-- 自定义插槽：卡片项 -->
         <template #card-item="{ record, index }">
           <slot name="card-item" :record="record" :index="index"></slot>
         </template>
-        <!-- 自定义插槽：列 -->
         <template #columns>
           <slot name="columns"></slot>
         </template>
-        <!-- 自定义插槽：操作列标题 -->
-        <template #optional-title="{ column }">
+        <template v-if="optional?.visible" #optional-title="{ column }">
           <div class="header-cell-action">
             {{ column.title }}
 
-            <!-- 设置图标 -->
-            <IconSettings class="table__setting" @click="handleOpenSetting" />
+            <IconSettings v-if="optional?.visible" class="table__setting" @click="handleOpenSetting" />
           </div>
         </template>
-        <!-- 自定义插槽：操作列 -->
-        <template #optional="{ record }">
+        <template v-if="optional?.visible" #optional="{ record }">
           <Space>
-            <!-- 自定义插槽：操作栏前置内容 -->
             <slot name="table-action-before" :record="record"></slot>
-
-            <!-- 编辑按钮 -->
             <Button
+              v-if="typeof permission.edit === 'function' ? permission.edit(record) : permission.edit"
               type="text"
               @click="handleEdit(record)">
-              编辑
+              {{ textReplacement?.btn?.edit || '编辑' }}
             </Button>
-
-            <!-- 删除按钮 -->
             <Button
+              v-if="typeof permission.delete === 'function' ? permission.delete(record) : permission.delete"
               type="text"
               @click="handleDelete(record)">
-              删除
+              {{ textReplacement?.btn?.delete || '删除' }}
             </Button>
-
-            <!-- 自定义插槽：操作栏后置内容 -->
             <slot name="table-action-after" :record="record"></slot>
           </Space>
+        </template>
+        <template v-if="optional?.visible" #pagination-total="slotProps">
+          <slot name="pagination-total" :total="slotProps.total">
+            <span v-if="selectedRowKeys.length > 0">
+              {{ `已选择 ${selectedRowKeys.length} 个${label}` }}
+            </span>
+            <span v-else>{{ `共 ${slotProps.total} 个${label}` }}</span>
+          </slot>
         </template>
       </Table>
     </main>
@@ -112,17 +110,21 @@
 
 <script lang="ts">
 import type { PropType } from 'vue';
-import type { TableData, TableChangeExtra, PaginationProps } from '@arco-design/web-vue';
-import { defineComponent, onBeforeUnmount } from 'vue';
+import type { TableData, TableColumnData, TableDraggable, TableChangeExtra, PaginationProps } from '@arco-design/web-vue';
+import type { TablePermission, TableSwitchConfirm, TableTextReplacement } from './types';
+import { defineComponent, ref, onBeforeUnmount } from 'vue';
 import { Space, Button, Table } from '@arco-design/web-vue';
 import { IconSettings } from '@arco-design/web-vue/es/icon';
+import { useTableInit } from './hooks/useTableInit';
 import { useTable } from './hooks/useTable';
 import { useTableSetting } from './hooks/useTableSetting';
 import Filter from './filter.vue';
 import Setting from './setting.vue';
+import type { VirtualListProps } from '@arco-design/web-vue/es/_components/virtual-list-v2/interface';
+import type { TableOperationColumn } from '@arco-design/web-vue/es/table/interface';
 
 export default defineComponent({
-  name: 'GalaxyTable', // 组件名称
+  name: 'GalaxyTable',
   components: {
     Space,
     Button,
@@ -134,65 +136,198 @@ export default defineComponent({
   props: {
     uuid: {
       type: String,
-      required: true, // 必须传入 uuid
+      required: true,
+    },
+    label: {
+      type: String,
+      default: '',
     },
     rowKey: {
       type: String,
-      default: 'id', // 默认值为 'id'
+      default: 'id',
     },
     loading: {
       type: Boolean,
-      default: false, // 默认不加载
+      default: false,
     },
     columns: {
-      type: Array as PropType<any[]>,
-      required: true, // 必须传入列配置
+      type: Array as PropType<TableColumnData[]>,
+      required: true,
     },
     dataSource: {
       type: Array as PropType<TableData[]>,
-      required: true, // 必须传入数据源
+      required: true,
     },
+    /**
+     * 分页查询
+     */
     pagination: {
       type: [Boolean, Object] as PropType<boolean | PaginationProps>,
       default: () => ({
         total: 0,
         showTotal: true,
-      }), // 默认分页配置
+      }),
+    },
+    /**
+     * 传递虚拟列表属性，传入此参数以开启虚拟滚动 [VirtualListProps](#VirtualListProps)
+     */
+    virtualListProps: {
+      type: Object as PropType<VirtualListProps>,
+    },
+    /**
+     * 表格拖拽排序的配置
+     */
+    draggable: {
+      type: Object as PropType<TableDraggable>,
+    },
+    /**
+     * 数据懒加载函数，传入时开启懒加载功能
+     */
+    loadMore: {
+      type: Function as PropType<(record: TableData, done: (children?: TableData[]) => void) => void>,
     },
     showCheckedAll: {
       type: Boolean,
-      default: true, // 默认显示全选
+      default: true,
     },
     showRowSelection: {
       type: Boolean,
-      default: true, // 默认显示行选择
+      default: true,
     },
+    rowSelectionType: {
+      type: String as PropType<'checkbox' | 'radio'>,
+      default: 'checkbox',
+    },
+    // 权限控制
+    permission: {
+      type: Object as PropType<TablePermission>,
+      default: () => ({
+        filter: true, // 是否展示过滤器
+        delete: true, // 是否可以删除
+        edit: true, // 是否可以编辑
+      }),
+    },
+    // 文本替换
+    textReplacement: {
+      type: Object as PropType<TableTextReplacement>,
+    },
+    // 是否关闭默认弹窗提示
+    switchConfirm: {
+      type: Object as PropType<TableSwitchConfirm>,
+      default: () => ({
+        delete: true,
+        deleteBatch: true,
+      }),
+    },
+    /**
+     * 表格行元素的类名
+     */
+    rowClass: {
+      type: [String, Array, Object, Function] as PropType<
+        string | any[] | Record<string, any> | ((record: TableData, rowIndex: number) => any)
+      >,
+    },
+    /**
+     * 单元格合并方法（索引从数据项开始计数）
+     */
+    spanMethod: {
+      type: Function as PropType<
+        (data: {
+          record: TableData;
+          column: TableColumnData | TableOperationColumn;
+          rowIndex: number;
+          columnIndex: number;
+        }) => { rowspan?: number; colspan?: number } | void
+      >,
+    },
+    /**
+     * 实现对操作栏的控制
+     */
     optional: {
       type: Object as PropType<{ visible: boolean; width: number }>,
       default: () => ({
         visible: true,
         width: 120,
-      }), // 默认操作列配置
+      }),
     },
+    /**
+     * 实现对搜索栏的控制
+     */
     filter: {
       type: Object as PropType<{
         selector: boolean;
         moreFilter: boolean;
+        myFilter: boolean;
         inputSearch: boolean;
         summary: boolean;
       }>,
       default: () => ({
         selector: true,
         moreFilter: true,
+        myFilter: true,
         inputSearch: true,
         summary: true,
-      }), // 默认筛选器配置
+      }),
+    },
+    /**
+     * 分页位置
+     */
+    pagePosition: {
+      type: String as PropType<'br' | 'tr'>,
+      default: 'br',
+    },
+    /**
+     * 默认已选择的行（非受控模式）优先于 `rowSelection`
+     */
+    defaultSelectedKeys: {
+      type: Array as PropType<(string | number)[]>,
+    },
+    /**
+     * 表格的滚动属性配置
+     */
+    scroll: {
+      type: Object as PropType<{
+        x?: number | string;
+        y?: number | string;
+        minWidth?: number | string;
+        maxHeight?: number | string;
+      }>,
+    },
+    /**
+     * 最大允许选中行数
+     */
+    maxSelectedKeysCount: {
+      type: Number,
+      default: 50,
+    },
+    /**
+     * 是否开启斑马纹效果
+     */
+    stripe: {
+      type: Boolean,
+      default: false,
+    },
+    /**
+     * 是否允许调整列宽
+     */
+    columnResizable: {
+      type: Boolean,
+      default: false,
+    },
+    /**
+     * 多模式 支持 table/card 模式
+     */
+    multiMode: {
+      type: Boolean,
+      default: false,
     },
   },
-  emits: ['search', 'change', 'edit', 'delete', 'delete-batch', 'delete-cancel'], // 定义组件触发的事件
-  expose: ['formData', 'innerPagination', 'selectedRowKeys'], // 暴露的属性
+  emits: ['search', 'change', 'edit', 'delete', 'delete-batch', 'delete-cancel'],
+  expose: ['formData', 'innerPagination', 'selectedRowKeys'],
   setup(props, { emit }) {
-    // 使用 useTable 钩子获取表格逻辑
+    const mode = ref<'table' | 'card'>('table');
+
+    const { tableContainerRef } = useTableInit();
     const {
       openSetting,
       selectedRowKeys,
@@ -205,40 +340,45 @@ export default defineComponent({
       handleEdit,
       handleDeleteBatch,
       handleDelete,
+      handleSorterChange,
       handlePageChange,
       handlePageSizeChange,
     } = useTable({ props, emit });
+    const { formData, sortedColumns, tableSize, dispose, handleCustomSearch } = useTableSetting(props);
 
-    // 使用 useTableSetting 钩子获取表格设置逻辑
-    const { formData, mergedColumns, tableSize, dispose, handleCustomSearch } = useTableSetting(props);
-
-    // 组件卸载时清理资源
     onBeforeUnmount(() => dispose());
 
-    // 处理表格数据变化
+    function handleChangeMode(_mode: 'table' | 'card') {
+      mode.value = _mode;
+    }
+
     function handleChange(data: TableData[], extra: TableChangeExtra, currentData: TableData[]) {
       emit('change', data, extra, currentData);
     }
 
     return {
-      formData, // 表单数据
-      mergedColumns, // 合并后的列配置
-      tableSize, // 表格尺寸
-      openSetting, // 设置面板状态
-      selectedRowKeys, // 选中的行键
-      innerPagination, // 内部分页配置
-      handleCustomSearch, // 自定义搜索方法
-      handleChange, // 数据变化处理
-      handleOpenSetting, // 打开设置面板方法
-      handleSearch, // 搜索方法
-      handleSelect, // 选择行方法
-      handleSelectAll, // 全选方法
-      handleSelectionChange, // 选择变化方法
-      handleEdit, // 编辑方法
-      handleDeleteBatch, // 批量删除方法
-      handleDelete, // 删除方法
-      handlePageSizeChange, // 分页大小变化方法
-      handlePageChange, // 分页变化方法
+      mode,
+      tableContainerRef,
+      formData,
+      sortedColumns,
+      tableSize,
+      openSetting,
+      selectedRowKeys,
+      innerPagination,
+      handleChangeMode,
+      handleCustomSearch,
+      handleChange,
+      handleOpenSetting,
+      handleSearch,
+      handleSelect,
+      handleSelectAll,
+      handleSelectionChange,
+      handleEdit,
+      handleDeleteBatch,
+      handleDelete,
+      handleSorterChange,
+      handlePageSizeChange,
+      handlePageChange,
     };
   },
 });

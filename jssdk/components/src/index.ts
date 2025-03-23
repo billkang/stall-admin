@@ -1,5 +1,7 @@
 import { defineJSSDK, initContext } from '@stall-jssdk/core';
 
+import { MemberSelector } from './MemberSelector';
+import { OrganizationSelector } from './OrganizationSelector';
 import { MemberTable } from './MemberTable';
 
 initContext({
@@ -7,4 +9,9 @@ initContext({
 });
 
 export const defineSDKMemberSelector = () =>
-  defineJSSDK('member-selector', MemberTable);
+  defineJSSDK('member-selector', MemberSelector);
+
+export const defineSDKOrganizationSelector = () =>
+  defineJSSDK('organization-selector', OrganizationSelector);
+
+export const defineSDKMemberTable = () => defineJSSDK('member-table', MemberTable);
