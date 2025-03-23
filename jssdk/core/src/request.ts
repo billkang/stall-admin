@@ -1,15 +1,18 @@
-import mitt, { type Emitter } from 'mitt';
+import type { Emitter } from 'mitt';
+
 import axios from 'axios';
+import mitt from 'mitt';
+
 import { context } from './context';
 
 export enum ENUM_REQUEST_EVENT {
-  LOADING = 'loading',
   ERROR = 'error',
+  LOADING = 'loading',
 }
 
 type Events = {
-  loading: boolean;
   error: any;
+  loading: boolean;
 };
 
 export const emitter: Emitter<Events> = mitt<Events>();
@@ -20,7 +23,7 @@ function formatToken(token: null | string) {
   return token ? `Bearer ${token}` : null;
 }
 
-request.interceptors.request.use(function (config: any) {
+request.interceptors.request.use((config: any) => {
   emitter.emit(ENUM_REQUEST_EVENT.LOADING, true);
 
   let accessStore;
@@ -44,7 +47,7 @@ request.interceptors.request.use(function (config: any) {
 });
 
 request.interceptors.response.use(
-  function (response: { data: any; status: number }) {
+  (response: { data: any; status: number }) => {
     emitter.emit(ENUM_REQUEST_EVENT.LOADING, false);
 
     const { data: responseData, status } = response;
@@ -58,7 +61,7 @@ request.interceptors.response.use(
 
     throw Object.assign({}, response, { response });
   },
-  function (error: any) {
+  (error: any) => {
     emitter.emit(ENUM_REQUEST_EVENT.ERROR, error);
     emitter.emit(ENUM_REQUEST_EVENT.LOADING, false);
 

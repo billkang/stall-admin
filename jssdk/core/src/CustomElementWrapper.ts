@@ -1,7 +1,9 @@
-import { defineComponent, h, ref, provide } from 'vue';
+import { defineComponent, h, provide, ref } from 'vue';
+
 import { Spin } from '@arco-design/web-vue';
 import { IconRefresh } from '@arco-design/web-vue/es/icon';
-import { request, emitter, ENUM_REQUEST_EVENT } from './request';
+
+import { emitter, ENUM_REQUEST_EVENT, request } from './request';
 
 export default defineComponent({
   setup(_props, { slots }) {
@@ -10,8 +12,14 @@ export default defineComponent({
     const loading = ref<boolean>(false);
     const error = ref<string>('');
 
-    emitter.on(ENUM_REQUEST_EVENT.LOADING, (data: boolean) => (loading.value = data));
-    emitter.on(ENUM_REQUEST_EVENT.ERROR, (message: string) => (error.value = message));
+    emitter.on(
+      ENUM_REQUEST_EVENT.LOADING,
+      (data: boolean) => (loading.value = data),
+    );
+    emitter.on(
+      ENUM_REQUEST_EVENT.ERROR,
+      (message: string) => (error.value = message),
+    );
 
     const handleRefresh = () => {
       error.value = '';
@@ -37,8 +45,8 @@ export default defineComponent({
                       `组件加载失败: ${error.value}`,
                     ]),
                     h(IconRefresh, {
-                      style: { cursor: 'pointer' },
                       onClick: () => handleRefresh(),
+                      style: { cursor: 'pointer' },
                     }),
                   ])
                 : slots.default && slots.default(),

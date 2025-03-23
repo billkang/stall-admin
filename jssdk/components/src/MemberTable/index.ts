@@ -1,3 +1,1 @@
-import MemberTable from './member-table.vue';
-
-export { MemberTable };
+export { default as MemberTable } from './member-table.vue';

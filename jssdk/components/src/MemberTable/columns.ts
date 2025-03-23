@@ -1,20 +1,20 @@
 export const columns = [
   {
-    title: 'productName',
     dataIndex: 'productName',
+    title: 'productName',
   },
   {
-    title: 'category',
     dataIndex: 'category',
+    title: 'category',
     width: 120,
   },
   {
-    title: 'description',
     dataIndex: 'description',
+    title: 'description',
   },
   {
-    title: 'status',
     dataIndex: 'status',
+    title: 'status',
     width: 120,
   },
 ];

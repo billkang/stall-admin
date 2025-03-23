@@ -1,4 +1,5 @@
-import { initContext, defineJSSDK } from '@stall-jssdk/core';
+import { defineJSSDK, initContext } from '@stall-jssdk/core';
+
 import { MemberTable } from './MemberTable';
 
 initContext({
