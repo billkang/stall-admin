@@ -1,7 +1,6 @@
 import { defineJSSDK, initContext } from '@stall-jssdk/core';
 
 import { MemberSelector } from './MemberSelector';
-import { OrganizationSelector } from './OrganizationSelector';
 import { ProductTable } from './ProductTable';
 
 import './MemberSelector/style.less';
@@ -13,8 +12,5 @@ initContext({
 
 export const defineSDKMemberSelector = () =>
   defineJSSDK('member-selector', MemberSelector);
-
-export const defineSDKOrganizationSelector = () =>
-  defineJSSDK('organization-selector', OrganizationSelector);
 
 export const defineSDKProductTable = () => defineJSSDK('product-table', ProductTable);
