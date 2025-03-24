@@ -1690,6 +1690,9 @@ importers:
 
   playground:
     dependencies:
+      '@arco-design/web-vue':
+        specifier: 'catalog:'
+        version: 2.56.3(vue@3.5.13(typescript@5.7.2))
       '@micro-zoe/micro-app':
         specifier: 'catalog:'
         version: 1.0.0-rc.19

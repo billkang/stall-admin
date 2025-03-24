@@ -5,23 +5,22 @@
       v-model:model-value="memberNameList"
       :max-tag-count="5"
       :disabled="disabled"
-      :placeholder="`请选择${type === 'person' ? '人员' : '用户'}`"
+      placeholder="请选择人员"
       @remove="handleRemove">
-      <template #prefix>{{ `${type === 'person' ? '人员: ' : '用户: '}` }}</template>
+      <template #prefix>人员:</template>
       <template #suffix>
         <template v-if="memberNameList.length > 0">
           <Button type="text" @click="handleOpenModal">编辑</Button>
           <Button type="text" @click="handleClear">清空</Button>
         </template>
         <template v-else>
-          <Button type="text" @click="handleOpenModal">添加{{ `${type === 'person' ? '人员' : '用户'}` }}</Button>
+          <Button type="text" @click="handleOpenModal">添加人员</Button>
         </template>
       </template>
     </InputTag>
 
     <MemberModal
       v-model="visible"
-      :type="type"
       :data="memberDataList"
       :maxCount="maxCount"
       :multiple="multiple"
@@ -35,10 +34,6 @@ import { InputTag, Button } from '@arco-design/web-vue';
 import MemberModal from './components/member-modal.vue';
 
 const props = defineProps({
-  type: {
-    type: String as PropType<'person' | 'user'>,
-    default: 'person',
-  },
   selectedKeys: {
     type: Array as PropType<number[]>,
     default: () => [],
@@ -64,14 +59,12 @@ const originalMemberData = ref<any[]>([]);
 const memberDataList = ref<any[]>([]);
 const memberNameList = ref<string[]>([]);
 
-function queryByPage(data: any = { pageIndex: 1, pageSize: 100 }) {
-  let apiUrl =
-    '/api-proxy/person/queryConditionPage';
-  if (props.type === 'user') {
-    apiUrl = '/api-proxy/user/queryConditionPage';
-  }
+function queryByPage(params: any = { page: 1, pageSize: 100 }) {
+  const apiUrl = '/api/member/list';
 
-  return request.post(apiUrl, data);
+  return request.get(apiUrl, {
+    params
+  });
 }
 
 onBeforeMount(async () => {
@@ -107,21 +100,12 @@ const handleOpenModal = () => {
 
 function updateData(data: any[]) {
   memberDataList.value = data;
-  if (props.type === 'person') {
-    memberNameList.value = data.map((d: any) => d.personName);
-  } else {
-    memberNameList.value = data.map((d: any) => `${d.personName}(${d.userName})`);
-  }
+  memberNameList.value = data.map((d: any) => d.userName);
 }
 
 const handleRemove = (val: string) => {
   let data: any[] = [];
-  if (props.type === 'person') {
-    data = memberDataList.value.filter(d => d.personName !== val);
-  } else {
-    const userName = val.replace(/[\S|\s]+\(([\S\s]+)\)/g, '$1');
-    data = memberDataList.value.filter(d => d.userName !== userName);
-  }
+  data = memberDataList.value.filter(d => d.userName !== val);
 
   updateData(data);
 
@@ -145,9 +129,7 @@ const handleChange = (data: any) => {
 </script>
 
 <style lang="less">
-@import url('@arco-design/web-vue/es/style/index.less');
-@import url('@arco-design/web-vue/es/input-tag/style/index.less');
-@import url('@arco-design/web-vue/es/button/style/index.less');
+@import url('@arco-design/web-vue/es/index.css');
 
 .stall-jssdk__member-selector-container {
   width: 100%;

@@ -16,6 +16,7 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@arco-design/web-vue": "catalog:",
     "@micro-zoe/micro-app": "catalog:",
     "@stall-core/menu-ui": "workspace:*",
     "@stall/access": "workspace:*",

@@ -86,7 +86,7 @@ export function useTable({ props, emit }: { props: any; emit: any }) {
   };
 
   // 处理页码变化
-  const handlePageChange = (pageIndex: number) => {
+  const handlePageChange = (page: number) => {
     // 更新分页器当前页码
   };
 
@@ -243,9 +243,9 @@ Galaxy Table 的设计基于以下思路：
 ## **5.3 分页功能代码及说明**
 
 ```typescript
-const handlePageChange = (pageIndex: number) => {
-  (pagination.value as PaginationProps).current = pageIndex;
-  emit('search', { ...formData, pageIndex, pageSize: pagination.value.pageSize });
+const handlePageChange = (page: number) => {
+  (pagination.value as PaginationProps).current = page;
+  emit('search', { ...formData, page, pageSize: pagination.value.pageSize });
 };
 ```
 

@@ -5,6 +5,8 @@ import microApp from '@micro-zoe/micro-app';
 
 import { overridesPreferences } from './preferences';
 
+import '@arco-design/web-vue/es/index.css';
+
 microApp.start();
 
 /**

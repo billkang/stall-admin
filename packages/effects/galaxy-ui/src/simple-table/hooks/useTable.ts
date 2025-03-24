@@ -124,7 +124,7 @@ export function useTable({
         'search',
         {
           ...formData,
-          pageIndex: 1,
+          page: 1,
           pageSize: (pagination.value as PaginationProps).pageSize,
         },
         extraData,
@@ -143,16 +143,16 @@ export function useTable({
 
   /*
    * 处理页码变化的操作
-   * @param pageIndex - 新的页码
+   * @param page - 新的页码
    */
-  const handlePageChange = (pageIndex: number) => {
+  const handlePageChange = (page: number) => {
     // 更新分页器配置中的当前页码
-    (pagination.value as PaginationProps).current = pageIndex;
+    (pagination.value as PaginationProps).current = page;
 
     // 触发 search 事件，传递搜索表单数据、新的页码和每页显示记录数
     emit('search', {
       ...formData,
-      pageIndex,
+      page,
       pageSize: (pagination.value as PaginationProps).pageSize,
     });
   };
@@ -170,7 +170,7 @@ export function useTable({
     // 触发 search 事件，传递搜索表单数据、页码 1 和新的每页显示记录数
     emit('search', {
       ...formData,
-      pageIndex: 1,
+      page: 1,
       pageSize,
     });
   };

@@ -2,25 +2,14 @@
   <Modal
     v-model:visible="visible"
     class="stall-jssdk__member-modal-container"
-    :title="`选择${type === 'person' ? '人员' : '用户'}`"
+    title="选择人员"
     size="x-large"
     :bodyStyle="{ height: '528px' }"
     @close="handleClose">
-    <div class="left-section">
-      <Tree
-        :data="treeData"
-        :fieldNames="treeProps"
-        :expanded-keys="expandKeys"
-        :load-more="loadMoreOrg"
-        @expand="handleExpand"
-        @select="handleSelectTreeNode" />
-    </div>
-
-    <div class="right-section">
       <GalaxyTable
         v-if="visible"
         uuid="member-selector-modal-table"
-        :label="`${type === 'person' ? '人员' : '用户'}`"
+        label="人员"
         ref="tableRef"
         :loading="loading"
         :defaultSelectedKeys="selectedRowKeys"
@@ -34,7 +23,6 @@
         :filter="{ moreFilter: false, myFilter: false, summary: false }"
         @selectionChange="handleSelectChange"
         @search="handleSearch" />
-    </div>
 
     <template #footer>
       <div class="left-section">
@@ -51,20 +39,16 @@
 
 <script setup lang="ts">
 import { type PropType, ref, inject, watch } from 'vue';
-import { Modal, Tree, Button } from '@arco-design/web-vue';
+import { Modal, Button } from '@arco-design/web-vue';
 import { GalaxyTable, useTableFetchData } from '@stall/galaxy-ui';
 import { IconUserGroup } from '@arco-design/web-vue/es/icon';
-import { getColumnsByType } from './columns';
+import { columns } from './columns';
 
 const props = defineProps({
   modelValue: {
     type: Boolean,
     required: true,
     default: false,
-  },
-  type: {
-    type: String as PropType<'person' | 'user'>,
-    default: 'person',
   },
   data: {
     type: Array as PropType<any[]>,
@@ -83,18 +67,10 @@ const props = defineProps({
 const request = inject('request') as any;
 
 const visible = ref<boolean>(false);
-const expandKeys = ref([]);
-const treeData = ref([]);
-const treeProps = {
-  key: 'id',
-  title: 'orgName',
-  children: 'children',
-};
+
 const tableRef = ref(null);
-const selectedOrgId = ref('');
 const isChangedSelectedRowKeys = ref<boolean>(false);
 const selectedRowKeys = ref<number[]>([]);
-const columns = getColumnsByType(props.type);
 const memberDataList = ref<any[]>([]);
 
 watch(
@@ -106,65 +82,17 @@ watch(
       memberDataList.value = [...props.data];
       selectedRowKeys.value = props.data.map(d => d.id);
 
-      const data = await request.get(
-        '/api-proxy/organization/queryOrgTreeLazyList',
-      );
-
-      if (data.length === 1) {
-        const childList = await queryChildrenById(data[0].id);
-        data[0].children = childList.map(({ id, orgName }) => ({
-          id,
-          orgName,
-          children: [],
-        }));
-      }
-
-      treeData.value = data;
-      expandKeys.value = data.map((d: { id: any; }) => d.id);
-
       await getMemberListByPage();
     }
   },
 );
 
-async function queryChildrenById(id: string) {
-  return request.get(
-    '/api-proxy/organization/queryChildLazyList',
-    {
-      params: {
-        id,
-        isQueryPrincipal: false,
-      },
-    },
-  );
-}
+async function queryByPage(params: any) {
+  const apiUrl = '/api/member/list';
 
-async function loadMoreOrg(nodeData: any) {
-  const data = await queryChildrenById(nodeData.id);
-
-  if (data.length > 0) {
-    nodeData.children = nodeData.children || [];
-    nodeData.children.push(
-      ...data.map(({ id, orgName }) => ({
-        id,
-        orgName,
-        children: [],
-      })),
-    );
-  } else {
-    nodeData.children = null;
-    nodeData.isLeaf = true;
-  }
-}
-
-async function queryByPage(data: any) {
-  let apiUrl =
-    '/api-proxy/person/queryConditionPage';
-  if (props.type === 'user') {
-    apiUrl = '/api-proxy/user/queryConditionPage';
-  }
-
-  const res = await request.post(apiUrl, data);
+  const res = await request.get(apiUrl, {
+    params
+  });
 
   const ids = memberDataList.value.map(d => d.id);
   const newItems = res.items.filter((d: { id: any; }) => !ids.includes(d.id));
@@ -181,24 +109,12 @@ function getMemberListByPage(params: Record<string, string> = {}) {
 
   fetchData({
     ...params,
-    leftOrgId: selectedOrgId.value,
   });
 }
-
-const handleSelectTreeNode = (_selectedKeys: any, { node }: any) => {
-  if (node.id) {
-    selectedOrgId.value = node.id;
-    getMemberListByPage();
-  }
-};
 
 const handleSelectChange = (keys: number[]) => {
   selectedRowKeys.value = keys;
   isChangedSelectedRowKeys.value = true;
-};
-
-const handleExpand = (keys: never[]) => {
-  expandKeys.value = keys;
 };
 
 const handleSearch = (data: Record<string, any>) => {
@@ -220,36 +136,24 @@ const handleChange = () => {
           id,
           email,
           gender,
-          orgId,
-          orgName,
-          personCode,
-          personName,
-          personType,
           phone,
           position,
           roleName,
           status,
           supplier,
           userName,
-          userType,
         } = d;
 
         return {
           id,
           email,
           gender,
-          orgId,
-          orgName,
-          personCode,
-          personName,
-          personType,
           phone,
           position,
           roleName,
           status,
           supplier,
           userName,
-          userType,
         };
       });
 

@@ -19,10 +19,10 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@arco-design/web-vue": "catalog:",
     "@stall/galaxy-ui": "workspace:*",
     "@stall/vite-config": "workspace:*",
     "@stall-jssdk/core": "workspace:*",
-    "@arco-design/web-vue": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
   }

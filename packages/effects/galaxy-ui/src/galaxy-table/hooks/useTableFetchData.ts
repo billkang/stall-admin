@@ -16,7 +16,7 @@ export function useTableFetchData(fn: Function, tableRef?: Ref<any>) {
       const formData = (tableRef && unref(tableRef)?.formData) || {};
 
       const data = await fn({
-        pageIndex: current,
+        page: current,
         pageSize,
         ...formData,
         ...params,
@@ -26,9 +26,9 @@ export function useTableFetchData(fn: Function, tableRef?: Ref<any>) {
         dataSource.value = data;
         pagination.value = undefined;
       } else {
-        const { items, totalCount } = data;
+        const { items, total } = data;
         dataSource.value = items;
-        pagination.value!.total = totalCount;
+        pagination.value!.total = total;
       }
     } finally {
       loading.value = false;

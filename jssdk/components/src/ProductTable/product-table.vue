@@ -10,9 +10,8 @@ const request = inject('request') as any;
 const memberDataList = ref<any[]>([]);
 
 onMounted(async () => {
-  const { items } = await queryByPage({ page: 1, pageSize: 20 });
-
-  memberDataList.value = items;
+  const data = await queryByPage({ page: 1, pageSize: 20 });
+  memberDataList.value = data.items;
 });
 
 async function queryByPage(params: any) {
@@ -25,12 +24,12 @@ async function queryByPage(params: any) {
 
 <template>
   <div class="jssdk-member-table-container">
-    <Table :data-source="memberDataList" :columns="columns" />
+    <Table :data="memberDataList" :columns="columns" />
   </div>
 </template>
 
-<style lang="less" scoped>
-@import url('@arco-design/web-vue/es/table/style/index.less');
+<style lang="less">
+@import url('@arco-design/web-vue/es/index.css');
 
 .jssdk-member-table-container {
   background-color: white;

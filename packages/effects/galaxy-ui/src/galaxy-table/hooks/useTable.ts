@@ -115,7 +115,7 @@ export function useTable({
         'search',
         {
           ...formData,
-          pageIndex: 1,
+          page: 1,
           pageSize: (pagination.value as PaginationProps).pageSize,
         },
         extraData,
@@ -139,12 +139,12 @@ export function useTable({
     });
   };
 
-  const handlePageChange = (pageIndex: number) => {
-    (pagination.value as PaginationProps).current = pageIndex;
+  const handlePageChange = (page: number) => {
+    (pagination.value as PaginationProps).current = page;
 
     emit('search', {
       ...formData,
-      pageIndex,
+      page,
       pageSize: (pagination.value as PaginationProps).pageSize,
     });
   };
@@ -155,7 +155,7 @@ export function useTable({
 
     emit('search', {
       ...formData,
-      pageIndex: 1,
+      page: 1,
       pageSize,
     });
   };

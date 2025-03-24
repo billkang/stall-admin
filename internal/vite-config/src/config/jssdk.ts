@@ -5,26 +5,16 @@ import type { DefineLibraryOptions } from '../typing';
 import { readPackageJSON } from '@stall/node-utils';
 
 import { defineConfig, mergeConfig } from 'vite';
-
-import { loadLibraryPlugins } from '../plugins';
+import dts from 'vite-plugin-dts';
+import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 import { getCommonConfig } from './common';
 
 function defineJSSDKConfig(userConfigPromise?: DefineLibraryOptions) {
   return defineConfig(async (config: ConfigEnv) => {
     const options = await userConfigPromise?.(config);
-    const { command, mode } = config;
-    const { library = {}, vite = {} } = options || {};
+    const { vite = {} } = options || {};
     const root = process.cwd();
-    const isBuild = command === 'build';
-
-    const plugins = await loadLibraryPlugins({
-      dts: false,
-      injectMetadata: true,
-      isBuild,
-      mode,
-      ...library,
-    });
-
     const { dependencies = {}, peerDependencies = {} } =
       await readPackageJSON(root);
 
@@ -49,7 +39,21 @@ function defineJSSDKConfig(userConfigPromise?: DefineLibraryOptions) {
           },
         },
       },
-      plugins,
+      plugins: [
+        vue({
+          template: {
+            compilerOptions: {
+              isCustomElement: (tag: string) => tag.startsWith('dcp-jssdk-'),
+            },
+          },
+          customElement: true,
+        }),
+        vueJsx(),
+        dts({
+          rollupTypes: true,
+          logLevel: 'error',
+        }),
+      ],
     };
     const commonConfig = await getCommonConfig();
     const mergedConmonConfig = mergeConfig(commonConfig, packageConfig);
