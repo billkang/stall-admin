@@ -123,6 +123,20 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
         },
       ],
     },
+    {
+      collapsed: false,
+      text: '数据中台-课时7',
+      items: [
+        {
+          link: 'lesson7_work-skills/git',
+          text: 'Git 使用指南',
+        },
+        {
+          link: 'lesson7_work-skills/agile',
+          text: '敏捷开发指南',
+        },
+      ],
+    },
   ];
 }
 
