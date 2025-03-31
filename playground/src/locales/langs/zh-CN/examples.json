@@ -15,6 +15,9 @@
   "jssdk": {
     "title": "JSSDK"
   },
+  "file-uploader": {
+    "title": "文件上传"
+  },
   "galaxy-table": {
     "title": "自定义表格"
   },

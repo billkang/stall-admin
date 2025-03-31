@@ -25,6 +25,7 @@ function defineJSSDKConfig(userConfigPromise?: DefineLibraryOptions) {
 
     const packageConfig: UserConfig = {
       build: {
+        minify: false,
         lib: {
           entry: 'src/index.ts',
           formats: ['es'],

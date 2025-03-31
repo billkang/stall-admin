@@ -25,6 +25,15 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/examples/jssdk.vue'),
       },
       {
+        name: 'FileUploaderExample',
+        path: '/examples/file-uploader',
+        meta: {
+          icon: 'mdi:file',
+          title: $t('examples.file-uploader.title'),
+        },
+        component: () => import('#/views/examples/file-uploader.vue'),
+      },
+      {
         name: 'GalaxyTableExample',
         path: '/examples/galaxy-table',
         meta: {

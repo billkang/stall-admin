@@ -23,7 +23,7 @@
     "@stall/galaxy-ui": "workspace:*",
     "@stall/vite-config": "workspace:*",
     "@stall-jssdk/core": "workspace:*",
-    "vue": "catalog:",
-    "vue-router": "catalog:"
+    "spark-md5": "catalog:",
+    "vue": "catalog:"
   }
 }

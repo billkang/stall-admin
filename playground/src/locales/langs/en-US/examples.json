@@ -12,6 +12,9 @@
   "jssdk": {
     "title": "JSSDK"
   },
+  "file-uploader": {
+    "title": "file-uploader"
+  },
   "galaxy-table": {
     "title": "custom table"
   },
