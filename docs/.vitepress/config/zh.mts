@@ -128,11 +128,21 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时7',
       items: [
         {
-          link: 'lesson7_work-skills/git',
+          link: 'lesson6_webworker/how-to',
+          text: '实时动态图表组件的Web Worker架构实践',
+        },
+      ],
+    },
+    {
+      collapsed: false,
+      text: '数据中台-课时8',
+      items: [
+        {
+          link: 'lesson8_work-skills/git',
           text: 'Git 使用指南',
         },
         {
-          link: 'lesson7_work-skills/agile',
+          link: 'lesson8_work-skills/agile',
           text: '敏捷开发指南',
         },
       ],
