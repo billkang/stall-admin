@@ -43,6 +43,10 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
           link: 'lesson1_background/introduction',
           text: '项目背景介绍',
         },
+        {
+          link: 'lesson1_background/rbac',
+          text: 'RBAC权限管理入门指南',
+        },
       ],
     },
     {
@@ -290,7 +294,7 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
         },
         {
           link: 'engineering/monorepo',
-          text: 'Monorepo 技术实践指南',
+          text: 'Monorepo 技术介绍',
         },
         {
           link: 'engineering/css',
