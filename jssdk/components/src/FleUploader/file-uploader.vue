@@ -66,7 +66,8 @@ const checkFileAndChunks = async (file: any, fileHash: string) => {
   });
 
   if (fileExists) {
-    throw new Error('文件已存在');
+    error.value = '文件已存在';
+    return;
   }
 
   return chunks;
@@ -74,6 +75,7 @@ const checkFileAndChunks = async (file: any, fileHash: string) => {
 
 /**
  * 上传单个分片
+ * @param file 文件对象
  * @param chunk 分片对象
  * @param fileHash 文件的MD5哈希值
  * @param chunkIndex 分片索引
@@ -81,6 +83,7 @@ const checkFileAndChunks = async (file: any, fileHash: string) => {
  * @returns 上传结果
  */
 const uploadSingleChunk = async (
+  file: File,
   chunk: Blob,
   fileHash: string,
   chunkIndex: number,
@@ -152,7 +155,7 @@ const handleFileSelect = async (e: any) => {
         const start = chunkIndex * chunkSize;
         const end = Math.min(start + chunkSize, file.size);
         const chunk = file.slice(start, end);
-        return uploadSingleChunk(chunk, fileHash, chunkIndex, chunkCount)
+        return uploadSingleChunk(file, chunk, fileHash, chunkIndex, chunkCount)
           .then(() => {
             progress.value = Math.round(
               ((existingChunks.length + batch.indexOf(chunkIndex) + 1) /
@@ -182,7 +185,7 @@ const handleFileSelect = async (e: any) => {
 };
 
 const handleUpload = () => {
-  inputRef.value.click();
+  inputRef.value?.click();
 };
 </script>
 
