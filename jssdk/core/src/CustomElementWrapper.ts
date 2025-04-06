@@ -38,9 +38,9 @@ export default defineComponent({
               spinning: loading.value,
               style: { width: '100%' },
             },
-            [
-              error.value
-                ? h('div', [
+            error.value
+              ? [
+                  h('div', [
                     h('span', { style: { 'margin-right': '8px' } }, [
                       `组件加载失败: ${error.value}`,
                     ]),
@@ -48,9 +48,9 @@ export default defineComponent({
                       onClick: () => handleRefresh(),
                       style: { cursor: 'pointer' },
                     }),
-                  ])
-                : slots.default && slots.default(),
-            ],
+                  ]),
+                ]
+              : slots.default?.(),
           ),
         ],
       ),

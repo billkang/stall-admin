@@ -1,9 +1,10 @@
-const express = require('express');
-const cors = require('cors');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const fs = require('node:fs');
+const path = require('node:path');
+
 const bodyParser = require('body-parser');
+const cors = require('cors');
+const express = require('express');
+const multer = require('multer');
 
 const app = express();
 
@@ -20,14 +21,14 @@ if (!fs.existsSync(TEMP_DIR)) fs.mkdirSync(TEMP_DIR);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // 从请求参数中获取 hash（注意这里使用 req.query 替代 req.body）
-    const { hash } = req.query; // 改为从 URL 参数获取
+    // 从请求参数中获取 hash
+    const { hash } = req.query;
     const chunkDir = path.resolve(TEMP_DIR, hash);
     fs.mkdirSync(chunkDir, { recursive: true }); // 更安全的目录创建方式
     cb(null, chunkDir);
   },
   filename: (req, file, cb) => {
-    const { index } = req.query; // 改为从 URL 参数获取
+    const { index } = req.query;
     cb(null, `${index}`);
   },
 });
@@ -35,16 +36,32 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // 检查文件是否已存在
-app.post('/api/files/check', (req, res) => {
+// 检查文件和分片是否存在
+app.post('/api/files/check', async (req, res) => {
   const { hash, ext } = req.body;
+
+  // 检查文件是否存在
   const filename = `${hash}.${ext}`;
   const filePath = path.resolve(UPLOAD_DIR, filename);
+  const fileExists = fs.existsSync(filePath);
+
+  // 获取已存在的分片列表
+  const chunkDir = path.resolve(TEMP_DIR, hash);
+  let chunks = [];
+  if (fs.existsSync(chunkDir)) {
+    chunks = fs
+      .readdirSync(chunkDir)
+      .map((file) => Number.parseInt(file))
+      .filter((num) => !Number.isNaN(num))
+      .sort((a, b) => a - b);
+  }
 
   res.json({
     code: 0,
     data: {
-      exists: fs.existsSync(filePath),
-    }
+      fileExists,
+      chunks,
+    },
   });
 });
 
@@ -52,7 +69,7 @@ app.post('/api/files/check', (req, res) => {
 app.post(
   '/api/files/upload',
   (req, res, next) => {
-    // 手动解析 URL 参数（Express 默认不解析 POST 请求的 query 参数）
+    // 手动解析 URL 参数
     req.query = { ...req.query, ...req.body };
     next();
   },
@@ -64,7 +81,7 @@ app.post(
 
 // 合并分片
 app.post('/api/files/merge', async (req, res) => {
-  const { hash, filename, chunkSize } = req.body;
+  const { hash, filename } = req.body;
   const ext = path.extname(filename);
   const finalFilename = `${hash}${ext}`;
   const chunkDir = path.resolve(TEMP_DIR, hash);
@@ -76,6 +93,7 @@ app.post('/api/files/merge', async (req, res) => {
   // 合并文件
   const writeStream = fs.createWriteStream(
     path.resolve(UPLOAD_DIR, finalFilename),
+    'utf8',
   );
 
   try {
@@ -90,7 +108,7 @@ app.post('/api/files/merge', async (req, res) => {
     fs.rmdirSync(chunkDir); // 删除临时目录
 
     res.json({ code: 0, data: 'success' });
-  } catch (err) {
+  } catch {
     res.status(500).json({ code: -1, error: '合并失败' });
   }
 });

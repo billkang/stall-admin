@@ -125,6 +125,10 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
           link: 'lesson6_big-file-upload/how-to',
           text: '大文件分片上传实现指南',
         },
+        {
+          link: 'lesson6_big-file-upload/core_api',
+          text: '大文件上传核心API解析',
+        },
       ],
     },
     {
