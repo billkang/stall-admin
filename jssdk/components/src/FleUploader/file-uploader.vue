@@ -193,7 +193,7 @@ const handleUpload = () => {
   <div class="stall-jssdk__file-uploader-container">
     <input
       ref="fileInput"
-      class="stall-jssdk__file-uploader-input"
+      class="file-uploader-input"
       type="file"
       @change="handleFileSelect"
     />
@@ -222,9 +222,9 @@ const handleUpload = () => {
   display: flex;
   align-items: center;
   margin-bottom: 16px;
-}
 
-.stall-jssdk__file-uploader-input {
-  display: none;
+  .file-uploader-input {
+    display: none;
+  }
 }
 </style>

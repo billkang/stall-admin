@@ -1,7 +1,6 @@
 import { defineJSSDK, initContext } from '@stall-jssdk/core';
 
 import { FileUplader } from './FleUploader';
-import { FileUpladerWorker } from './FleUploaderWorker';
 import { MemberSelector } from './MemberSelector';
 import { ProductTable } from './ProductTable';
 
@@ -13,9 +12,6 @@ initContext({
 
 export const defineSDKFileUploader = () =>
   defineJSSDK('file-uploader', FileUplader);
-
-export const defineSDKFileUploaderWorker = () =>
-  defineJSSDK('file-uploader-worker', FileUpladerWorker);
 
 export const defineSDKMemberSelector = () =>
   defineJSSDK('member-selector', MemberSelector);
