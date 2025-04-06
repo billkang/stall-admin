@@ -2,6 +2,8 @@
 
 ## 一、Axios 设计思路
 
+![axios](../../public/course/lesson2/axios.png)
+
 ### 1.1 核心特性
 
 Axios 是一个基于 Promise 的 HTTP 客户端库，广泛用于浏览器和 Node.js 环境中发送 HTTP 请求。它通过以下核心特性提供了一个强大且灵活的解决方案：

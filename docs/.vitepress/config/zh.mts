@@ -146,6 +146,10 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时8',
       items: [
         {
+          link: 'lesson8_work-skills/development-process',
+          text: '数字中台项目开发流程及团队角色解析',
+        },
+        {
           link: 'lesson8_work-skills/git',
           text: 'Git 使用指南',
         },

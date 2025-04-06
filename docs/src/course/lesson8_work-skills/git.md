@@ -166,7 +166,7 @@ git push origin --delete <branchname>
 
 Git Flow 是一种流行的分支管理模型，它为团队提供了一种清晰的流程和规范来管理代码分支，特别适用于多人协作的项目。
 
-![git-flow](../../public/course/git-flow.png)
+![git-flow](../../public/course/lesson8/git-flow.png)
 
 ### 1. 主要分支
 
@@ -187,7 +187,7 @@ Git Flow 是一种流行的分支管理模型，它为团队提供了一种清�
 
 ## 五、Code Review 和 Pull Request（PR）操作流程
 
-![code-review](../../public/course/code-review.svg)
+![code-review](../../public/course/lesson8/code-review.svg)
 
 ### 1. Code Review
 
