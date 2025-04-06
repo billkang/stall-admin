@@ -3,7 +3,9 @@
 ## 一、业务场景聚焦：实时交易趋势监控组件
 
 ### 业务背景
+
 某金融科技公司数字中台需要开发实时交易监控组件，具体要求：
+
 1. **数据特征**：
    - 每秒接收5000-10000条交易数据
    - 每条数据包含：时间戳、交易类型、金额、地区等20+字段
@@ -16,6 +18,7 @@
    - 点击图表钻取明细数据
 
 ### 原始技术方案痛点
+
 ```javascript
 // 旧方案直接在主线程处理
 socket.onmessage = ({ data }) => {
@@ -24,7 +27,9 @@ socket.onmessage = ({ data }) => {
   chart.setOption(updateOptions(processed)) // 触发重绘
 }
 ```
+
 **暴露问题**：
+
 1. 图表刷新率波动在8-15FPS之间
 2. 用户调整时间范围时界面冻结3-5秒
 3. 数据延迟导致预警信息滞后
@@ -32,6 +37,7 @@ socket.onmessage = ({ data }) => {
 ## 二、技术架构设计
 
 ### 分层架构设计
+
 ```
 [WebSocket 数据层] --> [Web Worker 计算层] --> [ECharts 渲染层]
        ↑                       ↑                       ↑
@@ -39,6 +45,7 @@ socket.onmessage = ({ data }) => {
 ```
 
 ### 技术栈选择
+
 - **通信层**：WebSocket + Protobuf
 - **计算层**：Web Worker Pool
 - **渲染层**：ECharts GL + Vue3 Composition API
@@ -46,6 +53,7 @@ socket.onmessage = ({ data }) => {
 ## 三、完整实现方案
 
 ### 1. 模拟数据服务（Mock Server）
+
 ```javascript
 // mock-server.js
 const WebSocket = require('ws')
@@ -71,6 +79,7 @@ wss.on('connection', ws => {
 ```
 
 ### 2. Web Worker处理核心
+
 ```javascript
 // worker-processor.js
 class DataPipeline {
@@ -85,32 +94,32 @@ class DataPipeline {
 
   process(chunk) {
     // 数据清洗
-    const validData = chunk.filter(item => 
-      item.amount > 0 && 
+    const validData = chunk.filter(item =>
+      item.amount > 0 &&
       ['PAY', 'REFUND', 'TOPUP'].includes(item.type)
-    
+
     // 实时统计
     const now = Date.now()
     this.stats.lastMinute = [
       ...this.stats.lastMinute.filter(t => t > now - 60000),
       ...validData.map(() => now)
     ]
-    
+
     validData.forEach(item => {
       this.stats.typeDistribution.set(
-        item.type, 
+        item.type,
         (this.stats.typeDistribution.get(item.type) || 0) + 1
       )
-      
+
       this.stats.regionRank.set(
         item.region,
         (this.stats.regionRank.get(item.region) || 0) + item.amount
       )
     })
-    
+
     // 异常检测
     const anomaly = this.detectAnomaly(validData)
-    
+
     return {
       summary: {
         total: this.stats.lastMinute.length,
@@ -130,6 +139,7 @@ self.onmessage = ({ data }) => {
 ```
 
 ### 3. Vue3可视化组件
+
 ```vue
 <!-- RealtimeChart.vue -->
 <script setup>
@@ -170,7 +180,7 @@ const handleWorkerMessage = (event) => {
 // WebSocket连接管理
 const connectWebSocket = () => {
   socket.value = new WebSocket('ws://localhost:8080')
-  
+
   socket.value.onmessage = ({ data }) => {
     const freeWorker = workerPool.value.find(w => !w.busy)
     if (freeWorker) {
@@ -215,6 +225,7 @@ onUnmounted(() => {
 ```
 
 ### 4. Web Worker通信优化
+
 ```javascript
 // worker-manager.js
 class WorkerScheduler {
@@ -229,7 +240,7 @@ class WorkerScheduler {
   dispatch(data) {
     return new Promise(resolve => {
       const availableWorker = this.pool.find(w => !w.busy)
-      
+
       if (availableWorker) {
         availableWorker.busy = true
         availableWorker.instance.onmessage = (e) => {
@@ -266,12 +277,14 @@ class WorkerScheduler {
 ## 五、方案扩展性设计
 
 ### 1. 动态负载均衡
+
 ```javascript
 const dynamicWorkerCount = Math.floor(navigator.hardwareConcurrency * 0.8)
 const workerScheduler = new WorkerScheduler('/workers/processor.js', dynamicWorkerCount)
 ```
 
 ### 2. 降级策略
+
 ```javascript
 const useWebWorker = () => {
   try {
@@ -282,12 +295,13 @@ const useWebWorker = () => {
   }
 }
 
-const processor = useWebWorker() ? 
-  new WebWorkerProcessor() : 
+const processor = useWebWorker() ?
+  new WebWorkerProcessor() :
   new WasmProcessor()
 ```
 
 ### 3. 数据压缩传输
+
 ```javascript
 // 使用Pako进行Gzip压缩
 import pako from 'pako'

@@ -136,7 +136,7 @@ function sidebarCourse(): DefaultTheme.SidebarItem[] {
       text: '数据中台-课时7',
       items: [
         {
-          link: 'lesson6_webworker/how-to',
+          link: 'lesson7_webworker/how-to',
           text: '实时动态图表组件的Web Worker架构实践',
         },
       ],
