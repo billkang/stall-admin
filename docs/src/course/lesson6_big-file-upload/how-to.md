@@ -60,6 +60,11 @@ const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB
 使用 `SparkMD5` 库计算文件的 MD5 哈希值，确保文件的唯一性和完整性。
 
 ```typescript
+/**
+ * 计算文件的MD5哈希值
+ * @param file 文件对象
+ * @returns 文件的MD5哈希值
+ */
 const calculateFileHash = (file: any): Promise<string> => {
   return new Promise((resolve) => {
     const spark = new SparkMD5.ArrayBuffer();
@@ -94,17 +99,20 @@ const calculateFileHash = (file: any): Promise<string> => {
 在上传前，前端向服务器发送请求，检查文件是否已存在以及哪些分片已成功上传。这一步骤支持断点续传功能。
 
 ```typescript
+/**
+ * 检查文件和分片是否存在
+ * @param file 文件对象
+ * @param fileHash 文件的MD5哈希值
+ * @returns 已存在的分片索引数组
+ */
 const checkFileAndChunks = async (file: any, fileHash: string) => {
+  // 合并后的检查接口，同时检查文件是否存在和获取已存在的分片列表
   const { chunks, fileExists } = await request.post(`${apiPrefix}/check`, {
     ext: file.name.split('.').pop(),
     hash: fileHash,
   });
 
-  if (fileExists) {
-    throw new Error('文件已存在');
-  }
-
-  return chunks;
+  return { chunks, fileExists };
 };
 ```
 
@@ -113,28 +121,10 @@ const checkFileAndChunks = async (file: any, fileHash: string) => {
 前端通过控制并发数，同时上传多个分片，提升上传效率。上传进度通过计算已上传分片的比例实时更新。
 
 ```typescript
-const uploadSingleChunk = async (
-  chunk: Blob,
-  fileHash: string,
-  chunkIndex: number,
-  chunkCount: number,
-) => {
-  const formData = new FormData();
-  formData.append('chunk', chunk);
-
-  const params = new URLSearchParams({
-    filename: file.name,
-    hash: fileHash,
-    index: chunkIndex.toString(),
-    total: chunkCount.toString(),
-  });
-
-  await request.post(`${apiPrefix}/upload?${params}`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
-  return true;
-};
-
+/**
+ * 处理文件选择事件
+ * @param e 文件选择事件
+ */
 const handleFileSelect = async (e: any) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -149,7 +139,15 @@ const handleFileSelect = async (e: any) => {
     const fileHash = await calculateFileHash(file);
 
     // 检查文件和分片
-    const existingChunks = await checkFileAndChunks(file, fileHash);
+    const { chunks: existingChunks, fileExists } = await checkFileAndChunks(
+      file,
+      fileHash,
+    );
+
+    if (fileExists) {
+      error.value = '文件已存在';
+      return;
+    }
 
     const chunkSize = CHUNK_SIZE;
     const chunkCount = Math.ceil(file.size / chunkSize);
@@ -166,7 +164,7 @@ const handleFileSelect = async (e: any) => {
         const start = chunkIndex * chunkSize;
         const end = Math.min(start + chunkSize, file.size);
         const chunk = file.slice(start, end);
-        return uploadSingleChunk(chunk, fileHash, chunkIndex, chunkCount)
+        return uploadSingleChunk(file, chunk, fileHash, chunkIndex, chunkCount)
           .then(() => {
             progress.value = Math.round(
               ((existingChunks.length + batch.indexOf(chunkIndex) + 1) /
@@ -193,6 +191,61 @@ const handleFileSelect = async (e: any) => {
   } finally {
     uploading.value = false;
   }
+};
+```
+
+#### 4.1.5 上传单个分片
+
+```typescript
+/**
+ * 上传单个分片
+ * @param file 文件对象
+ * @param chunk 分片对象
+ * @param fileHash 文件的MD5哈希值
+ * @param chunkIndex 分片索引
+ * @param chunkCount 分片总数
+ * @returns 上传结果
+ */
+const uploadSingleChunk = async (
+  file: File,
+  chunk: Blob,
+  fileHash: string,
+  chunkIndex: number,
+  chunkCount: number,
+) => {
+  const formData = new FormData();
+  formData.append('chunk', chunk);
+
+  const params = new URLSearchParams({
+    filename: file.name,
+    hash: fileHash,
+    index: chunkIndex.toString(),
+    total: chunkCount.toString(),
+  });
+
+  await request.post(`${apiPrefix}/upload?${params}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return true;
+};
+```
+
+#### 4.1.6 合并分片
+
+```typescript
+/**
+ * 合并分片
+ * @param fileHash 文件的MD5哈希值
+ * @param filename 文件名
+ * @returns 合并结果
+ */
+const mergeChunks = async (fileHash: string, filename: string) => {
+  await request.post(`${apiPrefix}/merge`, {
+    chunkSize: CHUNK_SIZE,
+    filename,
+    hash: fileHash,
+  });
+  return true;
 };
 ```
 
@@ -245,6 +298,8 @@ const upload = multer({ storage });
 服务器提供接口，检查文件是否已存在以及哪些分片已成功上传。
 
 ```javascript
+// 检查文件是否已存在
+// 检查文件和分片是否存在
 app.post('/api/files/check', async (req, res) => {
   const { hash, ext } = req.body;
 

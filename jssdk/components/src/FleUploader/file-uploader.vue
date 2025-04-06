@@ -65,12 +65,7 @@ const checkFileAndChunks = async (file: any, fileHash: string) => {
     hash: fileHash,
   });
 
-  if (fileExists) {
-    error.value = '文件已存在';
-    return;
-  }
-
-  return chunks;
+  return { chunks, fileExists };
 };
 
 /**
@@ -138,7 +133,15 @@ const handleFileSelect = async (e: any) => {
     const fileHash = await calculateFileHash(file);
 
     // 检查文件和分片
-    const existingChunks = await checkFileAndChunks(file, fileHash);
+    const { chunks: existingChunks, fileExists } = await checkFileAndChunks(
+      file,
+      fileHash,
+    );
+
+    if (fileExists) {
+      error.value = '文件已存在';
+      return;
+    }
 
     const chunkSize = CHUNK_SIZE;
     const chunkCount = Math.ceil(file.size / chunkSize);
