@@ -20,8 +20,10 @@
     "ant-design-vue": "catalog:",
     "lucide-vue-next": "catalog:",
     "medium-zoom": "catalog:",
+    "mermaid": "catalog:",
     "radix-vue": "catalog:",
-    "vitepress-plugin-group-icons": "catalog:"
+    "vitepress-plugin-group-icons": "catalog:",
+    "vitepress-plugin-mermaid": "catalog:"
   },
   "devDependencies": {
     "@stall/vite-config": "workspace:*",
