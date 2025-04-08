@@ -330,7 +330,7 @@ export default {
     );
 
     if (!hasPermission) {
-      el.style.display = 'none';
+      el.remove();
     }
   },
   updated(el, binding) {
