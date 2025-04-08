@@ -13,6 +13,10 @@
       "path": "apps/child-vue3-vite",
     },
     {
+      "name": "@stall/server",
+      "path": "apps/server",
+    },
+    {
       "name": "@stall/web",
       "path": "apps/web",
     },
