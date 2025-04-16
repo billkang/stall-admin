@@ -272,6 +272,10 @@ function sidebarTeaching(): DefaultTheme.SidebarItem[] {
           link: 'vue/hooks',
           text: 'Hooks 深入解析：从 React 到 Vue 3',
         },
+        {
+          link: 'vue/status-machine',
+          text: '状态机：理论与 HTML 状态机的深度解析',
+        },
       ],
     },
     {
