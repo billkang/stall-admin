@@ -31,6 +31,7 @@
     "dev:docs": "pnpm -F @stall/docs run dev",
     "dev:play": "pnpm -F @stall/playground run dev",
     "server": "pnpm -F @stall/server run start",
+    "server:ws": "pnpm -F @stall/server run ws",
     "format": "vsh lint --format",
     "lint": "vsh lint",
     "postinstall": "pnpm -r run stub --if-present",
