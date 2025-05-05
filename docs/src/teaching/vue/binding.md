@@ -22,7 +22,10 @@ class Dep {
 
   depend() {
     if (Dep.target) {
-      this.subscribers.add(Dep.target); // 收集当前依赖
+      // 收集当前依赖
+      if (!this.subscribers.has(Dep.target)) {
+        this.subscribers.add(Dep.target);
+      }
     }
   }
 
@@ -111,7 +114,9 @@ class Dep {
 
   depend() {
     if (Dep.target) {
-      this.subscribers.add(Dep.target);
+      if (!this.subscribers.has(Dep.target)) {
+        this.subscribers.add(Dep.target);
+      }
     }
   }
 

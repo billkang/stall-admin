@@ -4,35 +4,35 @@ class DataPipeline {
     this.stats = {
       lastMinute: [], // 保存最近一分钟的交易时间戳
       typeDistribution: new Map(), // 交易类型分布
-      regionRank: new Map() // 地区交易金额排名
+      regionRank: new Map(), // 地区交易金额排名
     };
   }
 
   process(chunk) {
     // 数据清洗：过滤无效数据
-    const validData = chunk.filter(item =>
-      item.amount > 0 &&
-      ['PAY', 'REFUND', 'TOPUP'].includes(item.type)
+    const validData = chunk.filter(
+      (item) =>
+        item.amount > 0 && ['PAY', 'REFUND', 'TOPUP'].includes(item.type),
     );
 
     // 实时统计
     const now = Date.now();
     this.stats.lastMinute = [
-      ...this.stats.lastMinute.filter(t => t > now - 60000), // 保留最近60秒的数据
-      ...validData.map(() => now) // 添加新数据的时间戳
+      ...this.stats.lastMinute.filter((t) => t > now - 60000), // 保留最近60秒的数据
+      ...validData.map(() => now), // 添加新数据的时间戳
     ];
 
-    validData.forEach(item => {
+    validData.forEach((item) => {
       // 更新交易类型分布
       this.stats.typeDistribution.set(
         item.type,
-        (this.stats.typeDistribution.get(item.type) || 0) + 1
+        (this.stats.typeDistribution.get(item.type) || 0) + 1,
       );
 
       // 更新地区交易金额排名
       this.stats.regionRank.set(
         item.region,
-        (this.stats.regionRank.get(item.region) || 0) + item.amount
+        (this.stats.regionRank.get(item.region) || 0) + item.amount,
       );
     });
 
@@ -44,21 +44,21 @@ class DataPipeline {
       summary: {
         total: this.stats.lastMinute.length, // 最近一分钟的交易总数
         types: Object.fromEntries(this.stats.typeDistribution), // 交易类型分布
-        regions: Array.from(this.stats.regionRank).sort((a, b) => b[1] - a[1]) // 地区交易金额排名
+        regions: Array.from(this.stats.regionRank).sort((a, b) => b[1] - a[1]), // 地区交易金额排名
       },
-      anomaly // 异常信息
+      anomaly, // 异常信息
     };
   }
 
   detectAnomaly(data) {
     // 示例：简单的异常检测逻辑
-    return data.some(item => item.amount > 5000); // 如果有交易金额超过5000，则认为是异常
+    return data.some((item) => item.amount > 5000); // 如果有交易金额超过5000，则认为是异常
   }
 }
 
 // Web Worker 主逻辑
 self.onmessage = ({ data }) => {
   const processor = new DataPipeline();
-  const result = processor.process(data); // 处理接收到的数据
+  const result = processor.process(data.list); // 处理接收到的数据
   self.postMessage(result); // 将处理结果发送回主线程
 };

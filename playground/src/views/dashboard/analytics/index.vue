@@ -19,6 +19,7 @@ import AnalyticsVisitsData from './analytics-visits-data.vue';
 import AnalyticsVisitsSales from './analytics-visits-sales.vue';
 import AnalyticsVisitsSource from './analytics-visits-source.vue';
 import AnalyticsVisits from './analytics-visits.vue';
+import RealtimeChart from './realtime-chart.vue';
 
 const overviewItems: AnalysisOverviewItem[] = [
   {
@@ -61,6 +62,8 @@ const chartTabs: TabOption[] = [
     value: 'visits',
   },
 ];
+
+const workerUrl = new URL('./worker-processor.js', import.meta.url).href;
 </script>
 
 <template>
@@ -74,6 +77,10 @@ const chartTabs: TabOption[] = [
         <AnalyticsVisits />
       </template>
     </AnalysisChartsTabs>
+
+    <AnalysisChartCard class="mt-5" title="实时交易趋势">
+      <RealtimeChart :workerUrl="workerUrl" />
+    </AnalysisChartCard>
 
     <div class="mt-5 w-full md:flex">
       <AnalysisChartCard class="mt-5 md:mr-4 md:mt-0 md:w-1/3" title="访问数量">

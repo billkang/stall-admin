@@ -75,6 +75,9 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
         legalComments: 'none',
       },
       plugins,
+      worker: {
+        format: 'es',
+      },
       server: {
         host: true,
         port,

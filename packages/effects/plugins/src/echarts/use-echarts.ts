@@ -4,7 +4,7 @@ import type { Ref } from 'vue';
 
 import type EchartsUI from './echarts-ui.vue';
 
-import { computed, nextTick, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 
 import { usePreferences } from '@stall/preferences';
 
@@ -23,7 +23,7 @@ type EchartsUIType = typeof EchartsUI | undefined;
 type EchartsThemeType = 'dark' | 'light' | null;
 
 function useEcharts(chartRef: Ref<EchartsUIType>) {
-  let chartInstance: echarts.ECharts | null = null;
+  const chartInstance: Ref<echarts.ECharts | null> = ref(null);
   let cacheOptions: EChartsOption = {};
 
   const { isDark } = usePreferences();
@@ -45,7 +45,7 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
     if (!el) {
       return;
     }
-    chartInstance = echarts.init(el, t || isDark.value ? 'dark' : null);
+    chartInstance.value = echarts.init(el, t || isDark.value ? 'dark' : null);
 
     return chartInstance;
   };
@@ -66,12 +66,12 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
       }
       nextTick(() => {
         useTimeoutFn(() => {
-          if (!chartInstance) {
+          if (!chartInstance.value) {
             const instance = initCharts();
             if (!instance) return;
           }
-          clear && chartInstance?.clear();
-          chartInstance?.setOption(currentOptions);
+          clear && chartInstance.value?.clear();
+          chartInstance.value?.setOption(currentOptions);
           resolve(null);
         }, 30);
       });
@@ -79,7 +79,7 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
   };
 
   function resize() {
-    chartInstance?.resize({
+    chartInstance.value?.resize({
       animation: {
         duration: 300,
         easing: 'quadraticIn',
@@ -94,8 +94,8 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
   useResizeObserver(chartRef as never, resizeHandler);
 
   watch(isDark, () => {
-    if (chartInstance) {
-      chartInstance.dispose();
+    if (chartInstance.value) {
+      chartInstance.value.dispose();
       initCharts();
       renderEcharts(cacheOptions);
       resize();
@@ -104,7 +104,7 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
 
   tryOnUnmounted(() => {
     // 销毁实例，释放资源
-    chartInstance?.dispose();
+    chartInstance.value?.dispose();
   });
   return {
     renderEcharts,
