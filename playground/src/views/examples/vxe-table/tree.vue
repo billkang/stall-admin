@@ -37,7 +37,7 @@ const gridOptions: VxeGridProps<RowType> = {
   },
 };
 
-const [Grid, gridApi] = useStallVxeGrid({ gridOptions });
+const [Grid, gridApi] = useStallVxeGrid({ gridOptions } as any);
 
 const expandAll = () => {
   gridApi.grid?.setAllTreeExpand(true);

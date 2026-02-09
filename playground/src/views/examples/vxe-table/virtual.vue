@@ -33,7 +33,7 @@ const gridOptions: VxeGridProps<RowType> = {
   showOverflow: true,
 };
 
-const [Grid, gridApi] = useStallVxeGrid({ gridOptions });
+const [Grid, gridApi] = useStallVxeGrid({ gridOptions } as any);
 
 // 模拟行数据
 const loadList = (size = 200) => {

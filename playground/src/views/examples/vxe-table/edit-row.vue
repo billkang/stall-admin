@@ -50,7 +50,7 @@ const gridOptions: VxeGridProps<RowType> = {
   showOverflow: true,
 };
 
-const [Grid, gridApi] = useStallVxeGrid({ gridOptions });
+const [Grid, gridApi] = useStallVxeGrid({ gridOptions } as any);
 
 function hasEditStatus(row: RowType) {
   return gridApi.grid?.isEditByRow(row);

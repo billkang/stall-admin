@@ -47,7 +47,7 @@ const gridOptions: VxeGridProps<RowType> = {
   showOverflow: true,
 };
 
-const [Grid] = useStallVxeGrid({ gridOptions });
+const [Grid] = useStallVxeGrid({ gridOptions } as any);
 </script>
 
 <template>

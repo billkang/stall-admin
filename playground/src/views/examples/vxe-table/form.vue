@@ -114,7 +114,7 @@ const gridOptions: VxeTableGridOptions<RowType> = {
 const [Grid] = useStallVxeGrid({
   formOptions,
   gridOptions,
-});
+} as any);
 </script>
 
 <template>

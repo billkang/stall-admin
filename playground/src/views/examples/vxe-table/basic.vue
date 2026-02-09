@@ -43,7 +43,7 @@ const gridEvents: VxeGridListeners<RowType> = {
   },
 };
 
-const [Grid, gridApi] = useStallVxeGrid({ gridEvents, gridOptions });
+const [Grid, gridApi] = useStallVxeGrid({ gridEvents, gridOptions } as any);
 
 const showBorder = gridApi.useStore((state) => state.gridOptions?.border);
 const showStripe = gridApi.useStore((state) => state.gridOptions?.stripe);

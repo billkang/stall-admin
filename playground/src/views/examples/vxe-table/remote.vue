@@ -62,7 +62,7 @@ const gridOptions: VxeGridProps<RowType> = {
 
 const [Grid, gridApi] = useStallVxeGrid({
   gridOptions,
-});
+} as any);
 </script>
 
 <template>
