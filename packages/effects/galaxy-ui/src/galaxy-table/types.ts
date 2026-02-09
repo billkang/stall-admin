@@ -1,14 +1,14 @@
 export type TablePermission = {
-  filter: boolean; // 是否展示过滤器
   delete: boolean | Function; // 是否可以删除
   edit: boolean | Function; // 是否可以编辑
+  filter: boolean; // 是否展示过滤器
 };
 
 export type TableTextReplacement = {
   btn?: {
-    edit?: string;
     delete?: string;
     deleteBatch?: string;
+    edit?: string;
   };
 };
 
@@ -18,6 +18,6 @@ export type TableSwitchConfirm = {
 };
 
 export type TablePagination = {
-  total: number;
   showTotal: boolean;
+  total: number;
 };

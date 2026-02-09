@@ -42,22 +42,27 @@ HTML 状态机是浏览器解析 HTML 文档的核心机制之一。它的任务
 HTML 状态机包含多个状态，以下是几个关键状态及其作用：
 
 1. **数据状态（Data State）**
+
    - 处理普通字符。
    - 当遇到 `<` 时，切换到标签打开状态。
 
 2. **标签打开状态（Tag Open State）**
+
    - 处理 `<` 后的字符。
    - 如果是 `/`，切换到标签关闭状态；如果是 `!`，切换到标记声明状态；否则，开始解析标签名称。
 
 3. **标签名称状态（Tag Name State）**
+
    - 解析标签名称（如 `div`、`p`）。
    - 当遇到空格或 `>` 时，切换到属性名称状态或标签结束状态。
 
 4. **属性名称状态（Attribute Name State）**
+
    - 解析属性名称（如 `class`、`id`）。
    - 当遇到 `=` 时，切换到属性值状态。
 
 5. **属性值状态（Attribute Value State）**
+
    - 解析属性值，支持单引号、双引号或无引号。
    - 根据引号类型切换到相应的引号状态。
 
@@ -161,7 +166,7 @@ const stateMap = {
   AttributeValue: 'AttributeValue',
   AttributeValueDoubleQuoted: 'AttributeValueDoubleQuoted',
   AttributeValueSingleQuoted: 'AttributeValueSingleQuoted',
-  MarkupDeclaration: 'MarkupDeclaration'
+  MarkupDeclaration: 'MarkupDeclaration',
 };
 
 // 测试解析
@@ -176,11 +181,15 @@ console.log(parser.parse(input));
 
 ```javascript
 [
-  { type: 'StartTag', tagName: 'div', attributes: [{ name: 'class', value: 'container' }] },
+  {
+    type: 'StartTag',
+    tagName: 'div',
+    attributes: [{ name: 'class', value: 'container' }],
+  },
   { type: 'Text', content: 'Hello World' },
   { type: 'EndTag', tagName: 'p' },
-  { type: 'EndTag', tagName: 'div' }
-]
+  { type: 'EndTag', tagName: 'div' },
+];
 ```
 
 ## 三、状态机的优势与局限性

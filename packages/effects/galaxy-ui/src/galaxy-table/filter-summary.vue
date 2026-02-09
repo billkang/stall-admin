@@ -1,23 +1,14 @@
-<template>
-  <div v-if="visible" class="stall-galaxy-table-filter__summary">
-    <div class="label">筛选结果</div>
-
-    <Space class="tag-list">
-      <Tag v-for="tag in tagList" :key="tag.key" closable @close="handleClose(tag)">
-        {{`${tag.title} 包含 "${tag.value}"`}}
-      </Tag>
-    </Space>
-
-    <div class="clear-all" @click="handleClear">清空条件</div>
-  </div>
-</template>
-
 <script lang="ts">
 import type { TableColumnData } from '@arco-design/web-vue';
-import { computed, defineComponent, type PropType } from 'vue';
+
+import type { PropType } from 'vue';
+
+import { computed, defineComponent } from 'vue';
+
 import { Space, Tag } from '@arco-design/web-vue';
-import { isArray, isValidValue } from './utils';
+
 import { useTableSetting } from './hooks/useTableSetting';
+import { isArray, isValidValue } from './utils';
 
 type TagData = {
   key: string;
@@ -42,16 +33,19 @@ export default defineComponent({
   },
   emits: ['search'],
   setup(props, { emit }) {
-    const { formData, resetFormData, cleanFormDataByKey } = useTableSetting(props);
+    const { formData, resetFormData, cleanFormDataByKey } =
+      useTableSetting(props);
 
-    const visible = computed(() => Object.values(formData).filter(val => isValidValue(val)).length > 0);
+    const visible = computed(() =>
+      Object.values(formData).some((val) => isValidValue(val)),
+    );
     const tagList = computed(() => {
       const tags: Array<TagData> = [];
 
-      Object.entries(formData).forEach(d => {
+      Object.entries(formData).forEach((d) => {
         const [key, val] = d;
         if (isValidValue(val)) {
-          const col = props.columns.find(c => c.dataIndex === key);
+          const col = props.columns.find((c) => c.dataIndex === key);
           if (col) {
             const { title, filterable } = col;
             const tagValue: string[] = [];
@@ -63,7 +57,9 @@ export default defineComponent({
               }
 
               list.forEach((val: string) => {
-                const item = filterable.filters!.find((d: any) => d.value === val);
+                const item = filterable.filters!.find(
+                  (d: any) => d.value === val,
+                );
                 tagValue.push((item?.text as string) || `${val}`);
               });
             } else {
@@ -109,3 +105,22 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <div v-if="visible" class="stall-galaxy-table-filter__summary">
+    <div class="label">筛选结果</div>
+
+    <Space class="tag-list">
+      <Tag
+        v-for="tag in tagList"
+        :key="tag.key"
+        closable
+        @close="handleClose(tag)"
+      >
+        {{ `${tag.title} 包含 "${tag.value}"` }}
+      </Tag>
+    </Space>
+
+    <div class="clear-all" @click="handleClear">清空条件</div>
+  </div>
+</template>

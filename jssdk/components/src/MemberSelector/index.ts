@@ -1,3 +1,1 @@
-import MemberSelector from './member-selector.vue';
-
-export { MemberSelector };
+export { default as MemberSelector } from './member-selector.vue';

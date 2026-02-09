@@ -219,8 +219,8 @@ jobs:
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "your-heroku-app-name"
-          heroku_email: "your-email@example.com"
+          heroku_app_name: 'your-heroku-app-name'
+          heroku_email: 'your-email@example.com'
 ```
 
 ### 3.5 代码质量保障

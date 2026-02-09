@@ -8,7 +8,7 @@ JavaScript 的方法本质上是函数，当一个方法被调用时，this 的�
 
 示例：
 
-``` javascript
+```javascript
 const obj = { value: 42 };
 function printValue() {
   console.log(this.value);
@@ -30,14 +30,14 @@ printValue.call(obj); // 输出: 42
 
 示例：
 
-``` javascript
+```javascript
 // 可行：借用通用方法
-const obj = { name: "Alice" };
-console.log(Object.prototype.hasOwnProperty.call(obj, "name")); // 输出: true
+const obj = { name: 'Alice' };
+console.log(Object.prototype.hasOwnProperty.call(obj, 'name')); // 输出: true
 
 // 不可行：借用数组方法 push 依赖数组的内部实现
 const notArray = { length: 0 };
-Array.prototype.push.call(notArray, "item");
+Array.prototype.push.call(notArray, 'item');
 console.log(notArray); // 输出: { '0': 'item', length: 1 }
 // 尽管代码执行成功，但此操作违反了 push 的原意。
 ```
@@ -48,16 +48,16 @@ console.log(notArray); // 输出: { '0': 'item', length: 1 }
 
 示例：
 
-``` javascript
+```javascript
 // 类数组对象借用数组方法（结构兼容）
-const arrayLike = { 0: "a", 1: "b", length: 2 };
+const arrayLike = { 0: 'a', 1: 'b', length: 2 };
 const result = Array.prototype.slice.call(arrayLike);
 console.log(result); // 输出: ["a", "b"]
 
 // 非类数组对象借用数组方法（结构不兼容）
-const nonArrayLike = { name: "Alice" };
+const nonArrayLike = { name: 'Alice' };
 try {
-  Array.prototype.join.call(nonArrayLike, "-");
+  Array.prototype.join.call(nonArrayLike, '-');
 } catch (err) {
   console.error(err); // 输出: TypeError
 }
@@ -69,13 +69,13 @@ try {
 
 示例：
 
-``` javascript
+```javascript
 // 提供正确的上下文（this）
 function greet() {
   return `Hello, ${this.name}!`;
 }
 
-const user = { name: "John" };
+const user = { name: 'John' };
 console.log(greet.call(user)); // 输出: Hello, John!
 
 // 提供错误的上下文（this）
@@ -94,15 +94,15 @@ try {
 
 示例：
 
-``` javascript
-const arrayLike = { 0: "a", 1: "b", length: 2 };
+```javascript
+const arrayLike = { 0: 'a', 1: 'b', length: 2 };
 
 // 借用 slice 转换为数组
 const array = Array.prototype.slice.call(arrayLike);
 console.log(array); // 输出: ["a", "b"]
 
 // 借用 join 方法
-const joined = Array.prototype.join.call(arrayLike, "-");
+const joined = Array.prototype.join.call(arrayLike, '-');
 console.log(joined); // 输出: "a-b"
 ```
 
@@ -112,10 +112,10 @@ Object.prototype 提供了一些与对象操作相关的通用方法，如 hasOw
 
 示例：
 
-``` javascript
+```javascript
 // 判断属性是否存在于对象自身
-const obj = { name: "Alice" };
-console.log(Object.prototype.hasOwnProperty.call(obj, "name")); // 输出: true
+const obj = { name: 'Alice' };
+console.log(Object.prototype.hasOwnProperty.call(obj, 'name')); // 输出: true
 
 // 获取对象类型
 console.log(Object.prototype.toString.call([])); // 输出: "[object Array]"
@@ -128,15 +128,15 @@ console.log(Object.prototype.toString.call({})); // 输出: "[object Object]"
 
 示例：
 
-``` javascript
+```javascript
 function introduce(greeting) {
   return `${greeting}, my name is ${this.name}`;
 }
 
-const person = { name: "Alice" };
+const person = { name: 'Alice' };
 
 // 借用 introduce 并动态绑定上下文
-console.log(introduce.call(person, "Hello")); // 输出: Hello, my name is Alice
+console.log(introduce.call(person, 'Hello')); // 输出: Hello, my name is Alice
 ```
 
 ## 四、借用方法的失败场景
@@ -147,8 +147,8 @@ console.log(introduce.call(person, "Hello")); // 输出: Hello, my name is Alice
 
 示例：
 
-``` javascript
-const invalidArrayLike = { 0: "a", 1: "b" }; // 没有 length
+```javascript
+const invalidArrayLike = { 0: 'a', 1: 'b' }; // 没有 length
 const result = Array.prototype.slice.call(invalidArrayLike);
 console.log(result); // 输出: []，因为 length 默认是 0
 ```
@@ -159,10 +159,10 @@ console.log(result); // 输出: []，因为 length 默认是 0
 
 示例：
 
-``` javascript
+```javascript
 // 借用数组方法 push 到非数组对象
 const notArray = { length: 0 };
-Array.prototype.push.call(notArray, "item");
+Array.prototype.push.call(notArray, 'item');
 console.log(notArray); // 输出: { '0': 'item', length: 1 }
 // 注意：这种行为虽然有效，但通常不推荐。
 ```
@@ -173,7 +173,7 @@ console.log(notArray); // 输出: { '0': 'item', length: 1 }
 
 示例：
 
-``` javascript
+```javascript
 function printValue() {
   console.log(this.value);
 }

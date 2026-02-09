@@ -20,7 +20,7 @@
 var num = 42;
 console.log(num.valueOf()); // 输出: 42
 
-var str = "Hello";
+var str = 'Hello';
 console.log(str.valueOf()); // 输出: Hello
 
 var bool = true;
@@ -58,11 +58,11 @@ Global Execution Context:
 
 ```javascript
 function MyNumber(value) {
-    this.value = value;
+  this.value = value;
 }
 
-MyNumber.prototype.valueOf = function() {
-    return this.value * 2;
+MyNumber.prototype.valueOf = function () {
+  return this.value * 2;
 };
 
 var myNum = new MyNumber(10);
@@ -112,7 +112,7 @@ MyNumber Prototype:
 var num = 42;
 console.log(num.toString()); // 输出: "42"
 
-var str = "Hello";
+var str = 'Hello';
 console.log(str.toString()); // 输出: "Hello"
 
 var bool = true;
@@ -150,13 +150,13 @@ Global Execution Context:
 
 ```javascript
 function MyDate(year, month, day) {
-    this.year = year;
-    this.month = month;
-    this.day = day;
+  this.year = year;
+  this.month = month;
+  this.day = day;
 }
 
-MyDate.prototype.toString = function() {
-    return `${this.year}-${this.month}-${this.day}`;
+MyDate.prototype.toString = function () {
+  return `${this.year}-${this.month}-${this.day}`;
 };
 
 var date = new MyDate(2023, 10, 5);
@@ -196,17 +196,17 @@ MyDate Prototype:
 
 ```javascript
 function MyComplexObject(value) {
-    this.value = value;
+  this.value = value;
 }
 
-MyComplexObject.prototype.valueOf = function() {
-    console.log('valueOf called');
-    return this.value;
+MyComplexObject.prototype.valueOf = function () {
+  console.log('valueOf called');
+  return this.value;
 };
 
-MyComplexObject.prototype.toString = function() {
-    console.log('toString called');
-    return String(this.value);
+MyComplexObject.prototype.toString = function () {
+  console.log('toString called');
+  return String(this.value);
 };
 
 var complexObj = new MyComplexObject(42);
@@ -227,15 +227,15 @@ console.log(complexObj.valueOf()); // 输出: valueOf called \n 42
 
 ```javascript
 function Currency(amount) {
-    this.amount = amount;
+  this.amount = amount;
 }
 
-Currency.prototype.valueOf = function() {
-    return this.amount;
+Currency.prototype.valueOf = function () {
+  return this.amount;
 };
 
-Currency.prototype.toString = function() {
-    return `$${this.amount.toFixed(2)}`;
+Currency.prototype.toString = function () {
+  return `$${this.amount.toFixed(2)}`;
 };
 
 var price = new Currency(99.99);
@@ -253,16 +253,16 @@ console.log(price.toString()); // 输出: $99.99 (toString 被显式调用)
 
 ```javascript
 function DateRange(start, end) {
-    this.start = start;
-    this.end = end;
+  this.start = start;
+  this.end = end;
 }
 
-DateRange.prototype.valueOf = function() {
-    return this.start.getTime();
+DateRange.prototype.valueOf = function () {
+  return this.start.getTime();
 };
 
-DateRange.prototype.toString = function() {
-    return `${this.start.toDateString()} to ${this.end.toDateString()}`;
+DateRange.prototype.toString = function () {
+  return `${this.start.toDateString()} to ${this.end.toDateString()}`;
 };
 
 var range = new DateRange(new Date(2023, 9, 1), new Date(2023, 9, 30));
@@ -280,35 +280,41 @@ console.log(range.toString()); // 输出: Sun Oct 01 2023 to Tue Oct 31 2023 (to
 
 ```javascript
 function Matrix(rows, cols, data) {
-    this.rows = rows;
-    this.cols = cols;
-    this.data = data || Array.from({ length: rows }, () => Array(cols).fill(0));
+  this.rows = rows;
+  this.cols = cols;
+  this.data = data || Array.from({ length: rows }, () => Array(cols).fill(0));
 }
 
-Matrix.prototype.valueOf = function() {
-    return this.data.flat();
+Matrix.prototype.valueOf = function () {
+  return this.data.flat();
 };
 
-Matrix.prototype.toString = function() {
-    return this.data.map(row => row.join('\t')).join('\n');
+Matrix.prototype.toString = function () {
+  return this.data.map((row) => row.join('\t')).join('\n');
 };
 
-Matrix.prototype.add = function(other) {
-    if (this.rows !== other.rows || this.cols !== other.cols) {
-        throw new Error("Matrices must have the same dimensions");
+Matrix.prototype.add = function (other) {
+  if (this.rows !== other.rows || this.cols !== other.cols) {
+    throw new Error('Matrices must have the same dimensions');
+  }
+  let newData = [];
+  for (let i = 0; i < this.rows; i++) {
+    newData[i] = [];
+    for (let j = 0; j < this.cols; j++) {
+      newData[i][j] = this.data[i][j] + other.data[i][j];
     }
-    let newData = [];
-    for (let i = 0; i < this.rows; i++) {
-        newData[i] = [];
-        for (let j = 0; j < this.cols; j++) {
-            newData[i][j] = this.data[i][j] + other.data[i][j];
-        }
-    }
-    return new Matrix(this.rows, this.cols, newData);
+  }
+  return new Matrix(this.rows, this.cols, newData);
 };
 
-var matrixA = new Matrix(2, 2, [[1, 2], [3, 4]]);
-var matrixB = new Matrix(2, 2, [[5, 6], [7, 8]]);
+var matrixA = new Matrix(2, 2, [
+  [1, 2],
+  [3, 4],
+]);
+var matrixB = new Matrix(2, 2, [
+  [5, 6],
+  [7, 8],
+]);
 
 var resultMatrix = matrixA.add(matrixB);
 

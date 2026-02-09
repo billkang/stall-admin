@@ -63,7 +63,7 @@ const chartTabs: TabOption[] = [
   },
 ];
 
-const workerUrl = new URL('./worker-processor.js', import.meta.url).href;
+const workerUrl = new URL('worker-processor.js', import.meta.url).href;
 </script>
 
 <template>
@@ -79,7 +79,7 @@ const workerUrl = new URL('./worker-processor.js', import.meta.url).href;
     </AnalysisChartsTabs>
 
     <AnalysisChartCard class="mt-5" title="实时交易趋势">
-      <RealtimeChart :workerUrl="workerUrl" />
+      <RealtimeChart :worker-url="workerUrl" />
     </AnalysisChartCard>
 
     <div class="mt-5 w-full md:flex">

@@ -91,9 +91,7 @@ pnpm（Performant npm）是一个高效的包管理工具，旨在解决传统�
 {
   "name": "my-monorepo",
   "version": "1.0.0",
-  "workspaces": [
-    "packages/*"
-  ]
+  "workspaces": ["packages/*"]
 }
 ```
 

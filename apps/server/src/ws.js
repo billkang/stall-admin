@@ -1,6 +1,7 @@
-const WebSocket = require('ws');
+const { type } = require('node:os');
+
 const Mock = require('mockjs');
-const { type } = require('os');
+const WebSocket = require('ws');
 
 const wss = new WebSocket.Server({ port: 8080 }, () => {
   console.log('WebSocket server is running on port 8080');
@@ -22,13 +23,13 @@ wss.on('connection', (ws) => {
       ],
     });
 
-    const visitSourceData =  Mock.mock({
-      'list': [
-        { 'name': '搜索引擎', 'value': '@integer(500, 2000)' },
-        { 'name': '直接访问', 'value': '@integer(300, 1500)' },
-        { 'name': '邮件营销', 'value': '@integer(200, 1000)' },
-        { 'name': '联盟广告', 'value': '@integer(200, 1000)' },
-      ]
+    const visitSourceData = Mock.mock({
+      list: [
+        { name: '搜索引擎', value: '@integer(500, 2000)' },
+        { name: '直接访问', value: '@integer(300, 1500)' },
+        { name: '邮件营销', value: '@integer(200, 1000)' },
+        { name: '联盟广告', value: '@integer(200, 1000)' },
+      ],
     });
 
     ws.send(
@@ -40,7 +41,7 @@ wss.on('connection', (ws) => {
         {
           type: 'visit-source',
           data: visitSourceData,
-        }
+        },
       ]),
     );
   }, 5000); // 每5秒发送一次

@@ -62,30 +62,35 @@ console.log('Performance Data:', performanceData);
 
 // 监听性能指标变化
 new PerformanceObserver((list) => {
-    list.getEntries().forEach((entry) => {
-        console.log('Performance Entry:', entry);
-        // 将性能数据发送到服务器
-        sendPerformanceData(entry);
-    });
-}).observe({ entryTypes: ['largest-contentful-paint', 'layout-shift', 'first-input'] });
+  list.getEntries().forEach((entry) => {
+    console.log('Performance Entry:', entry);
+    // 将性能数据发送到服务器
+    sendPerformanceData(entry);
+  });
+}).observe({
+  entryTypes: ['largest-contentful-paint', 'layout-shift', 'first-input'],
+});
 ```
 
 #### 错误监控示例
 
 ```javascript
 // 全局错误处理
-window.onerror = function(message, source, lineno, colno, error) {
-    console.error('JavaScript Error:', message, error);
-    // 将错误信息发送到服务器
-    sendErrorToServer({ message, source, lineno, colno, stack: error?.stack });
-    return true;
+window.onerror = function (message, source, lineno, colno, error) {
+  console.error('JavaScript Error:', message, error);
+  // 将错误信息发送到服务器
+  sendErrorToServer({ message, source, lineno, colno, stack: error?.stack });
+  return true;
 };
 
 // 捕获Promise拒绝错误
-window.addEventListener('unhandledrejection', function(event) {
-    console.error('Unhandled Promise Rejection:', event.reason);
-    sendErrorToServer({ message: event.reason.message, stack: event.reason.stack });
-    event.preventDefault();
+window.addEventListener('unhandledrejection', function (event) {
+  console.error('Unhandled Promise Rejection:', event.reason);
+  sendErrorToServer({
+    message: event.reason.message,
+    stack: event.reason.stack,
+  });
+  event.preventDefault();
 });
 ```
 
@@ -93,17 +98,29 @@ window.addEventListener('unhandledrejection', function(event) {
 
 ```javascript
 // 监听用户交互事件
-document.addEventListener('click', function(event) {
-    console.log('User Click:', event.target);
-    // 记录点击事件，可发送到服务器
-    sendUserInteraction({ type: 'click', target: event.target.tagName, time: new Date().toISOString() });
+document.addEventListener('click', function (event) {
+  console.log('User Click:', event.target);
+  // 记录点击事件，可发送到服务器
+  sendUserInteraction({
+    type: 'click',
+    target: event.target.tagName,
+    time: new Date().toISOString(),
+  });
 });
 
-document.addEventListener('scroll', function() {
+document.addEventListener(
+  'scroll',
+  function () {
     console.log('Scroll Position:', window.scrollY);
     // 记录滚动位置，可发送到服务器
-    sendUserInteraction({ type: 'scroll', position: window.scrollY, time: new Date().toISOString() });
-}, { passive: true });
+    sendUserInteraction({
+      type: 'scroll',
+      position: window.scrollY,
+      time: new Date().toISOString(),
+    });
+  },
+  { passive: true },
+);
 ```
 
 #### 业务指标监控示例
@@ -113,14 +130,14 @@ document.addEventListener('scroll', function() {
 ga('send', 'pageview'); // 发送页面浏览数据
 
 // 自定义埋点示例
-document.getElementById('submit-btn').addEventListener('click', function() {
-    // 发送埋点数据到服务器
-    sendAnalyticsData({
-        eventType: 'button_click',
-        elementId: 'submit-btn',
-        page: window.location.pathname,
-        timestamp: new Date().toISOString()
-    });
+document.getElementById('submit-btn').addEventListener('click', function () {
+  // 发送埋点数据到服务器
+  sendAnalyticsData({
+    eventType: 'button_click',
+    elementId: 'submit-btn',
+    page: window.location.pathname,
+    timestamp: new Date().toISOString(),
+  });
 });
 ```
 
@@ -130,569 +147,607 @@ document.getElementById('submit-btn').addEventListener('click', function() {
 
 1. **FCP（First Contentful Paint）**
 
-    **解释**：FCP衡量从网页开始加载到任何部分呈现在屏幕上所用的时间。
+   **解释**：FCP衡量从网页开始加载到任何部分呈现在屏幕上所用的时间。
 
-    **数据采集和计算方式**：
+   **数据采集和计算方式**：
 
-    ```javascript
-    const fcpObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntriesByType('paint');
-        entries.forEach((entry) => {
-            if (entry.name === 'first-contentful-paint') {
-                console.log('FCP:', entry.startTime);
-            }
-        });
-    });
+   ```javascript
+   const fcpObserver = new PerformanceObserver((list) => {
+     const entries = list.getEntriesByType('paint');
+     entries.forEach((entry) => {
+       if (entry.name === 'first-contentful-paint') {
+         console.log('FCP:', entry.startTime);
+       }
+     });
+   });
 
-    fcpObserver.observe({ entryTypes: ['paint'] });
-    ```
+   fcpObserver.observe({ entryTypes: ['paint'] });
+   ```
 
-    **提升手段**：
-    - **减少关键路径的资源大小**：
-        - **压缩CSS、JavaScript文件，减少代码冗余**：
+   **提升手段**：
 
-          ```javascript
-          // 使用Webpack进行代码压缩
-          const TerserPlugin = require('terser-webpack-plugin');
+   - **减少关键路径的资源大小**：
 
-          module.exports = {
-              optimization: {
-                  minimize: true,
-                  minimizer: [new TerserPlugin()],
-              },
-          };
-          ```
+     - **压缩CSS、JavaScript文件，减少代码冗余**：
 
-        - **使用图片压缩工具，减少图片文件大小**：
+       ```javascript
+       // 使用Webpack进行代码压缩
+       const TerserPlugin = require('terser-webpack-plugin');
 
-          ```javascript
-          // 使用图像压缩工具，如imagemin
-          const imagemin = require('imagemin');
-          const imageminWebp = require('imagemin-webp');
+       module.exports = {
+         optimization: {
+           minimize: true,
+           minimizer: [new TerserPlugin()],
+         },
+       };
+       ```
 
-          (async () => {
-              const files = await imagemin(['images/*.jpg'], {
-                  destination: 'build/images',
-                  plugins: [
-                      imageminWebp({ quality: 75 })
-                  ]
-              });
+     - **使用图片压缩工具，减少图片文件大小**：
 
-              console.log('Images optimized:', files);
-          })();
-          ```
+       ```javascript
+       // 使用图像压缩工具，如imagemin
+       const imagemin = require('imagemin');
+       const imageminWebp = require('imagemin-webp');
 
-    - **优化图片和视频等大资源的加载**：
-        - **使用懒加载技术，减少初始加载时间**：
+       (async () => {
+         const files = await imagemin(['images/*.jpg'], {
+           destination: 'build/images',
+           plugins: [imageminWebp({ quality: 75 })],
+         });
 
-          ```html
-          <img src="placeholder.jpg" data-src="real-image.jpg" loading="lazy" alt="Lazy-loaded image">
-          ```
+         console.log('Images optimized:', files);
+       })();
+       ```
 
-        - **使用现代图片格式（如WebP），提高加载效率**：
+   - **优化图片和视频等大资源的加载**：
 
-          ```html
-          <picture>
-              <source srcset="image.webp" type="image/webp">
-              <img src="image.jpg" alt="Modern image format">
-          </picture>
-          ```
+     - **使用懒加载技术，减少初始加载时间**：
 
-    - **使用`<link rel="preload">`提前加载关键资源**：
+       ```html
+       <img
+         src="placeholder.jpg"
+         data-src="real-image.jpg"
+         loading="lazy"
+         alt="Lazy-loaded image"
+       />
+       ```
 
-      ```html
-      <link rel="preload" href="critical.css" as="style">
-      ```
+     - **使用现代图片格式（如WebP），提高加载效率**：
+
+       ```html
+       <picture>
+         <source srcset="image.webp" type="image/webp" />
+         <img src="image.jpg" alt="Modern image format" />
+       </picture>
+       ```
+
+   - **使用`<link rel="preload">`提前加载关键资源**：
+
+     ```html
+     <link rel="preload" href="critical.css" as="style" />
+     ```
 
 2. **LCP（Largest Contentful Paint）**
 
-    **解释**：LCP衡量的是页面上最大的可见元素（如图像或文字块）变为可见所需的时间，这是用户感知页面加载完成的重要标志。
+   **解释**：LCP衡量的是页面上最大的可见元素（如图像或文字块）变为可见所需的时间，这是用户感知页面加载完成的重要标志。
 
-    **数据采集和计算方式**：
+   **数据采集和计算方式**：
 
-    ```javascript
-    const lcpObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntriesByType('largest-contentful-paint');
-        entries.forEach((entry) => {
-            console.log('LCP Element:', entry.element);
-            console.log('LCP Render Time:', entry.renderTime);
-            console.log('LCP Load Time:', entry.loadTime);
-        });
-    });
+   ```javascript
+   const lcpObserver = new PerformanceObserver((list) => {
+     const entries = list.getEntriesByType('largest-contentful-paint');
+     entries.forEach((entry) => {
+       console.log('LCP Element:', entry.element);
+       console.log('LCP Render Time:', entry.renderTime);
+       console.log('LCP Load Time:', entry.loadTime);
+     });
+   });
 
-    lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
-    ```
+   lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
+   ```
 
-    **提升手段**：
-    - **优化图片和视频等大资源的加载**：
-        - **使用懒加载技术**：
+   **提升手段**：
 
-          ```html
-          <img src="placeholder.jpg" data-src="real-image.jpg" loading="lazy" alt="Lazy-loaded image">
-          ```
+   - **优化图片和视频等大资源的加载**：
 
-        - **压缩图片尺寸**：
+     - **使用懒加载技术**：
 
-          ```javascript
-          // 使用图像压缩工具，如imagemin
-          const imagemin = require('imagemin');
-          const imageminWebp = require('imagemin-webp');
+       ```html
+       <img
+         src="placeholder.jpg"
+         data-src="real-image.jpg"
+         loading="lazy"
+         alt="Lazy-loaded image"
+       />
+       ```
 
-          (async () => {
-              const files = await imagemin(['images/*.jpg'], {
-                  destination: 'build/images',
-                  plugins: [
-                      imageminWebp({ quality: 75 })
-                  ]
-              });
+     - **压缩图片尺寸**：
 
-              console.log('Images optimized:', files);
-          })();
-          ```
+       ```javascript
+       // 使用图像压缩工具，如imagemin
+       const imagemin = require('imagemin');
+       const imageminWebp = require('imagemin-webp');
 
-        - **使用现代图片格式（如WebP）**：
+       (async () => {
+         const files = await imagemin(['images/*.jpg'], {
+           destination: 'build/images',
+           plugins: [imageminWebp({ quality: 75 })],
+         });
 
-          ```html
-          <picture>
-              <source srcset="image.webp" type="image/webp">
-              <img src="image.jpg" alt="Modern image format">
-          </picture>
-          ```
+         console.log('Images optimized:', files);
+       })();
+       ```
 
-    - **确保关键路径资源优先加载**：
-        - **使用`<link rel="preload">`提前加载关键资源**：
+     - **使用现代图片格式（如WebP）**：
 
-          ```html
-          <link rel="preload" href="main.js" as="script">
-          ```
+       ```html
+       <picture>
+         <source srcset="image.webp" type="image/webp" />
+         <img src="image.jpg" alt="Modern image format" />
+       </picture>
+       ```
 
-        - **通过代码分割，按需加载非关键资源**：
+   - **确保关键路径资源优先加载**：
 
-          ```javascript
-          // 使用Webpack进行代码分割
-          const mainModule = import('./main.js');
-          const featureModule = import('./feature.js');
-          ```
+     - **使用`<link rel="preload">`提前加载关键资源**：
 
-    - **使用骨架屏或占位符元素**：
-        - **在资源加载完成前，显示骨架屏或占位符**：
+       ```html
+       <link rel="preload" href="main.js" as="script" />
+       ```
 
-          ```html
-          <div class="skeleton-screen">
-              <!-- 骨架屏内容 -->
-          </div>
-          <script>
-              // 资源加载完成后隐藏骨架屏
-              window.addEventListener('load', function() {
-                  document.querySelector('.skeleton-screen').style.display = 'none';
-              });
-          </script>
-          ```
+     - **通过代码分割，按需加载非关键资源**：
+
+       ```javascript
+       // 使用Webpack进行代码分割
+       const mainModule = import('./main.js');
+       const featureModule = import('./feature.js');
+       ```
+
+   - **使用骨架屏或占位符元素**：
+
+     - **在资源加载完成前，显示骨架屏或占位符**：
+
+       ```html
+       <div class="skeleton-screen">
+         <!-- 骨架屏内容 -->
+       </div>
+       <script>
+         // 资源加载完成后隐藏骨架屏
+         window.addEventListener('load', function () {
+           document.querySelector('.skeleton-screen').style.display = 'none';
+         });
+       </script>
+       ```
 
 3. **FID（First Input Delay）**
 
-    **解释**：FID衡量从用户首次与页面互动（如点击链接或按钮）到浏览器实际能够响应该互动的时间。
+   **解释**：FID衡量从用户首次与页面互动（如点击链接或按钮）到浏览器实际能够响应该互动的时间。
 
-    **数据采集和计算方式**：
+   **数据采集和计算方式**：
 
-    ```javascript
-    const observer = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-            console.log('FID:', entry.processingStart - entry.startTime);
-        }
-    });
+   ```javascript
+   const observer = new PerformanceObserver((list) => {
+     for (const entry of list.getEntries()) {
+       console.log('FID:', entry.processingStart - entry.startTime);
+     }
+   });
 
-    observer.observe({ type: 'first-input', buffered: true });
-    ```
+   observer.observe({ type: 'first-input', buffered: true });
+   ```
 
-    **提升手段**：
-    - **减少JavaScript的阻塞**：
-        - **使用代码拆分和异步加载**：
+   **提升手段**：
 
-          ```javascript
-          // 使用Webpack进行代码分割
-          const mainModule = import('./main.js');
-          const featureModule = import('./feature.js');
-          ```
+   - **减少JavaScript的阻塞**：
 
-        - **使用Web Workers处理耗时任务**：
+     - **使用代码拆分和异步加载**：
 
-          ```javascript
-          const worker = new Worker('worker.js');
-          worker.postMessage('Start processing');
-          worker.onmessage = function(e) {
-              console.log('Result:', e.data);
-          };
-          ```
+       ```javascript
+       // 使用Webpack进行代码分割
+       const mainModule = import('./main.js');
+       const featureModule = import('./feature.js');
+       ```
 
-    - **优化服务器响应时间和网络连接**：
-        - **使用CDN加速资源加载**：
+     - **使用Web Workers处理耗时任务**：
 
-          ```html
-          <link rel="stylesheet" href="https://cdn.example.com/style.css">
-          <script src="https://cdn.example.com/script.js"></script>
-          ```
+       ```javascript
+       const worker = new Worker('worker.js');
+       worker.postMessage('Start processing');
+       worker.onmessage = function (e) {
+         console.log('Result:', e.data);
+       };
+       ```
 
-        - **使用HTTP/2减少请求延迟**：
+   - **优化服务器响应时间和网络连接**：
 
-          ```nginx
-          # Nginx配置示例
-          server {
-              listen 443 ssl http2;
-              server_name example.com;
-              # 其他配置...
-          }
-          ```
+     - **使用CDN加速资源加载**：
+
+       ```html
+       <link rel="stylesheet" href="https://cdn.example.com/style.css" />
+       <script src="https://cdn.example.com/script.js"></script>
+       ```
+
+     - **使用HTTP/2减少请求延迟**：
+
+       ```nginx
+       # Nginx配置示例
+       server {
+           listen 443 ssl http2;
+           server_name example.com;
+           # 其他配置...
+       }
+       ```
 
 4. **CLS（Cumulative Layout Shift）**
 
-    **解释**：CLS衡量页面在加载过程中元素意外移动的总量，可能导致用户点击错误的链接或阅读被打断。
+   **解释**：CLS衡量页面在加载过程中元素意外移动的总量，可能导致用户点击错误的链接或阅读被打断。
 
-    **数据采集和计算方式**：
+   **数据采集和计算方式**：
 
-    ```javascript
-    const clsObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntriesByType('layout-shift');
-        let totalCLS = 0;
-        entries.forEach((entry) => {
-            if (!entry.hadRecentInput) {
-                totalCLS += entry.value;
-            }
-            console.log('CLS Value:', entry.value);
-            console.log('CLS Impact:', entry.hadRecentInput ? 'Low' : 'High');
-        });
-        console.log('Total CLS:', totalCLS);
-    });
+   ```javascript
+   const clsObserver = new PerformanceObserver((list) => {
+     const entries = list.getEntriesByType('layout-shift');
+     let totalCLS = 0;
+     entries.forEach((entry) => {
+       if (!entry.hadRecentInput) {
+         totalCLS += entry.value;
+       }
+       console.log('CLS Value:', entry.value);
+       console.log('CLS Impact:', entry.hadRecentInput ? 'Low' : 'High');
+     });
+     console.log('Total CLS:', totalCLS);
+   });
 
-    clsObserver.observe({ type: 'layout-shift', buffered: true });
-    ```
+   clsObserver.observe({ type: 'layout-shift', buffered: true });
+   ```
 
-    **提升手段**：
-    - **避免在页面加载期间修改已渲染元素的尺寸**：
-        - **在CSS中提前定义好元素的尺寸**：
+   **提升手段**：
 
-          ```css
-          img {
-              width: 300px;
-              height: 200px;
-              object-fit: cover;
-          }
-          ```
+   - **避免在页面加载期间修改已渲染元素的尺寸**：
 
-        - **使用固定尺寸或百分比布局**：
+     - **在CSS中提前定义好元素的尺寸**：
 
-          ```css
-          .container {
-              display: flex;
-              flex-direction: column;
-          }
-          .item {
-              flex: 1;
-              height: 100px;
-          }
-          ```
+       ```css
+       img {
+         width: 300px;
+         height: 200px;
+         object-fit: cover;
+       }
+       ```
 
-    - **动态插入内容时预留空间或使用CSS动画**：
-        - **在动态内容插入前预留空间**：
+     - **使用固定尺寸或百分比布局**：
 
-          ```javascript
-          // 在插入内容前设置容器高度
-          const container = document.getElementById('content-container');
-          container.style.height = '300px'; // 预留高度
-          // 插入内容
-          container.innerHTML = '<div>Dynamic content</div>';
-          ```
+       ```css
+       .container {
+         display: flex;
+         flex-direction: column;
+       }
+       .item {
+         flex: 1;
+         height: 100px;
+       }
+       ```
 
-        - **使用CSS动画平滑过渡**：
+   - **动态插入内容时预留空间或使用CSS动画**：
 
-          ```css
-          .content-container {
-              transition: height 0.3s ease;
-          }
-          ```
+     - **在动态内容插入前预留空间**：
+
+       ```javascript
+       // 在插入内容前设置容器高度
+       const container = document.getElementById('content-container');
+       container.style.height = '300px'; // 预留高度
+       // 插入内容
+       container.innerHTML = '<div>Dynamic content</div>';
+       ```
+
+     - **使用CSS动画平滑过渡**：
+
+       ```css
+       .content-container {
+         transition: height 0.3s ease;
+       }
+       ```
 
 5. **TTI（Time to Interactive）**
 
-    **解释**：TTI衡量从页面开始加载到能够快速可靠地响应用户输入的时间。
+   **解释**：TTI衡量从页面开始加载到能够快速可靠地响应用户输入的时间。
 
-    **数据采集和计算方式**：
+   **数据采集和计算方式**：
 
-    ```javascript
-    const ttiObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntriesByType('longtask');
-        entries.forEach((entry) => {
-            console.log('TTI:', entry.startTime);
-        });
-    });
+   ```javascript
+   const ttiObserver = new PerformanceObserver((list) => {
+     const entries = list.getEntriesByType('longtask');
+     entries.forEach((entry) => {
+       console.log('TTI:', entry.startTime);
+     });
+   });
 
-    ttiObserver.observe({ entryTypes: ['longtask'] });
-    ```
+   ttiObserver.observe({ entryTypes: ['longtask'] });
+   ```
 
-    **提升手段**：
-    - **减少JavaScript的阻塞**：
-        - **使用代码拆分和异步加载**：
+   **提升手段**：
 
-          ```javascript
-          // 使用Webpack进行代码分割
-          const mainModule = import('./main.js');
-          const featureModule = import('./feature.js');
-          ```
+   - **减少JavaScript的阻塞**：
 
-        - **使用Web Workers处理耗时任务**：
+     - **使用代码拆分和异步加载**：
 
-          ```javascript
-          const worker = new Worker('worker.js');
-          worker.postMessage('Start processing');
-          worker.onmessage = function(e) {
-              console.log('Result:', e.data);
-          };
-          ```
+       ```javascript
+       // 使用Webpack进行代码分割
+       const mainModule = import('./main.js');
+       const featureModule = import('./feature.js');
+       ```
 
-    - **优化服务器响应时间和网络连接**：
-        - **使用CDN加速资源加载**：
+     - **使用Web Workers处理耗时任务**：
 
-          ```html
-          <link rel="stylesheet" href="https://cdn.example.com/style.css">
-          <script src="https://cdn.example.com/script.js"></script>
-          ```
+       ```javascript
+       const worker = new Worker('worker.js');
+       worker.postMessage('Start processing');
+       worker.onmessage = function (e) {
+         console.log('Result:', e.data);
+       };
+       ```
 
-        - **使用HTTP/2减少请求延迟**：
+   - **优化服务器响应时间和网络连接**：
 
-          ```nginx
-          # Nginx配置示例
-          server {
-              listen 443 ssl http2;
-              server_name example.com;
-              # 其他配置...
-          }
-          ```
+     - **使用CDN加速资源加载**：
+
+       ```html
+       <link rel="stylesheet" href="https://cdn.example.com/style.css" />
+       <script src="https://cdn.example.com/script.js"></script>
+       ```
+
+     - **使用HTTP/2减少请求延迟**：
+
+       ```nginx
+       # Nginx配置示例
+       server {
+           listen 443 ssl http2;
+           server_name example.com;
+           # 其他配置...
+       }
+       ```
 
 6. **TBT（Total Blocking Time）**
 
-    **解释**：TBT测量FCP和TTI之间的总时间，主线程处于屏蔽状态的时间足以阻止输入响应。
+   **解释**：TBT测量FCP和TTI之间的总时间，主线程处于屏蔽状态的时间足以阻止输入响应。
 
-    **数据采集和计算方式**：
+   **数据采集和计算方式**：
 
-    ```javascript
-    const tbtObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntriesByType('longtask');
-        let totalTBT = 0;
-        entries.forEach((entry) => {
-            totalTBT += entry.duration;
-        });
-        console.log('TBT:', totalTBT);
-    });
+   ```javascript
+   const tbtObserver = new PerformanceObserver((list) => {
+     const entries = list.getEntriesByType('longtask');
+     let totalTBT = 0;
+     entries.forEach((entry) => {
+       totalTBT += entry.duration;
+     });
+     console.log('TBT:', totalTBT);
+   });
 
-    tbtObserver.observe({ entryTypes: ['longtask'] });
-    ```
+   tbtObserver.observe({ entryTypes: ['longtask'] });
+   ```
 
-    **提升手段**：
-    - **减少JavaScript的阻塞**：
-        - **使用代码拆分和异步加载**：
+   **提升手段**：
 
-          ```javascript
-          // 使用Webpack进行代码分割
-          const mainModule = import('./main.js');
-          const featureModule = import('./feature.js');
-          ```
+   - **减少JavaScript的阻塞**：
 
-        - **使用Web Workers处理耗时任务**：
+     - **使用代码拆分和异步加载**：
 
-          ```javascript
-          const worker = new Worker('worker.js');
-          worker.postMessage('Start processing');
-          worker.onmessage = function(e) {
-              console.log('Result:', e.data);
-          };
-          ```
+       ```javascript
+       // 使用Webpack进行代码分割
+       const mainModule = import('./main.js');
+       const featureModule = import('./feature.js');
+       ```
 
-    - **优化服务器响应时间和网络连接**：
-        - **使用CDN加速资源加载**：
+     - **使用Web Workers处理耗时任务**：
 
-          ```html
-          <link rel="stylesheet" href="https://cdn.example.com/style.css">
-          <script src="https://cdn.example.com/script.js"></script>
-          ```
+       ```javascript
+       const worker = new Worker('worker.js');
+       worker.postMessage('Start processing');
+       worker.onmessage = function (e) {
+         console.log('Result:', e.data);
+       };
+       ```
 
-        - **使用HTTP/2减少请求延迟**：
+   - **优化服务器响应时间和网络连接**：
 
-          ```nginx
-          # Nginx配置示例
-          server {
-              listen 443 ssl http2;
-              server_name example.com;
-              # 其他配置...
-          }
-          ```
+     - **使用CDN加速资源加载**：
+
+       ```html
+       <link rel="stylesheet" href="https://cdn.example.com/style.css" />
+       <script src="https://cdn.example.com/script.js"></script>
+       ```
+
+     - **使用HTTP/2减少请求延迟**：
+
+       ```nginx
+       # Nginx配置示例
+       server {
+           listen 443 ssl http2;
+           server_name example.com;
+           # 其他配置...
+       }
+       ```
 
 7. **INP（Interaction to Next Paint）**
 
-    **解释**：INP衡量用户与页面交互后的延迟时间，选择最差的互动延迟时间作为代表性值。
+   **解释**：INP衡量用户与页面交互后的延迟时间，选择最差的互动延迟时间作为代表性值。
 
-    **数据采集和计算方式**：
+   **数据采集和计算方式**：
 
-    ```javascript
-    const inpObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntriesByType('interaction');
-        entries.forEach((entry) => {
-            console.log('INP:', entry.interactionId, entry.startTime, entry.duration);
-        });
-    });
+   ```javascript
+   const inpObserver = new PerformanceObserver((list) => {
+     const entries = list.getEntriesByType('interaction');
+     entries.forEach((entry) => {
+       console.log(
+         'INP:',
+         entry.interactionId,
+         entry.startTime,
+         entry.duration,
+       );
+     });
+   });
 
-    inpObserver.observe({ entryTypes: ['interaction'] });
-    ```
+   inpObserver.observe({ entryTypes: ['interaction'] });
+   ```
 
-    **提升手段**：
-    - **减少JavaScript的阻塞**：
-        - **使用代码拆分和异步加载**：
+   **提升手段**：
 
-          ```javascript
-          // 使用Webpack进行代码分割
-          const mainModule = import('./main.js');
-          const featureModule = import('./feature.js');
-          ```
+   - **减少JavaScript的阻塞**：
 
-        - **使用Web Workers处理耗时任务**：
+     - **使用代码拆分和异步加载**：
 
-          ```javascript
-          const worker = new Worker('worker.js');
-          worker.postMessage('Start processing');
-          worker.onmessage = function(e) {
-              console.log('Result:', e.data);
-          };
-          ```
+       ```javascript
+       // 使用Webpack进行代码分割
+       const mainModule = import('./main.js');
+       const featureModule = import('./feature.js');
+       ```
 
-    - **优化服务器响应时间和网络连接**：
-        - **使用CDN加速资源加载**：
+     - **使用Web Workers处理耗时任务**：
 
-          ```html
-          <link rel="stylesheet" href="https://cdn.example.com/style.css">
-          <script src="https://cdn.example.com/script.js"></script>
-          ```
+       ```javascript
+       const worker = new Worker('worker.js');
+       worker.postMessage('Start processing');
+       worker.onmessage = function (e) {
+         console.log('Result:', e.data);
+       };
+       ```
 
-        - **使用HTTP/2减少请求延迟**：
+   - **优化服务器响应时间和网络连接**：
 
-          ```nginx
-          # Nginx配置示例
-          server {
-              listen 443 ssl http2;
-              server_name example.com;
-              # 其他配置...
-          }
-          ```
+     - **使用CDN加速资源加载**：
+
+       ```html
+       <link rel="stylesheet" href="https://cdn.example.com/style.css" />
+       <script src="https://cdn.example.com/script.js"></script>
+       ```
+
+     - **使用HTTP/2减少请求延迟**：
+
+       ```nginx
+       # Nginx配置示例
+       server {
+           listen 443 ssl http2;
+           server_name example.com;
+           # 其他配置...
+       }
+       ```
 
 8. **FPS（Frames Per Second）**
 
-    **解释**：FPS表示每秒钟画面更新次数，影响动画的流畅度。
+   **解释**：FPS表示每秒钟画面更新次数，影响动画的流畅度。
 
-    **数据采集和计算方式**：
+   **数据采集和计算方式**：
 
-    ```javascript
-    let frameCount = 0;
-    let lastTime = 0;
+   ```javascript
+   let frameCount = 0;
+   let lastTime = 0;
 
-    function countFrames(timestamp) {
-        if (timestamp < lastTime) {
-            console.log('FPS:', frameCount);
-            frameCount = 0;
-        } else {
-            frameCount++;
-        }
-        lastTime = timestamp;
-        requestAnimationFrame(countFrames);
-    }
+   function countFrames(timestamp) {
+     if (timestamp < lastTime) {
+       console.log('FPS:', frameCount);
+       frameCount = 0;
+     } else {
+       frameCount++;
+     }
+     lastTime = timestamp;
+     requestAnimationFrame(countFrames);
+   }
 
-    requestAnimationFrame(countFrames);
-    ```
+   requestAnimationFrame(countFrames);
+   ```
 
-    **提升手段**：
-    - **减少DOM操作**：
-        - **避免频繁的重绘和回流**：
+   **提升手段**：
 
-          ```javascript
-          // 使用DocumentFragment减少DOM操作
-          const fragment = document.createDocumentFragment();
-          for (let i = 0; i < items.length; i++) {
-              const item = document.createElement('div');
-              item.textContent = items[i];
-              fragment.appendChild(item);
-          }
-          document.getElementById('container').appendChild(fragment);
-          ```
+   - **减少DOM操作**：
 
-        - **使用CSS动画和硬件加速**：
+     - **避免频繁的重绘和回流**：
 
-          ```css
-          .slide-in {
-              animation: slideIn 0.5s ease-out;
-              will-change: transform;
-          }
-          @keyframes slideIn {
-              from {
-                  transform: translateX(-100%);
-              }
-              to {
-                  transform: translateX(0);
-              }
-          }
-          ```
+       ```javascript
+       // 使用DocumentFragment减少DOM操作
+       const fragment = document.createDocumentFragment();
+       for (let i = 0; i < items.length; i++) {
+         const item = document.createElement('div');
+         item.textContent = items[i];
+         fragment.appendChild(item);
+       }
+       document.getElementById('container').appendChild(fragment);
+       ```
+
+     - **使用CSS动画和硬件加速**：
+
+       ```css
+       .slide-in {
+         animation: slideIn 0.5s ease-out;
+         will-change: transform;
+       }
+       @keyframes slideIn {
+         from {
+           transform: translateX(-100%);
+         }
+         to {
+           transform: translateX(0);
+         }
+       }
+       ```
 
 9. **FP（First Paint）**
 
-    **解释**：FP标志着浏览器开始在屏幕上渲染任何内容，包括背景颜色改变。
+   **解释**：FP标志着浏览器开始在屏幕上渲染任何内容，包括背景颜色改变。
 
-    **数据采集和计算方式**：
+   **数据采集和计算方式**：
 
-    ```javascript
-    const fpObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntriesByType('paint');
-        entries.forEach((entry) => {
-            if (entry.name === 'first-paint') {
-                console.log('FP:', entry.startTime);
-            }
-        });
-    });
+   ```javascript
+   const fpObserver = new PerformanceObserver((list) => {
+     const entries = list.getEntriesByType('paint');
+     entries.forEach((entry) => {
+       if (entry.name === 'first-paint') {
+         console.log('FP:', entry.startTime);
+       }
+     });
+   });
 
-    fpObserver.observe({ entryTypes: ['paint'] });
-    ```
+   fpObserver.observe({ entryTypes: ['paint'] });
+   ```
 
-    **提升手段**：
-    - **减少初始CSS和JavaScript的体积**：
-        - **通过压缩、合并文件，减少代码冗余**：
+   **提升手段**：
 
-          ```javascript
-          // 使用Webpack进行代码压缩
-          const TerserPlugin = require('terser-webpack-plugin');
+   - **减少初始CSS和JavaScript的体积**：
 
-          module.exports = {
-              optimization: {
-                  minimize: true,
-                  minimizer: [new TerserPlugin()],
-              },
-          };
-          ```
+     - **通过压缩、合并文件，减少代码冗余**：
 
-        - **使用代码分割，按需加载非关键资源**：
+       ```javascript
+       // 使用Webpack进行代码压缩
+       const TerserPlugin = require('terser-webpack-plugin');
 
-          ```javascript
-          // 使用Webpack进行代码分割
-          const mainModule = import('./main.js');
-          const featureModule = import('./feature.js');
-          ```
+       module.exports = {
+         optimization: {
+           minimize: true,
+           minimizer: [new TerserPlugin()],
+         },
+       };
+       ```
 
-    - **优先加载关键CSS**：
-        - **将首屏需要的CSS提前加载，非关键CSS可以异步加载**：
+     - **使用代码分割，按需加载非关键资源**：
 
-          ```html
-          <link rel="stylesheet" href="critical.css">
-          <link rel="preload" href="non-critical.css" as="style">
-          ```
+       ```javascript
+       // 使用Webpack进行代码分割
+       const mainModule = import('./main.js');
+       const featureModule = import('./feature.js');
+       ```
 
-        - **使用`<link rel="preload">`提前加载关键资源**：
+   - **优先加载关键CSS**：
 
-          ```html
-          <link rel="preload" href="critical.css" as="style">
-          ```
+     - **将首屏需要的CSS提前加载，非关键CSS可以异步加载**：
+
+       ```html
+       <link rel="stylesheet" href="critical.css" />
+       <link rel="preload" href="non-critical.css" as="style" />
+       ```
+
+     - **使用`<link rel="preload">`提前加载关键资源**：
+
+       ```html
+       <link rel="preload" href="critical.css" as="style" />
+       ```
 
 ## 业务自定义埋点，数据上报的核心技术方案和示例代码
 
@@ -713,34 +768,34 @@ document.getElementById('submit-btn').addEventListener('click', function() {
 ```javascript
 // 定义埋点数据结构
 const analyticsData = {
-    eventType: 'button_click', // 事件类型
-    elementId: 'submit-btn', // 元素ID
-    page: window.location.pathname, // 当前页面路径
-    timestamp: new Date().toISOString() // 事件发生时间
+  eventType: 'button_click', // 事件类型
+  elementId: 'submit-btn', // 元素ID
+  page: window.location.pathname, // 当前页面路径
+  timestamp: new Date().toISOString(), // 事件发生时间
 };
 
 // 发送埋点数据到服务器
 function sendAnalyticsData(data) {
-    // 使用fetch API发送POST请求
-    fetch('/api/analytics', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+  // 使用fetch API发送POST请求
+  fetch('/api/analytics', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Analytics data sent successfully:', data);
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Analytics data sent successfully:', data);
-    })
-    .catch(error => {
-        console.error('Error sending analytics data:', error);
+    .catch((error) => {
+      console.error('Error sending analytics data:', error);
     });
 }
 
 // 在业务代码中手动调用埋点
-document.getElementById('submit-btn').addEventListener('click', function() {
-    sendAnalyticsData(analyticsData);
+document.getElementById('submit-btn').addEventListener('click', function () {
+  sendAnalyticsData(analyticsData);
 });
 ```
 
@@ -748,17 +803,21 @@ document.getElementById('submit-btn').addEventListener('click', function() {
 
 ```javascript
 // 使用事件代理监听点击事件
-document.body.addEventListener('click', function(event) {
+document.body.addEventListener(
+  'click',
+  function (event) {
     const target = event.target;
     if (target.matches('.tracked-button')) {
-        sendAnalyticsData({
-            eventType: 'button_click',
-            elementId: target.id,
-            page: window.location.pathname,
-            timestamp: new Date().toISOString()
-        });
+      sendAnalyticsData({
+        eventType: 'button_click',
+        elementId: target.id,
+        page: window.location.pathname,
+        timestamp: new Date().toISOString(),
+      });
     }
-}, true); // 使用捕获阶段确保监听
+  },
+  true,
+); // 使用捕获阶段确保监听
 ```
 
 #### 可视化埋点示例
@@ -766,29 +825,29 @@ document.body.addEventListener('click', function(event) {
 ```javascript
 // 定义埋点规则配置
 const data = {
-    'button#submit-btn': {
-        eventType: 'button_click',
-        elementId: 'submit-btn',
-        page: window.location.pathname,
-        timestamp: new Date().toISOString()
-    },
-    'a[href="/checkout"]': {
-        eventType: 'checkout_click',
-        elementId: 'checkout-link',
-        page: window.location.pathname,
-        timestamp: new Date().toISOString()
-    }
+  'button#submit-btn': {
+    eventType: 'button_click',
+    elementId: 'submit-btn',
+    page: window.location.pathname,
+    timestamp: new Date().toISOString(),
+  },
+  'a[href="/checkout"]': {
+    eventType: 'checkout_click',
+    elementId: 'checkout-link',
+    page: window.location.pathname,
+    timestamp: new Date().toISOString(),
+  },
 };
 
 // 遍历埋点规则配置，为匹配的元素添加事件监听器
 for (const selector in data) {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach(element => {
-        element.addEventListener('click', function(event) {
-            const analyticsData =埋点规则配置[selector];
-            sendAnalyticsData(analyticsData);
-        });
+  const elements = document.querySelectorAll(selector);
+  elements.forEach((element) => {
+    element.addEventListener('click', function (event) {
+      const analyticsData = 埋点规则配置[selector];
+      sendAnalyticsData(analyticsData);
     });
+  });
 }
 ```
 
@@ -811,41 +870,44 @@ for (const selector in data) {
 const analyticsDataBatch = [];
 
 function sendAnalyticsDataBatch() {
-    if (analyticsDataBatch.length > 0) {
-        fetch('/api/analytics/batch', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ data: analyticsDataBatch })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Batch analytics data sent successfully:', data);
-            // 清空数据批
-            analyticsDataBatch.length = 0;
-        })
-        .catch(error => {
-            console.error('Error sending batch analytics data:', error);
-        });
-    }
+  if (analyticsDataBatch.length > 0) {
+    fetch('/api/analytics/batch', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ data: analyticsDataBatch }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Batch analytics data sent successfully:', data);
+        // 清空数据批
+        analyticsDataBatch.length = 0;
+      })
+      .catch((error) => {
+        console.error('Error sending batch analytics data:', error);
+      });
+  }
 }
 
 // 定时发送数据批
 setInterval(sendAnalyticsDataBatch, 30000);
 
 // 使用Beacon API在页面卸载时上报数据
-window.addEventListener('beforeunload', function() {
-    if (analyticsDataBatch.length > 0) {
-        navigator.sendBeacon('/api/analytics/batch', JSON.stringify({ data: analyticsDataBatch }));
-    }
+window.addEventListener('beforeunload', function () {
+  if (analyticsDataBatch.length > 0) {
+    navigator.sendBeacon(
+      '/api/analytics/batch',
+      JSON.stringify({ data: analyticsDataBatch }),
+    );
+  }
 });
 
 // 在visibilitychange事件中上报数据，提高可靠性
-document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'hidden') {
-        navigator.sendBeacon('/api/analytics', data);
-    }
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'hidden') {
+    navigator.sendBeacon('/api/analytics', data);
+  }
 });
 ```
 
@@ -854,17 +916,17 @@ document.addEventListener('visibilitychange', function() {
 ```javascript
 // 使用Beacon API发送单条数据
 function sendAnalyticsDataWithBeacon(data) {
-    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-    navigator.sendBeacon('/api/analytics', blob);
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  navigator.sendBeacon('/api/analytics', blob);
 }
 
 // 在页面卸载时发送数据
-window.addEventListener('beforeunload', function() {
-    sendAnalyticsDataWithBeacon({
-        eventType: 'page_unload',
-        page: window.location.pathname,
-        timestamp: new Date().toISOString()
-    });
+window.addEventListener('beforeunload', function () {
+  sendAnalyticsDataWithBeacon({
+    eventType: 'page_unload',
+    page: window.location.pathname,
+    timestamp: new Date().toISOString(),
+  });
 });
 ```
 
@@ -875,31 +937,31 @@ window.addEventListener('beforeunload', function() {
 const delayedAnalyticsData = [];
 
 function sendDelayedAnalyticsData() {
-    if (delayedAnalyticsData.length > 0) {
-        fetch('/api/analytics/delayed', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ data: delayedAnalyticsData })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Delayed analytics data sent successfully:', data);
-            // 清空延迟数据批
-            delayedAnalyticsData.length = 0;
-        })
-        .catch(error => {
-            console.error('Error sending delayed analytics data:', error);
-        });
-    }
+  if (delayedAnalyticsData.length > 0) {
+    fetch('/api/analytics/delayed', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ data: delayedAnalyticsData }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Delayed analytics data sent successfully:', data);
+        // 清空延迟数据批
+        delayedAnalyticsData.length = 0;
+      })
+      .catch((error) => {
+        console.error('Error sending delayed analytics data:', error);
+      });
+  }
 }
 
 // 在用户不活跃时发送延迟数据
-document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'visible') {
-        sendDelayedAnalyticsData();
-    }
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'visible') {
+    sendDelayedAnalyticsData();
+  }
 });
 
 // 定时检查发送延迟数据

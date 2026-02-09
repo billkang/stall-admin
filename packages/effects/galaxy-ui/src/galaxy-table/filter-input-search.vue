@@ -1,28 +1,13 @@
-<template>
-  <div class="stall-galaxy-table-filter__input-search" :class="{ 'focused-filter': focusedFilter === 'inputSearch' }">
-    <Input
-      v-if="visible"
-      v-model="formData[column.dataIndex]"
-      placeholder="请输入"
-      allow-clear
-      @clear="handleClear"
-      @press-enter="handleSearch">
-      <template #prefix>
-        <IconSearch />
-      </template>
-    </Input>
-    <div class="icon-search-wrapper" v-else @click.stop="handleClickInputSearch">
-      <IconSearch class="icon-search" />
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
-import { defineComponent, type PropType, ref, onMounted, onBeforeUnmount } from 'vue';
+import type { PropType } from 'vue';
+
+import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue';
+
 import { Input } from '@arco-design/web-vue';
 import { IconSearch } from '@arco-design/web-vue/es/icon';
-import { useTableSetting } from './hooks/useTableSetting';
+
 import { useTable } from './hooks/useTable';
+import { useTableSetting } from './hooks/useTableSetting';
 import { recursiveCheckNodeClass } from './utils';
 
 export default defineComponent({
@@ -47,7 +32,8 @@ export default defineComponent({
   emits: ['search'],
   setup(props, { emit }) {
     const { formData } = useTableSetting(props);
-    const { focusedFilter, handleClickFilter, handleClearFocusedFilter } = useTable({ props, emit });
+    const { focusedFilter, handleClickFilter, handleClearFocusedFilter } =
+      useTable({ props, emit });
 
     const visible = ref<boolean>(props.expand);
     const handleClickInputSearch = () => {
@@ -57,7 +43,10 @@ export default defineComponent({
 
     const handleToggleVisible = (e: Event) => {
       if (!props.expand) {
-        const found = recursiveCheckNodeClass(e.target as any, 'stall-galaxy-table-filter__input-search');
+        const found = recursiveCheckNodeClass(
+          e.target as any,
+          'stall-galaxy-table-filter__input-search',
+        );
         if (!found) {
           visible.value = false;
         }
@@ -95,3 +84,30 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <div
+    class="stall-galaxy-table-filter__input-search"
+    :class="{ 'focused-filter': focusedFilter === 'inputSearch' }"
+  >
+    <Input
+      v-if="visible"
+      v-model="formData[column.dataIndex]"
+      placeholder="请输入"
+      allow-clear
+      @clear="handleClear"
+      @press-enter="handleSearch"
+    >
+      <template #prefix>
+        <IconSearch />
+      </template>
+    </Input>
+    <div
+      class="icon-search-wrapper"
+      v-else
+      @click.stop="handleClickInputSearch"
+    >
+      <IconSearch class="icon-search" />
+    </div>
+  </div>
+</template>

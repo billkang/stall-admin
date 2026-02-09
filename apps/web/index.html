@@ -34,9 +34,7 @@
 
       const n1 = Number(ss1) + 2;
 
-      for(let i = 0; i < 10; i++) {
-
-      }
+      for (let i = 0; i < 10; i++) {}
 
       console.log(s1 === s2);
       console.log(ss1 === ss2);
@@ -44,14 +42,14 @@
       console.log(n1);
 
       const obj = {
-        a: 1
+        a: 1,
       };
 
       obj.valueOf = 1;
       console.log('obj: ', obj);
 
-      const arr1 = [1,2,3,4,5];
-      const arr2 = arr1.map(a => a+1);
+      const arr1 = [1, 2, 3, 4, 5];
+      const arr2 = arr1.map((a) => a + 1);
 
       console.log(arr2);
     </script>

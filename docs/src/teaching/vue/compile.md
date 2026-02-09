@@ -42,7 +42,7 @@ function parse(template) {
         type: 'Element',
         tag: startTag,
         attrs: parseAttrs(attrs),
-        children: []
+        children: [],
       };
       currentParent.children.push(element);
       stack.push(element);
@@ -53,12 +53,12 @@ function parse(template) {
     } else if (interpolation) {
       currentParent.children.push({
         type: 'Interpolation',
-        content: interpolation.trim()
+        content: interpolation.trim(),
       });
     } else if (text?.trim()) {
       currentParent.children.push({
         type: 'Text',
-        content: text.trim()
+        content: text.trim(),
       });
     }
   });
@@ -67,9 +67,10 @@ function parse(template) {
 }
 
 function parseAttrs(attrsStr) {
-  return attrsStr.split(/\s+/)
-    .filter(attr => attr)
-    .map(attr => {
+  return attrsStr
+    .split(/\s+/)
+    .filter((attr) => attr)
+    .map((attr) => {
       const [name, value] = attr.split('=');
       return { name, value: value?.replace(/['"]/g, '') };
     });
@@ -90,39 +91,39 @@ console.log(parse(template));
 ```json
 {
   "type": "Root",
-  "children": [{
-    "type": "Element",
-    "tag": "div",
-    "attrs": [{ "name": "class", "value": "container" }],
-    "children": [
-      {
-        "type": "Element",
-        "tag": "p",
-        "attrs": [],
-        "children": [
-          { "type": "Text", "content": "欢迎您，" },
-          { "type": "Interpolation", "content": "userName" },
-          { "type": "Text", "content": "！" }
-        ]
-      },
-      {
-        "type": "Element",
-        "tag": "button",
-        "attrs": [{ "name": "@click", "value": "handleClick" }],
-        "children": [{ "type": "Text", "content": "点击" }]
-      }
-    ]
-  }]
+  "children": [
+    {
+      "type": "Element",
+      "tag": "div",
+      "attrs": [{ "name": "class", "value": "container" }],
+      "children": [
+        {
+          "type": "Element",
+          "tag": "p",
+          "attrs": [],
+          "children": [
+            { "type": "Text", "content": "欢迎您，" },
+            { "type": "Interpolation", "content": "userName" },
+            { "type": "Text", "content": "！" }
+          ]
+        },
+        {
+          "type": "Element",
+          "tag": "button",
+          "attrs": [{ "name": "@click", "value": "handleClick" }],
+          "children": [{ "type": "Text", "content": "点击" }]
+        }
+      ]
+    }
+  ]
 }
 ```
 
 ### 常见问题解答
 
-1. **Q**: 为什么需要 AST？
-   **A**: AST 是模板的结构化表示，类似于建筑的蓝图，为后续处理提供基础。
+1. **Q**: 为什么需要 AST？ **A**: AST 是模板的结构化表示，类似于建筑的蓝图，为后续处理提供基础。
 
-2. **Q**: 正则表达式如何处理复杂情况？
-   **A**: 实际 Vue 编译器使用状态机解析模板，本文使用正则简化演示。
+2. **Q**: 正则表达式如何处理复杂情况？ **A**: 实际 Vue 编译器使用状态机解析模板，本文使用正则简化演示。
 
 ---
 
@@ -136,7 +137,7 @@ console.log(parse(template));
 function transform(ast) {
   const context = {
     helpers: new Set(['toDisplayString']),
-    currentNode: null
+    currentNode: null,
   };
 
   function traverse(node) {
@@ -147,12 +148,12 @@ function transform(ast) {
     }
 
     if (node.type === 'Element') {
-      node.props = node.attrs.filter(attr => {
+      node.props = node.attrs.filter((attr) => {
         if (attr.name.startsWith('@')) {
           node.events = node.events || [];
           node.events.push({
             name: attr.name.slice(1),
-            handler: attr.value
+            handler: attr.value,
           });
           return false;
         }
@@ -161,7 +162,7 @@ function transform(ast) {
     }
 
     if (node.children) {
-      node.children.forEach(child => traverse(child));
+      node.children.forEach((child) => traverse(child));
     }
 
     context.currentNode = null;
@@ -171,7 +172,7 @@ function transform(ast) {
 
   return {
     ast,
-    helpers: Array.from(context.helpers)
+    helpers: Array.from(context.helpers),
   };
 }
 
@@ -199,7 +200,7 @@ function generate(transformed) {
   const { ast, helpers } = transformed;
 
   const code = `
-    ${helpers.map(h => `const ${h} = Vue.${h}`).join('\n')}
+    ${helpers.map((h) => `const ${h} = Vue.${h}`).join('\n')}
 
     return function render(_ctx) {
       return ${genNode(ast.children[0])}
@@ -220,14 +221,20 @@ function generate(transformed) {
   function genProps(node) {
     const props = [];
     if (node.attrs) {
-      props.push(...node.attrs.map(attr =>
-        `${JSON.stringify(attr.name)}: ${JSON.stringify(attr.value)}`
-      ));
+      props.push(
+        ...node.attrs.map(
+          (attr) =>
+            `${JSON.stringify(attr.name)}: ${JSON.stringify(attr.value)}`,
+        ),
+      );
     }
     if (node.events) {
-      props.push(...node.events.map(event =>
-        `on${event.name[0].toUpperCase() + event.name.slice(1)}: ${event.handler}`
-      ));
+      props.push(
+        ...node.events.map(
+          (event) =>
+            `on${event.name[0].toUpperCase() + event.name.slice(1)}: ${event.handler}`,
+        ),
+      );
     }
     return props.join(', ');
   }
@@ -246,19 +253,17 @@ console.log(generatedCode);
 const toDisplayString = Vue.toDisplayString;
 
 return function render(_ctx) {
-  return h('div', { "class": "container" }, [
-    h('p', {}, [
-      "欢迎您，",
-      toDisplayString(_ctx.userName),
-      "！"
-    ]),
-    h('button', {
-      onClick: handleClick
-    }, [
-      "点击"
-    ])
+  return h('div', { class: 'container' }, [
+    h('p', {}, ['欢迎您，', toDisplayString(_ctx.userName), '！']),
+    h(
+      'button',
+      {
+        onClick: handleClick,
+      },
+      ['点击'],
+    ),
   ]);
-}
+};
 ```
 
 ---
@@ -284,7 +289,7 @@ const app = {
     const handleClick = () => alert('点击事件');
     return { userName, handleClick };
   },
-  render
+  render,
 };
 
 // 挂载到页面

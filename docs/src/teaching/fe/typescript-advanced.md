@@ -37,7 +37,7 @@ class Person {
 }
 
 // 创建对象
-const person = new Person("Alice", 30);
+const person = new Person('Alice', 30);
 person.greet(); // 输出: Hello, my name is Alice
 ```
 
@@ -78,7 +78,7 @@ class Manager extends Employee {
   }
 }
 
-const manager = new Manager("Bob", 5000, "HR");
+const manager = new Manager('Bob', 5000, 'HR');
 console.log(manager.displayDepartment()); // 输出: HR
 // console.log(manager.salary); // 错误：无法访问私有成员
 ```
@@ -138,8 +138,8 @@ function animalSound(animal: Animal): void {
 }
 
 // 创建对象
-const dog = new Dog("Rex");
-const cat = new Cat("Whiskers");
+const dog = new Dog('Rex');
+const cat = new Cat('Whiskers');
 
 // 调用多态方法
 animalSound(dog); // 输出: Rex barks. This is a Rex
@@ -167,7 +167,7 @@ abstract class Shape {
 
 class Circle extends Shape {
   constructor(public radius: number) {
-    super("Circle");
+    super('Circle');
   }
 
   calculateArea(): number {
@@ -176,8 +176,11 @@ class Circle extends Shape {
 }
 
 class Rectangle extends Shape {
-  constructor(public width: number, public height: number) {
-    super("Rectangle");
+  constructor(
+    public width: number,
+    public height: number,
+  ) {
+    super('Rectangle');
   }
 
   calculateArea(): number {
@@ -205,13 +208,13 @@ interface Drawable {
 
 class Canvas implements Drawable {
   draw() {
-    console.log("Drawing on canvas...");
+    console.log('Drawing on canvas...');
   }
 }
 
 class Printer implements Drawable {
   draw() {
-    console.log("Printing...");
+    console.log('Printing...');
   }
 }
 
@@ -252,7 +255,7 @@ console.log(MathUtils.calculateCircleArea(5)); // 输出: 78.54
 ```typescript
 class StringProcessor {
   private sanitize(input: string): string {
-    return input.trim().replace(/[^a-zA-Z0-9]/g, "");
+    return input.trim().replace(/[^a-zA-Z0-9]/g, '');
   }
 
   public process(input: string): string {
@@ -262,7 +265,7 @@ class StringProcessor {
 }
 
 const processor = new StringProcessor();
-console.log(processor.process("  Hello, World!  ")); // 输出: HELLOWORLD
+console.log(processor.process('  Hello, World!  ')); // 输出: HELLOWORLD
 ```
 
 ## 三、泛型高级用法
@@ -281,11 +284,11 @@ console.log(processor.process("  Hello, World!  ")); // 输出: HELLOWORLD
 
 ```typescript
 function identity<T>(arg: T): T {
-    return arg;
+  return arg;
 }
 
-let output1 = identity<string>("myString");  // 明确指定T为string类型
-let output2 = identity(5);  // 编译器自动推断T为number类型
+let output1 = identity<string>('myString'); // 明确指定T为string类型
+let output2 = identity(5); // 编译器自动推断T为number类型
 ```
 
 #### 2. 泛型接口
@@ -294,15 +297,15 @@ let output2 = identity(5);  // 编译器自动推断T为number类型
 
 ```typescript
 interface GenericIdentityFn<T> {
-    (arg: T): T;
+  (arg: T): T;
 }
 
 function identity<T>(arg: T): T {
-    return arg;
+  return arg;
 }
 
 let myIdentity: GenericIdentityFn<number> = identity;
-let output = myIdentity(5);  // 输出5，且类型是number
+let output = myIdentity(5); // 输出5，且类型是number
 ```
 
 #### 3. 泛型类
@@ -311,14 +314,14 @@ let output = myIdentity(5);  // 输出5，且类型是number
 
 ```typescript
 class GenericNumber<T> {
-    zeroValue: T;
-    add: (x: T, y: T) => T;
+  zeroValue: T;
+  add: (x: T, y: T) => T;
 }
 
 let myGenericNumber = new GenericNumber<number>();
 myGenericNumber.zeroValue = 0;
 myGenericNumber.add = (x, y) => x + y;
-let result = myGenericNumber.add(5, 10);  // 输出15，且类型是number
+let result = myGenericNumber.add(5, 10); // 输出15，且类型是number
 ```
 
 #### 4. 泛型约束
@@ -327,15 +330,15 @@ let result = myGenericNumber.add(5, 10);  // 输出15，且类型是number
 
 ```typescript
 interface Lengthwise {
-    length: number;
+  length: number;
 }
 
 // 泛型约束：T 必须符合 Lengthwise 接口
 function getLength<T extends Lengthwise>(arg: T): number {
-    return arg.length; // 安全，因为我们保证 T 有 length 属性
+  return arg.length; // 安全，因为我们保证 T 有 length 属性
 }
 
-getLength("Hello"); // 字符串有 length 属性，可以正常工作
+getLength('Hello'); // 字符串有 length 属性，可以正常工作
 getLength([1, 2, 3]); // 数组有 length 属性，可以正常工作
 // getLength(123); // 错误！数字没有 length 属性
 ```
@@ -346,10 +349,10 @@ getLength([1, 2, 3]); // 数组有 length 属性，可以正常工作
 
 ```typescript
 interface User {
-    id: number;
-    name: string;
-    email: string;
-    age?: number;
+  id: number;
+  name: string;
+  email: string;
+  age?: number;
 }
 
 type PartialUser = Partial<User>;
@@ -366,14 +369,14 @@ type PartialUser = Partial<User>;
 
 ```typescript
 const user: User = {
-    id: 1,
-    name: "Alice",
-    email: "alice@example.com"
+  id: 1,
+  name: 'Alice',
+  email: 'alice@example.com',
 };
 
 const userUpdate: PartialUser = {
-    name: "Alice Smith",
-    age: 30
+  name: 'Alice Smith',
+  age: 30,
 };
 
 // 合并对象
@@ -386,15 +389,15 @@ const updatedUser = { ...user, ...userUpdate };
 
 ```typescript
 function processItem<T>(item: T) {
-    if (typeof item === "number") {
-        console.log(`Number: ${item}`);
-    } else if (typeof item === "string") {
-        console.log(`String: ${item}`);
-    }
+  if (typeof item === 'number') {
+    console.log(`Number: ${item}`);
+  } else if (typeof item === 'string') {
+    console.log(`String: ${item}`);
+  }
 }
 
 processItem(42); // 输出: Number: 42
-processItem("Hello"); // 输出: String: Hello
+processItem('Hello'); // 输出: String: Hello
 ```
 
 #### 7. 泛型与高级类型
@@ -402,25 +405,27 @@ processItem("Hello"); // 输出: String: Hello
 泛型可以与高级类型（如联合类型、交叉类型、映射类型等）结合使用，以实现更复杂的类型逻辑。以下是一个使用联合类型和泛型的案例：
 
 ```typescript
-type Message = {
-    type: "info";
-    message: string;
-} | {
-    type: "error";
-    message: string;
-    code: number;
-};
+type Message =
+  | {
+      type: 'info';
+      message: string;
+    }
+  | {
+      type: 'error';
+      message: string;
+      code: number;
+    };
 
 function handleMessage<T extends Message>(msg: T) {
-    if (msg.type === "info") {
-        console.log(`Info: ${msg.message}`);
-    } else {
-        console.log(`Error [${msg.code}]: ${msg.message}`);
-    }
+  if (msg.type === 'info') {
+    console.log(`Info: ${msg.message}`);
+  } else {
+    console.log(`Error [${msg.code}]: ${msg.message}`);
+  }
 }
 
-handleMessage({ type: "info", message: "All good!" });
-handleMessage({ type: "error", message: "Something wrong", code: 404 });
+handleMessage({ type: 'info', message: 'All good!' });
+handleMessage({ type: 'error', message: 'Something wrong', code: 404 });
 ```
 
 ### （三）泛型的高级技巧
@@ -431,10 +436,10 @@ TypeScript 允许为泛型参数提供默认值。这使得在调用泛型函数
 
 ```typescript
 function logValue<T = string>(value: T): void {
-    console.log(value);
+  console.log(value);
 }
 
-logValue("Hello"); // 使用默认类型 string
+logValue('Hello'); // 使用默认类型 string
 logValue(42); // 显式指定类型 number
 ```
 
@@ -443,10 +448,10 @@ logValue(42); // 显式指定类型 number
 条件类型是 TypeScript 中的一种高级类型，它允许我们根据条件动态地选择类型。
 
 ```typescript
-type IsNumber<T> = T extends number ? "Yes" : "No";
+type IsNumber<T> = T extends number ? 'Yes' : 'No';
 
-type A = IsNumber<number>;  // "Yes"
-type B = IsNumber<string>;  // "No"
+type A = IsNumber<number>; // "Yes"
+type B = IsNumber<string>; // "No"
 ```
 
 #### 3. 泛型与递归类型
@@ -455,16 +460,13 @@ type B = IsNumber<string>;  // "No"
 
 ```typescript
 type Tree<T> = {
-    value: T;
-    children?: Tree<T>[];
+  value: T;
+  children?: Tree<T>[];
 };
 
 const tree: Tree<number> = {
-    value: 1,
-    children: [
-        { value: 2 },
-        { value: 3, children: [{ value: 4 }] }
-    ]
+  value: 1,
+  children: [{ value: 2 }, { value: 3, children: [{ value: 4 }] }],
 };
 ```
 
@@ -474,19 +476,19 @@ const tree: Tree<number> = {
 
 ```typescript
 interface User {
-    id: number;
-    name: string;
-    email: string;
-    age?: number;
+  id: number;
+  name: string;
+  email: string;
+  age?: number;
 }
 
 // 使用 Omit<T, K> 排除特定属性
-type UserWithoutEmail = Omit<User, "email">;
+type UserWithoutEmail = Omit<User, 'email'>;
 
 const user: UserWithoutEmail = {
-    id: 1,
-    name: "Alice",
-    age: 30
+  id: 1,
+  name: 'Alice',
+  age: 30,
 };
 ```
 
@@ -496,30 +498,32 @@ const user: UserWithoutEmail = {
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 interface Todo {
-    id: number;
-    text: string;
-    completed: boolean;
+  id: number;
+  text: string;
+  completed: boolean;
 }
 
 // 使用 createAsyncThunk 泛型
 export const fetchTodos = createAsyncThunk<Todo[], void>(
-    'todos/fetchTodos',
-    async () => {
-        const response = await fetch('https://jsonplaceholder.typicode.com/todos?_limit=10');
-        return await response.json();
-    }
+  'todos/fetchTodos',
+  async () => {
+    const response = await fetch(
+      'https://jsonplaceholder.typicode.com/todos?_limit=10',
+    );
+    return await response.json();
+  },
 );
 
 // 使用 createSlice 泛型
 const todosSlice = createSlice({
-    name: 'todos',
-    initialState: { items: [] } as { items: Todo[] },
-    reducers: {},
-    extraReducers: (builder) => {
-        builder.addCase(fetchTodos.fulfilled, (state, action) => {
-            state.items = action.payload;
-        });
-    }
+  name: 'todos',
+  initialState: { items: [] } as { items: Todo[] },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchTodos.fulfilled, (state, action) => {
+      state.items = action.payload;
+    });
+  },
 });
 ```
 
@@ -555,14 +559,14 @@ const todosSlice = createSlice({
 
 ```typescript
 function getLength(input: string | number): number {
-  if (typeof input === "string") {
+  if (typeof input === 'string') {
     return input.length;
   } else {
     return input.toString().length;
   }
 }
 
-console.log(getLength("TypeScript")); // 输出: 10
+console.log(getLength('TypeScript')); // 输出: 10
 console.log(getLength(12345)); // 输出: 5
 ```
 
@@ -579,13 +583,13 @@ class Animal {
 
 class Dog extends Animal {
   bark() {
-    console.log("Woof!");
+    console.log('Woof!');
   }
 }
 
 class Cat extends Animal {
   meow() {
-    console.log("Meow!");
+    console.log('Meow!');
   }
 }
 
@@ -597,8 +601,8 @@ function makeSound(animal: Animal): void {
   }
 }
 
-const dog = new Dog("Rex");
-const cat = new Cat("Whiskers");
+const dog = new Dog('Rex');
+const cat = new Cat('Whiskers');
 
 makeSound(dog); // 输出: Woof!
 makeSound(cat); // 输出: Meow!
@@ -663,14 +667,20 @@ type ApiResponse = SuccessResponse | ErrorResponse;
 
 function handleResponse(response: ApiResponse): void {
   if (response.success) {
-    console.log("Data received:", response.data);
+    console.log('Data received:', response.data);
   } else {
-    console.error("Error:", response.error);
+    console.error('Error:', response.error);
   }
 }
 
-const successResponse: SuccessResponse = { success: true, data: "Hello, TypeScript!" };
-const errorResponse: ErrorResponse = { success: false, error: "An error occurred" };
+const successResponse: SuccessResponse = {
+  success: true,
+  data: 'Hello, TypeScript!',
+};
+const errorResponse: ErrorResponse = {
+  success: false,
+  error: 'An error occurred',
+};
 
 handleResponse(successResponse); // 输出: Data received: Hello, TypeScript!
 handleResponse(errorResponse); // 输出: Error: An error occurred
@@ -687,7 +697,7 @@ handleResponse(errorResponse); // 输出: Error: An error occurred
 ```typescript
 function getNumberOrString(value: number): number | string {
   if (value > 10) {
-    return "Greater than 10";
+    return 'Greater than 10';
   } else {
     return value;
   }
@@ -711,10 +721,10 @@ function combine<T, U>(a: T, b: U): T | U {
   return a || b;
 }
 
-let result = combine(5, "hello");
+let result = combine(5, 'hello');
 console.log(result); // 输出: "hello"
 
-result = combine("hello", 5);
+result = combine('hello', 5);
 console.log(result); // 输出: "hello"
 ```
 
@@ -761,13 +771,13 @@ type PartialUser = Partial<User>;
 ```typescript
 const user: User = {
   id: 1,
-  name: "Alice",
-  email: "alice@example.com"
+  name: 'Alice',
+  email: 'alice@example.com',
 };
 
 const userUpdate: PartialUser = {
-  name: "Alice Smith",
-  age: 30
+  name: 'Alice Smith',
+  age: 30,
 };
 
 // 合并对象
@@ -801,9 +811,9 @@ type RequiredUser = Required<User>;
 ```typescript
 const user: RequiredUser = {
   id: 1,
-  name: "Alice",
-  email: "alice@example.com",
-  age: 30
+  name: 'Alice',
+  email: 'alice@example.com',
+  age: 30,
 };
 ```
 
@@ -834,8 +844,8 @@ type ReadonlyUser = Readonly<User>;
 ```typescript
 const user: ReadonlyUser = {
   id: 1,
-  name: "Alice",
-  email: "alice@example.com"
+  name: 'Alice',
+  email: 'alice@example.com',
 };
 
 // user.name = "Bob"; // 错误：不能给只读属性赋值
@@ -866,13 +876,13 @@ type UserPick = Pick<User, 'id' | 'name'>;
 ```typescript
 const user: User = {
   id: 1,
-  name: "Alice",
-  email: "alice@example.com"
+  name: 'Alice',
+  email: 'alice@example.com',
 };
 
 const userPick: UserPick = {
   id: user.id,
-  name: user.name
+  name: user.name,
 };
 ```
 
@@ -902,13 +912,13 @@ type UserOmit = Omit<User, 'email'>;
 ```typescript
 const user: User = {
   id: 1,
-  name: "Alice",
-  email: "alice@example.com"
+  name: 'Alice',
+  email: 'alice@example.com',
 };
 
 const userOmit: UserOmit = {
   id: user.id,
-  name: user.name
+  name: user.name,
 };
 ```
 
@@ -929,8 +939,8 @@ type UserRecord = Record<'address' | 'phone', string>;
 
 ```typescript
 const userRecord: UserRecord = {
-  address: "123 Main St",
-  phone: "555-1234"
+  address: '123 Main St',
+  phone: '555-1234',
 };
 ```
 
@@ -956,9 +966,13 @@ class MyClass {}
 方法装饰器用于装饰方法，可以访问和修改方法的属性描述符。
 
 ```typescript
-function logMethod(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+function logMethod(
+  target: any,
+  propertyKey: string,
+  descriptor: PropertyDescriptor,
+) {
   const originalMethod = descriptor.value;
-  descriptor.value = function(...args: any[]) {
+  descriptor.value = function (...args: any[]) {
     console.log(`Calling method: ${propertyKey} with args: ${args}`);
     return originalMethod.apply(this, args);
   };
@@ -972,7 +986,7 @@ class MyClass {
 }
 
 const obj = new MyClass();
-obj.greet("Alice"); // 输出: Calling method: greet with args: Alice, Hello, Alice!
+obj.greet('Alice'); // 输出: Calling method: greet with args: Alice, Hello, Alice!
 ```
 
 ### （三）属性装饰器
@@ -993,7 +1007,7 @@ class MyClass {
   }
 }
 
-const obj = new MyClass("Alice");
+const obj = new MyClass('Alice');
 ```
 
 ### （四）参数装饰器
@@ -1001,8 +1015,14 @@ const obj = new MyClass("Alice");
 参数装饰器用于装饰参数，可以访问和修改参数的属性描述符。
 
 ```typescript
-function logParameter(target: any, propertyKey: string, parameterIndex: number) {
-  console.log(`Logging parameter at index ${parameterIndex} for method ${propertyKey}`);
+function logParameter(
+  target: any,
+  propertyKey: string,
+  parameterIndex: number,
+) {
+  console.log(
+    `Logging parameter at index ${parameterIndex} for method ${propertyKey}`,
+  );
 }
 
 class MyClass {
@@ -1012,7 +1032,7 @@ class MyClass {
 }
 
 const obj = new MyClass();
-obj.greet("Alice");
+obj.greet('Alice');
 ```
 
 ### （五）装饰器的高级应用
@@ -1023,7 +1043,11 @@ obj.greet("Alice");
 
 ```typescript
 function repeat(times: number) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args: any[]) {
       for (let i = 0; i < times; i++) {
@@ -1041,7 +1065,7 @@ class MyClass {
 }
 
 const obj = new MyClass();
-obj.greet("Alice");
+obj.greet('Alice');
 // 输出:
 // Hello, Alice!
 // Hello, Alice!
@@ -1055,19 +1079,27 @@ obj.greet("Alice");
 可以在同一个类、方法、属性或参数上应用多个装饰器。装饰器的执行顺序是从下到上（即后应用的装饰器先执行）。
 
 ```typescript
-function decorator1(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-  console.log("Decorator 1 applied");
+function decorator1(
+  target: any,
+  propertyKey: string,
+  descriptor: PropertyDescriptor,
+) {
+  console.log('Decorator 1 applied');
 }
 
-function decorator2(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-  console.log("Decorator 2 applied");
+function decorator2(
+  target: any,
+  propertyKey: string,
+  descriptor: PropertyDescriptor,
+) {
+  console.log('Decorator 2 applied');
 }
 
 class MyClass {
   @decorator1
   @decorator2
   method() {
-    console.log("Method called");
+    console.log('Method called');
   }
 }
 
@@ -1100,10 +1132,12 @@ obj.method();
 `type` 和 `interface` 都可以用来定义类型，包括对象的形状、函数的类型等。它们的主要区别在于：
 
 1. **扩展性**：
+
    - `interface` 支持多次声明，可以合并多个接口定义。
    - `type` 不支持多次声明，但可以通过交叉类型来扩展。
 
 2. **复杂类型**：
+
    - `type` 可以定义更复杂的类型，如联合类型、元组等。
    - `interface` 主要用于定义对象的形状。
 
@@ -1233,7 +1267,7 @@ interface Animal {
 
 class Dog implements Animal {
   eat() {
-    console.log("Woof!");
+    console.log('Woof!');
   }
 }
 ```
@@ -1251,6 +1285,7 @@ class Dog implements Animal {
 ### （三）实践指导
 
 1. **优先使用 `interface`**：
+
    - 定义对象或类的结构时，`interface` 更加清晰明确。
    - 需要声明合并或类实现时，`interface` 更合适。
 
@@ -1296,13 +1331,13 @@ type ID = string | number;
 
 ### （五）总结
 
-| 使用场景 | 推荐使用 |
-| --- | --- |
-| 定义简单的对象类型 | `interface` |
-| 定义类的结构 | `interface` |
-| 需要类型合并 | `interface` |
-| 定义联合类型或交叉类型 | `type` |
-| 定义函数类型或复杂类型表达式 | `type` |
+| 使用场景                     | 推荐使用    |
+| ---------------------------- | ----------- |
+| 定义简单的对象类型           | `interface` |
+| 定义类的结构                 | `interface` |
+| 需要类型合并                 | `interface` |
+| 定义联合类型或交叉类型       | `type`      |
+| 定义函数类型或复杂类型表达式 | `type`      |
 
 总体来说，`interface` 更适合用于描述对象和类的结构，而 `type` 则提供了更多灵活性，适用于更复杂的类型表达需求。了解这两者的区别和适用场景，可以帮助你更合理地组织代码。
 

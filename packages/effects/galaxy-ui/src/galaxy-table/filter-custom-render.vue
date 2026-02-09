@@ -9,7 +9,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    return () => (!!props.render ? props.render() : undefined);
+    return () => (props.render ? props.render() : undefined);
   },
 });
 </script>

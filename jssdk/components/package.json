@@ -2,6 +2,14 @@
   "name": "@stall-jssdk/components",
   "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/jssdk.js",
+  "module": "./dist/jssdk.js",
   "exports": {
     "./dist/*.css": {
       "import": "./dist/*.css"
@@ -10,19 +18,11 @@
       "import": "./dist/jssdk.js"
     }
   },
-  "main": "./dist/jssdk.js",
-  "module": "./dist/jssdk.js",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "vite build"
-  },
   "dependencies": {
     "@arco-design/web-vue": "catalog:",
+    "@stall-jssdk/core": "workspace:*",
     "@stall/galaxy-ui": "workspace:*",
     "@stall/vite-config": "workspace:*",
-    "@stall-jssdk/core": "workspace:*",
     "spark-md5": "catalog:",
     "vue": "catalog:"
   }

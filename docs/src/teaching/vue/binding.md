@@ -30,7 +30,7 @@ class Dep {
   }
 
   notify() {
-    this.subscribers.forEach(sub => sub()); // 通知所有依赖更新
+    this.subscribers.forEach((sub) => sub()); // 通知所有依赖更新
   }
 }
 
@@ -46,13 +46,13 @@ function defineReactive(obj, key, value) {
         value = newVal;
         dep.notify(); // 通知依赖更新
       }
-    }
+    },
   });
 }
 
 function observer(obj) {
   if (!obj || typeof obj !== 'object') return;
-  Object.keys(obj).forEach(key => defineReactive(obj, key, obj[key]));
+  Object.keys(obj).forEach((key) => defineReactive(obj, key, obj[key]));
 }
 
 // 测试
@@ -72,8 +72,8 @@ data.name = 'Vue 2'; // 触发视图更新
 
 ### 代码解读
 
-* 依赖收集：可以画一个数据对象（例如 data.name）与一个名为 Dep 的类实例之间的关系图。当访问 data.name 时，应该展示出如何通过 getter 方法触发 Dep.depend() 函数来收集当前正在执行的更新函数作为依赖。
-* 通知机制：在另一个图中，当设置新的 data.name 值时，展示 setter 方法是如何调用 dep.notify() 来触发所有已注册依赖（即之前收集的更新函数）的执行。
+- 依赖收集：可以画一个数据对象（例如 data.name）与一个名为 Dep 的类实例之间的关系图。当访问 data.name 时，应该展示出如何通过 getter 方法触发 Dep.depend() 函数来收集当前正在执行的更新函数作为依赖。
+- 通知机制：在另一个图中，当设置新的 data.name 值时，展示 setter 方法是如何调用 dep.notify() 来触发所有已注册依赖（即之前收集的更新函数）的执行。
 
 ```mermaid
 graph TD;
@@ -89,12 +89,12 @@ graph TD;
 
 ### 优点
 
-* **易于理解**：逻辑清晰，容易上手。
-* **兼容性好**：支持较旧版本的浏览器。
+- **易于理解**：逻辑清晰，容易上手。
+- **兼容性好**：支持较旧版本的浏览器。
 
 ### 缺点
 
-* **局限性**：无法监听新增或删除的属性，对数组的变化也缺乏直接的支持。
+- **局限性**：无法监听新增或删除的属性，对数组的变化也缺乏直接的支持。
 
 ## 方案2：`Proxy + 发布-订阅模式`
 
@@ -121,7 +121,7 @@ class Dep {
   }
 
   notify() {
-    this.subscribers.forEach(sub => sub());
+    this.subscribers.forEach((sub) => sub());
   }
 }
 
@@ -146,7 +146,7 @@ function reactive(obj) {
       const result = Reflect.set(target, key, value, receiver);
       dep.notify(); // 通知依赖更新
       return result;
-    }
+    },
   });
 }
 
@@ -165,8 +165,8 @@ data.name = 'Vue 3'; // 触发视图更新
 
 ### 代码解读
 
-* 拦截器工作原理：使用图形表示如何利用 Proxy 对象拦截对目标对象属性的 get 和 set 操作。对于每个操作，都应展示 getDep(target, key) 如何获取对应的 Dep 实例，并且如何通过 depend() 收集依赖以及 notify() 更新视图。
-* 复杂场景处理：特别强调 Proxy 在处理数组方法调用、属性增删等情况下的优势，可以通过流程图展示这些情况的处理逻辑。
+- 拦截器工作原理：使用图形表示如何利用 Proxy 对象拦截对目标对象属性的 get 和 set 操作。对于每个操作，都应展示 getDep(target, key) 如何获取对应的 Dep 实例，并且如何通过 depend() 收集依赖以及 notify() 更新视图。
+- 复杂场景处理：特别强调 Proxy 在处理数组方法调用、属性增删等情况下的优势，可以通过流程图展示这些情况的处理逻辑。
 
 ```mermaid
 graph TD;
@@ -183,12 +183,12 @@ graph TD;
 
 ### 优点
 
-* **功能强大**：能够监听属性的增删和数组的变化，适用于复杂的场景。
-* **现代特性**：更好地符合未来的发展趋势，如 Vue 3 所采用的技术栈。
+- **功能强大**：能够监听属性的增删和数组的变化，适用于复杂的场景。
+- **现代特性**：更好地符合未来的发展趋势，如 Vue 3 所采用的技术栈。
 
 ### 缺点
 
-* **浏览器支持**：需要现代浏览器的支持，对于老旧环境可能不友好。
+- **浏览器支持**：需要现代浏览器的支持，对于老旧环境可能不友好。
 
 ## 方案3：`AngularJS 的脏检查机制`
 
@@ -212,7 +212,7 @@ class Scope {
     let dirty;
     do {
       dirty = false;
-      this.$$watchers.forEach(watcher => {
+      this.$$watchers.forEach((watcher) => {
         const newValue = watcher.expr();
         const oldValue = watcher.last;
         if (newValue !== oldValue) {
@@ -229,9 +229,12 @@ class Scope {
 const scope = new Scope();
 let name = 'Angular';
 
-scope.$watch(() => name, (newValue, oldValue) => {
-  console.log(`Name changed: ${oldValue} -> ${newValue}`);
-});
+scope.$watch(
+  () => name,
+  (newValue, oldValue) => {
+    console.log(`Name changed: ${oldValue} -> ${newValue}`);
+  },
+);
 
 name = 'AngularJS';
 scope.$digest(); // 手动触发脏检查
@@ -239,8 +242,8 @@ scope.$digest(); // 手动触发脏检查
 
 ### 代码解读
 
-* watch和digest 循环：绘制一个包含 $watchers 列表和 $digest 循环过程的图表。显示每次循环时如何比较表达式的旧值和新值，并根据结果决定是否调用监听器函数。
-* 性能影响：为了突出性能问题，可以添加一个图表，模拟随着 $watchers 数量增加，需要进行更多次比较的过程，从而直观地展示为什么这种方法可能不适合大型应用。
+- watch和digest 循环：绘制一个包含 $watchers 列表和 $digest 循环过程的图表。显示每次循环时如何比较表达式的旧值和新值，并根据结果决定是否调用监听器函数。
+- 性能影响：为了突出性能问题，可以添加一个图表，模拟随着 $watchers 数量增加，需要进行更多次比较的过程，从而直观地展示为什么这种方法可能不适合大型应用。
 
 ```mermaid
 graph TD;
@@ -259,24 +262,24 @@ graph TD;
 
 ### 优点
 
-* **实现简单**：无需额外的代理层，适合早期的开发环境。
-* **灵活性高**：开发者可以根据需要自定义检测频率和范围。
+- **实现简单**：无需额外的代理层，适合早期的开发环境。
+- **灵活性高**：开发者可以根据需要自定义检测频率和范围。
 
 ### 缺点
 
-* **性能问题**：随着数据量的增长，频繁的循环检查会导致性能下降。
-* **实时性差**：不适合对响应速度有较高要求的应用场景。
+- **性能问题**：随着数据量的增长，频繁的循环检查会导致性能下降。
+- **实时性差**：不适合对响应速度有较高要求的应用场景。
 
 ## 总结对比
 
 | 方案 | 优点 | 缺点 | 使用场景 |
-| --- | ---- | ---- | ------- |
+| --- | --- | --- | --- |
 | `Object.defineProperty + 发布订阅` | 简单易用，兼容性好 | 无法监听新增/删除属性，数组监听有限 | Vue 2 等传统框架 |
 | `Proxy + 发布订阅` | 功能强大，支持新增/删除属性及数组操作 | 需要现代浏览器支持 | Vue 3 等现代框架 |
 | `脏检查` | 实现简单，适用于早期浏览器 | 性能较低，适合小型项目 | AngularJS 等早期框架 |
 
 ## 推荐选择
 
-* **现代项目**：推荐使用 `Proxy + 发布-订阅模式`，因为其功能全面且更适应未来的开发需求。
-* **兼容性优先**：如果目标环境包含较多旧版浏览器，则可以选择 `Object.defineProperty + 发布-订阅模式`。
-* **简单项目或老项目**：对于那些对性能要求不高或者已经稳定运行的老系统，`脏检查机制` 仍然是一个可行的选择。
+- **现代项目**：推荐使用 `Proxy + 发布-订阅模式`，因为其功能全面且更适应未来的开发需求。
+- **兼容性优先**：如果目标环境包含较多旧版浏览器，则可以选择 `Object.defineProperty + 发布-订阅模式`。
+- **简单项目或老项目**：对于那些对性能要求不高或者已经稳定运行的老系统，`脏检查机制` 仍然是一个可行的选择。

@@ -2,6 +2,14 @@
   "name": "@stall/galaxy-ui",
   "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
   "exports": {
     "./dist/*.css": {
       "import": "./dist/*.css"
@@ -9,14 +17,6 @@
     ".": {
       "import": "./dist/index.mjs"
     }
-  },
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "vite build"
   },
   "dependencies": {
     "@arco-design/web-vue": "catalog:",

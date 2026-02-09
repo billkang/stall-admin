@@ -25,10 +25,10 @@
 #### 示例代码
 
 ```javascript
-var globalVar = "I am in the global scope";
+var globalVar = 'I am in the global scope';
 
 function outerFunction() {
-    console.log(globalVar); // 输出: I am in the global scope
+  console.log(globalVar); // 输出: I am in the global scope
 }
 outerFunction();
 ```
@@ -75,21 +75,21 @@ Global Execution Context:
 
 ```javascript
 function outerFunction(param) {
-    var outerVar = "I am in the outer function scope";
+  var outerVar = 'I am in the outer function scope';
 
-    function innerFunction(innerParam) {
-        var innerVar = "I am in the inner function scope";
+  function innerFunction(innerParam) {
+    var innerVar = 'I am in the inner function scope';
 
-        console.log(innerVar); // 输出: I am in the inner function scope
-        console.log(outerVar); // 输出: I am in the outer function scope
-        console.log(param);    // 输出: outerParamValue
-        console.log(innerParam); // 输出: innerParamValue
-    }
+    console.log(innerVar); // 输出: I am in the inner function scope
+    console.log(outerVar); // 输出: I am in the outer function scope
+    console.log(param); // 输出: outerParamValue
+    console.log(innerParam); // 输出: innerParamValue
+  }
 
-    innerFunction("innerParamValue");
+  innerFunction('innerParamValue');
 }
 
-outerFunction("outerParamValue");
+outerFunction('outerParamValue');
 ```
 
 #### 内存示意图
@@ -158,6 +158,7 @@ Inner Function Execution Context:
 #### 详细解释
 
 - **Activation Object (AO)**:
+
   - **arguments**: 包含传递给函数的参数。
   - **param**: 外部函数的参数。
   - **outerVar**: 外部函数内部的变量。
@@ -183,7 +184,7 @@ Eval执行上下文是由`eval`函数创建的。这种执行上下文比较特�
 
 ```javascript
 var x = 10;
-eval("console.log(x);"); // 输出: 10
+eval('console.log(x);'); // 输出: 10
 ```
 
 #### 内存示意图
@@ -247,19 +248,19 @@ Eval Execution Context:
 
 ```javascript
 function exampleFunction(param) {
-    var localVar;
-    console.log(localVar); // 输出: undefined
+  var localVar;
+  console.log(localVar); // 输出: undefined
 
-    function innerFunction() {}
+  function innerFunction() {}
 
-    console.log(typeof innerFunction); // 输出: function
-    console.log(typeof localVar); // 输出: undefined
+  console.log(typeof innerFunction); // 输出: function
+  console.log(typeof localVar); // 输出: undefined
 
-    localVar = 5;
-    console.log(localVar); // 输出: 5
+  localVar = 5;
+  console.log(localVar); // 输出: 5
 }
 
-exampleFunction("paramValue");
+exampleFunction('paramValue');
 ```
 
 #### 内存示意图
@@ -306,6 +307,7 @@ Example Function Execution Context:
 #### 详细解释
 
 - **Activation Object (AO)**:
+
   - **arguments**: 包含传递给函数的参数。
   - **param**: 外部函数的参数。
   - **localVar**: 初始化为 `undefined`。
@@ -324,19 +326,19 @@ Example Function Execution Context:
 
 ```javascript
 function exampleFunction(param) {
-    var localVar;
-    console.log(localVar); // 输出: undefined
+  var localVar;
+  console.log(localVar); // 输出: undefined
 
-    function innerFunction() {}
+  function innerFunction() {}
 
-    console.log(typeof innerFunction); // 输出: function
-    console.log(typeof localVar); // 输出: undefined
+  console.log(typeof innerFunction); // 输出: function
+  console.log(typeof localVar); // 输出: undefined
 
-    localVar = 5;
-    console.log(localVar); // 输出: 5
+  localVar = 5;
+  console.log(localVar); // 输出: 5
 }
 
-exampleFunction("paramValue");
+exampleFunction('paramValue');
 ```
 
 #### 内存示意图
@@ -383,6 +385,7 @@ Example Function Execution Context:
 #### 详细解释
 
 - **Activation Object (AO)**:
+
   - **arguments**: 包含传递给函数的参数。
   - **param**: 外部函数的参数。
   - **localVar**: 初始化为 `undefined`，然后赋值为 `5`。
@@ -416,10 +419,10 @@ JavaScript中的作用域确实可以分为几种不同的类型。通常情况�
 #### 示例代码
 
 ```javascript
-var globalVar = "I am in the global scope";
+var globalVar = 'I am in the global scope';
 
 function accessGlobalVar() {
-    console.log(globalVar); // 输出: I am in the global scope
+  console.log(globalVar); // 输出: I am in the global scope
 }
 
 accessGlobalVar();
@@ -466,16 +469,16 @@ Global Execution Context:
 
 ```javascript
 function localScopeExample() {
-    var localVar = "I am in the local scope";
-    console.log(localVar); // 输出: I am in the local scope
+  var localVar = 'I am in the local scope';
+  console.log(localVar); // 输出: I am in the local scope
 
-    function innerFunction() {
-        var innerVar = "I am in the inner function scope";
-        console.log(innerVar); // 输出: I am in the inner function scope
-    }
+  function innerFunction() {
+    var innerVar = 'I am in the inner function scope';
+    console.log(innerVar); // 输出: I am in the inner function scope
+  }
 
-    innerFunction();
-    // console.log(innerVar); // 抛出 ReferenceError: innerVar is not defined
+  innerFunction();
+  // console.log(innerVar); // 抛出 ReferenceError: innerVar is not defined
 }
 
 localScopeExample();
@@ -544,6 +547,7 @@ Inner Function Execution Context:
 ##### 详细解释
 
 - **Activation Object (AO)**:
+
   - **arguments**: 包含传递给函数的参数。
   - **localVar**: 函数内部的局部变量。
   - **innerFunction**: 内部函数。
@@ -567,13 +571,13 @@ Inner Function Execution Context:
 
 ```javascript
 if (true) {
-    var blockVar = "I am in a block with var";
-    let blockLet = "I am in a block with let";
-    const blockConst = "I am in a block with const";
+  var blockVar = 'I am in a block with var';
+  let blockLet = 'I am in a block with let';
+  const blockConst = 'I am in a block with const';
 
-    console.log(blockVar); // 输出: I am in a block with var
-    console.log(blockLet); // 输出: I am in a block with let
-    console.log(blockConst); // 输出: I am in a block with const
+  console.log(blockVar); // 输出: I am in a block with var
+  console.log(blockLet); // 输出: I am in a block with let
+  console.log(blockConst); // 输出: I am in a block with const
 }
 
 console.log(blockVar); // 输出: I am in a block with var
@@ -611,6 +615,7 @@ Inside Block:
 ##### 详细解释
 
 - **Variable Object (VO)**:
+
   - **blockVar**: 使用 `var` 声明的变量，具有函数作用域，因此在全局作用域中可见。
 
 - **Lexical Environment**:
@@ -625,15 +630,15 @@ Inside Block:
 
 ```javascript
 for (var i = 0; i < 3; i++) {
-    setTimeout(function() {
-        console.log(i); // 输出: 3, 3, 3
-    }, 1000);
+  setTimeout(function () {
+    console.log(i); // 输出: 3, 3, 3
+  }, 1000);
 }
 
 for (let j = 0; j < 3; j++) {
-    setTimeout(function() {
-        console.log(j); // 输出: 0, 1, 2
-    }, 1000);
+  setTimeout(function () {
+    console.log(j); // 输出: 0, 1, 2
+  }, 1000);
 }
 ```
 
@@ -674,6 +679,7 @@ For Loop with let:
 ##### 详细解释
 
 - **Using `var`**:
+
   - **i**: 被提升到全局作用域，循环结束后值为 3。
   - 所有回调函数共享同一个 `i`，因此输出都是 3。
 
@@ -691,14 +697,14 @@ For Loop with let:
 var x = 10;
 
 function firstLevel() {
-    var y = 20;
+  var y = 20;
 
-    function secondLevel() {
-        var z = 30;
-        console.log(x + y + z); // 输出: 60
-    }
+  function secondLevel() {
+    var z = 30;
+    console.log(x + y + z); // 输出: 60
+  }
 
-    secondLevel();
+  secondLevel();
 }
 
 firstLevel();
@@ -784,10 +790,10 @@ Second Level Execution Context:
 
 ```javascript
 var person = {
-    name: "Alice",
-    greet: function() {
-        console.log(`Hello, my name is ${this.name}`);
-    }
+  name: 'Alice',
+  greet: function () {
+    console.log(`Hello, my name is ${this.name}`);
+  },
 };
 
 person.greet(); // 输出: Hello, my name is Alice
@@ -801,10 +807,10 @@ person.greet(); // 输出: Hello, my name is Alice
 
 ```javascript
 function greet() {
-    console.log(`Hello, my name is ${this.name}`);
+  console.log(`Hello, my name is ${this.name}`);
 }
 
-var person = { name: "Bob" };
+var person = { name: 'Bob' };
 
 greet.call(person); // 输出: Hello, my name is Bob
 greet.apply(person); // 输出: Hello, my name is Bob
@@ -821,10 +827,10 @@ boundGreet(); // 输出: Hello, my name is Bob
 
 ```javascript
 function Person(name) {
-    this.name = name;
+  this.name = name;
 }
 
-var alice = new Person("Alice");
+var alice = new Person('Alice');
 console.log(alice.name); // 输出: Alice
 ```
 
@@ -836,12 +842,12 @@ console.log(alice.name); // 输出: Alice
 
 ```javascript
 var person = {
-    name: "Charlie",
-    greet: function() {
-        setTimeout(() => {
-            console.log(`Hello, my name is ${this.name}`);
-        }, 1000);
-    }
+  name: 'Charlie',
+  greet: function () {
+    setTimeout(() => {
+      console.log(`Hello, my name is ${this.name}`);
+    }, 1000);
+  },
 };
 
 person.greet(); // 输出: Hello, my name is Charlie

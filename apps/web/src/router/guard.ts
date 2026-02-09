@@ -1,14 +1,10 @@
 import type { Router } from 'vue-router';
 
-import { DEFAULT_HOME_PATH, LOGIN_PATH } from '@stall/constants';
 import { preferences } from '@stall/preferences';
-import { useAccessStore, useUserStore } from '@stall/stores';
+import { useAccessStore } from '@stall/stores';
 import { startProgress, stopProgress } from '@stall/utils';
 
-import { accessRoutes, coreRouteNames } from '#/router/routes';
-import { useAuthStore } from '#/store';
-
-import { generateAccess } from './access';
+import { coreRouteNames } from '#/router/routes';
 
 /**
  * 通用守卫配置
@@ -45,10 +41,8 @@ function setupCommonGuard(router: Router) {
  * @param router
  */
 function setupAccessGuard(router: Router) {
-  router.beforeEach(async (to, from) => {
+  router.beforeEach(async (to) => {
     const accessStore = useAccessStore();
-    const userStore = useUserStore();
-    const authStore = useAuthStore();
 
     // *******************************
     // * 步骤 1：检查是否为基本路由 *

@@ -225,7 +225,8 @@ const defaultPreferences: Preferences = {
   },
   logo: {
     enable: true,
-    source: 'https://unpkg.com/@stalljs/static-source@0.1.7/source/logo-v1.webp',
+    source:
+      'https://unpkg.com/@stalljs/static-source@0.1.7/source/logo-v1.webp',
   },
   navigation: {
     accordion: true,

@@ -67,7 +67,7 @@ function reactive(obj) {
         trigger(target, key); // 触发更新
       }
       return result;
-    }
+    },
   });
 }
 
@@ -92,7 +92,7 @@ function trigger(target, key) {
   const depsMap = targetMap.get(target);
   if (!depsMap) return;
   const effects = depsMap.get(key);
-  effects && effects.forEach(effect => effect());
+  effects && effects.forEach((effect) => effect());
 }
 ```
 
@@ -142,7 +142,7 @@ function processElement(oldVNode, newVNode, container) {
 }
 
 function mountElement(vnode, container) {
-  const el = vnode.el = document.createElement(vnode.type);
+  const el = (vnode.el = document.createElement(vnode.type));
   const { children, props } = vnode;
 
   if (props) {
@@ -154,14 +154,14 @@ function mountElement(vnode, container) {
   if (typeof children === 'string') {
     el.textContent = children;
   } else if (Array.isArray(children)) {
-    children.forEach(child => patch(null, child, el));
+    children.forEach((child) => patch(null, child, el));
   }
 
   container.appendChild(el);
 }
 
 function patchElement(oldVNode, newVNode) {
-  const el = newVNode.el = oldVNode.el;
+  const el = (newVNode.el = oldVNode.el);
   const oldProps = oldVNode.props || {};
   const newProps = newVNode.props || {};
 
@@ -199,7 +199,7 @@ function patchChildren(oldVNode, newVNode, container) {
       updateChildren(container, c1, c2);
     } else {
       container.innerHTML = '';
-      c2.forEach(child => patch(null, child, container));
+      c2.forEach((child) => patch(null, child, container));
     }
   } else {
     if (Array.isArray(c1)) {
@@ -230,7 +230,10 @@ function updateChildren(container, oldChildren, newChildren) {
     }
     if (!found) {
       // 新增节点
-      container.insertBefore(patch(null, newChild, container), container.childNodes[i] || null);
+      container.insertBefore(
+        patch(null, newChild, container),
+        container.childNodes[i] || null,
+      );
     }
   }
 
@@ -252,12 +255,12 @@ function setAttribute(el, key, value) {
 
 function processTextVNode(oldVNode, newVNode, container) {
   if (oldVNode) {
-    const el = newVNode.el = oldVNode.el;
+    const el = (newVNode.el = oldVNode.el);
     if (newVNode.children !== oldVNode.children) {
       el.nodeValue = newVNode.children;
     }
   } else {
-    const el = newVNode.el = document.createTextNode(newVNode.children);
+    const el = (newVNode.el = document.createTextNode(newVNode.children));
     container.appendChild(el);
   }
 }
@@ -285,7 +288,7 @@ function mountComponent(initialVNode, container) {
 
 function updateComponent(oldVNode, newVNode) {
   newVNode.el = oldVNode.el;
-  const instance = newVNode.component = oldVNode.component;
+  const instance = (newVNode.component = oldVNode.component);
 
   instance.beforeUpdate?.();
 
@@ -350,7 +353,7 @@ import { reactive } from '@vue/reactivity';
 // 使用 reactive 创建一个响应式对象
 const state = reactive({
   count: 0,
-  title: 'Hello Vue 3!'
+  title: 'Hello Vue 3!',
 });
 ```
 
@@ -410,7 +413,7 @@ const instance = {
 
     // 初始渲染
     componentUpdateFn();
-  }
+  },
 };
 
 // 调用组件的 setup 方法
@@ -447,7 +450,7 @@ function queueJob(job) {
     queue.add(job);
     // 使用 Promise 微任务队列批量执行任务
     Promise.resolve().then(() => {
-      queue.forEach(job => job());
+      queue.forEach((job) => job());
       queue.clear();
     });
   }

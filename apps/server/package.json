@@ -1,11 +1,11 @@
 {
   "name": "@stall/server",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
     "start": "node ./src/app.js",
     "ws": "node ./src/ws.js"
   },
+  "main": "index.js",
   "dependencies": {
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",

@@ -17,9 +17,9 @@ import StallModal from './modal.vue';
 
 const USER_MODAL_INJECT_KEY = Symbol('STALL_MODAL_INJECT');
 
-export function useStallModal<TParentModalProps extends ModalProps = ModalProps>(
-  options: ModalApiOptions = {},
-) {
+export function useStallModal<
+  TParentModalProps extends ModalProps = ModalProps,
+>(options: ModalApiOptions = {}) {
   // Modal一般会抽离出来，所以如果有传入 connectedComponent，则表示为外部调用，与内部组件进行连接
   // 外部的Modal通过provide/inject传递api
 

@@ -1,32 +1,29 @@
-<template>
-  <!-- <SimpleTable uuid="test" :dataSource="memberDataList" :columns="columns" /> -->
-  <GalaxyTable uuid="test" :dataSource="memberDataList" :columns="columns" />
-</template>
-
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
-import { getExampleTableApi } from '#/api';
+import { onMounted, ref } from 'vue';
+
 // import { SimpleTable } from '@stall/galaxy-ui';
 import { GalaxyTable } from '@stall/galaxy-ui';
 
+import { getExampleTableApi } from '#/api';
+
 const columns = [
   {
-    title: '序号',
     dataIndex: 'seq',
-    width: 50,
     filterable: {
       componentType: 'input',
       visible: true,
     },
+    title: '序号',
+    width: 50,
   },
   {
     dataIndex: 'category',
-    title: 'Category',
-    width: 100,
     filterable: {
       componentType: 'input',
       visible: true,
     },
+    title: 'Category',
+    width: 100,
   },
   {
     dataIndex: 'open',
@@ -34,7 +31,6 @@ const columns = [
   },
   {
     dataIndex: 'status',
-    title: 'Status',
     filterable: {
       componentType: 'select',
       filters: [
@@ -53,6 +49,7 @@ const columns = [
       ],
       visible: true,
     },
+    title: 'Status',
   },
   { dataIndex: 'color', title: 'Color' },
   { dataIndex: 'productName', title: 'Product Name' },
@@ -79,6 +76,11 @@ async function queryByPage({ page, pageSize }: any) {
   return res;
 }
 </script>
+
+<template>
+  <!-- <SimpleTable uuid="test" :dataSource="memberDataList" :columns="columns" /> -->
+  <GalaxyTable uuid="test" :data-source="memberDataList" :columns="columns" />
+</template>
 
 <style lang="less">
 @import url('@stall/galaxy-ui/dist/galaxy-ui.css');

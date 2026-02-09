@@ -43,72 +43,73 @@ PerformanceObserver 是 Performance API 的一个高级特性，它允许开发�
 
 1. **页面加载性能分析**：在页面加载完成后，使用 `performance.timing` 获取页面加载的各个时间点，计算页面加载总耗时、DNS 查询耗时、TCP 连接耗时等指标，分析页面加载性能。例如：
 
-    ```javascript
-    const performanceTiming = performance.timing;
-    const pageLoadTime = performanceTiming.loadEventEnd - performanceTiming.navigationStart;
-    console.log('页面加载总耗时:', pageLoadTime);
-    ```
+   ```javascript
+   const performanceTiming = performance.timing;
+   const pageLoadTime =
+     performanceTiming.loadEventEnd - performanceTiming.navigationStart;
+   console.log('页面加载总耗时:', pageLoadTime);
+   ```
 
 2. **资源加载性能监测**：使用 `performance.getEntriesByType('resource')` 获取所有资源的加载性能数据，找出加载时间过长的资源，进行优化。例如：
 
-    ```javascript
-    const resourceEntries = performance.getEntriesByType('resource');
-    resourceEntries.forEach(entry => {
-        console.log(`资源 ${entry.name} 加载耗时: ${entry.duration}ms`);
-    });
-    ```
+   ```javascript
+   const resourceEntries = performance.getEntriesByType('resource');
+   resourceEntries.forEach((entry) => {
+     console.log(`资源 ${entry.name} 加载耗时: ${entry.duration}ms`);
+   });
+   ```
 
 3. **自定义性能测量**：在代码中使用 `performance.mark()` 和 `performance.measure()` 添加自定义标记和测量，分析特定代码块的执行时间。例如：
 
-    ```javascript
-    performance.mark('start');
-    // 模拟复杂计算
-    for (let i = 0; i < 1000000; i++) {
-        const result = Math.sqrt(i);
-    }
-    performance.mark('end');
-    performance.measure('complex-calculation', 'start', 'end');
-    const measures = performance.getEntriesByType('measure');
-    console.log('复杂计算耗时:', measures[0].duration);
-    ```
+   ```javascript
+   performance.mark('start');
+   // 模拟复杂计算
+   for (let i = 0; i < 1000000; i++) {
+     const result = Math.sqrt(i);
+   }
+   performance.mark('end');
+   performance.measure('complex-calculation', 'start', 'end');
+   const measures = performance.getEntriesByType('measure');
+   console.log('复杂计算耗时:', measures[0].duration);
+   ```
 
 ### PerformanceObserver
 
 1. **实时性能监控**：在页面加载过程中，实时监听资源加载、页面导航等性能事件，及时发现性能问题。例如，监听资源加载事件，当发现某个资源加载时间过长时，可以动态调整加载策略，如取消加载或者切换到备用资源：
 
-    ```javascript
-    const observer = new PerformanceObserver(list => {
-        const entries = list.getEntries();
-        entries.forEach(entry => {
-            console.log(`资源 ${entry.name} 加载耗时: ${entry.duration}ms`);
-        });
-    });
-    observer.observe({ type: 'resource' });
-    ```
+   ```javascript
+   const observer = new PerformanceObserver((list) => {
+     const entries = list.getEntries();
+     entries.forEach((entry) => {
+       console.log(`资源 ${entry.name} 加载耗时: ${entry.duration}ms`);
+     });
+   });
+   observer.observe({ type: 'resource' });
+   ```
 
 2. **长任务监测**：监听 `longtask` 类型的性能条目，及时发现长时间运行的任务，避免页面卡顿。例如，当检测到某个任务运行时间过长时，可以考虑将其拆分为多个小任务，使用 `setTimeout` 或 `requestIdleCallback` 进行优化：
 
-    ```javascript
-    const longTaskObserver = new PerformanceObserver(list => {
-        const entries = list.getEntries();
-        entries.forEach(entry => {
-            console.log(`检测到长任务，耗时: ${entry.duration}ms`);
-        });
-    });
-    longTaskObserver.observe({ entryTypes: ['longtask'] });
-    ```
+   ```javascript
+   const longTaskObserver = new PerformanceObserver((list) => {
+     const entries = list.getEntries();
+     entries.forEach((entry) => {
+       console.log(`检测到长任务，耗时: ${entry.duration}ms`);
+     });
+   });
+   longTaskObserver.observe({ entryTypes: ['longtask'] });
+   ```
 
 3. **用户交互性能监测**：监听用户交互相关的性能事件，如点击、滚动等，分析用户操作的响应时间。例如，监测按钮点击后的响应时间，优化交互体验：
 
-    ```javascript
-    const interactionObserver = new PerformanceObserver(list => {
-        const entries = list.getEntries();
-        entries.forEach(entry => {
-            console.log(`交互事件 ${entry.name} 响应耗时: ${entry.duration}ms`);
-        });
-    });
-    interactionObserver.observe({ type: 'event', durationThreshold: 0 });
-    ```
+   ```javascript
+   const interactionObserver = new PerformanceObserver((list) => {
+     const entries = list.getEntries();
+     entries.forEach((entry) => {
+       console.log(`交互事件 ${entry.name} 响应耗时: ${entry.duration}ms`);
+     });
+   });
+   interactionObserver.observe({ type: 'event', durationThreshold: 0 });
+   ```
 
 ## 四、总结
 

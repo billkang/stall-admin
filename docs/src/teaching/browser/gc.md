@@ -19,11 +19,11 @@
 
 ```javascript
 function createClosure() {
-    let localVar = "I am in a closure";
+  let localVar = 'I am in a closure';
 
-    return function() {
-        console.log(localVar); // 输出: I am in a closure
-    };
+  return function () {
+    console.log(localVar); // 输出: I am in a closure
+  };
 }
 
 const closure = createClosure();
@@ -246,11 +246,13 @@ Create Closure Execution Context (no references left, ready for garbage collecti
 ### 2.1 标记清除
 
 - **工作原理**
+
   - 垃圾回收器会给所有变量添加标记。
   - 任何能够被引用的变量（全局变量、闭包变量、函数调用栈中的变量）会被标记为"可到达"。
   - 未被标记为"可到达"的变量会被认为无法访问并被清理。
 
 - **优点**
+
   - 简单高效，适用于大部分场景。
   - 不会因循环引用问题而失败。
 
@@ -316,6 +318,7 @@ After setting objA and objB to null:
 ### 2.2 引用计数
 
 - **工作原理**
+
   - 每个对象被引用时，记录一个引用计数。
   - 当引用计数为 0 时，清理该对象。
 
@@ -407,16 +410,16 @@ function example() {
 
 ```javascript
 function shortLivedObjects() {
-    for (let i = 0; i < 1000; i++) {
-        let tempObj = { index: i }; // 短生命周期对象
-    }
+  for (let i = 0; i < 1000; i++) {
+    let tempObj = { index: i }; // 短生命周期对象
+  }
 }
 
 shortLivedObjects();
 
 function longLivedObjects() {
-    let largeArray = new Array(1e6).fill('data'); // 长生命周期对象
-    return largeArray;
+  let largeArray = new Array(1e6).fill('data'); // 长生命周期对象
+  return largeArray;
 }
 
 const globalArray = longLivedObjects();
@@ -540,6 +543,7 @@ Old Generation:
 ### 4.3 优缺点
 
 - **优点**
+
   - 自动化: 无需手动释放内存。
   - 安全性高: 减少内存错误。
 
@@ -552,13 +556,16 @@ Old Generation:
 ### 5.1 针对浏览器场景的优化
 
 - **增量式垃圾回收**:
+
   - 将大任务拆分为多个小任务，逐步完成垃圾回收。
   - 减少 "Stop-the-World" 的停顿时间。
 
 - **并发回收**:
+
   - 利用多核 CPU 的优势，在后台线程并发执行垃圾回收任务，不影响主线程。
 
 - **内存占用的优化**:
+
   - **小内存设计**: V8 引擎采用小内存占用设计，以尽快完成垃圾回收，减少对浏览器渲染的影响。
   - **限制新生代容量**: 新生代内存通常限制在 1-8 MB，回收快速，避免过多对象占用内存导致性能下降。
 
@@ -569,6 +576,7 @@ Old Generation:
 ### 5.2 与 Java 的垃圾回收的对比
 
 - **Java**
+
   - 使用多种算法（如 CMS、G1 GC）处理大规模服务器内存。
   - 更关注内存使用效率与吞吐量。
 
@@ -603,11 +611,11 @@ myObject = null; // 释放对象
 
 ```javascript
 function createClosure() {
-    let localVar = "I am in a closure";
+  let localVar = 'I am in a closure';
 
-    return function() {
-        console.log(localVar); // 输出: I am in a closure
-    };
+  return function () {
+    console.log(localVar); // 输出: I am in a closure
+  };
 }
 
 const closure = createClosure();
@@ -625,11 +633,11 @@ closure = null;
 
 ```javascript
 let intervalId = setInterval(() => {
-    console.log("Interval running");
+  console.log('Interval running');
 }, 1000);
 
 setTimeout(() => {
-    clearInterval(intervalId); // 清除定时器
+  clearInterval(intervalId); // 清除定时器
 }, 5000);
 ```
 
@@ -643,8 +651,8 @@ setTimeout(() => {
 'use strict';
 
 function testFunction() {
-    var localVar = "I am local"; // 正确声明局部变量
-    globalVar = "I am global";   // 抛出 ReferenceError
+  var localVar = 'I am local'; // 正确声明局部变量
+  globalVar = 'I am global'; // 抛出 ReferenceError
 }
 
 testFunction();

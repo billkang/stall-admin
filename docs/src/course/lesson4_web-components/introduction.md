@@ -7,14 +7,17 @@ Web Components 是一套旨在促进组件化开发的技术集合，它允许�
 ### 组成部分
 
 1. **Custom Elements（自定义元素）**：
+
    - **定义新元素**：开发者可以定义全新的 HTML 元素，它们包含自己的结构、样式和逻辑。
    - **命名规则**：为了防止与现有的 HTML 标签冲突，自定义元素的名字必须至少包含一个连字符（例如 `<my-element>`）。
 
 2. **Shadow DOM（影子 DOM）**：
+
    - **封装机制**：提供了一种将元素的内容与其上下文隔离开的方法，确保了样式的局部作用域，避免了全局样式污染。
    - **样式隔离**：通过 Shadow DOM，组件内部的样式不会影响到外部文档，反之亦然。
 
 3. **HTML Templates（HTML 模板）**：
+
    - **声明式模板**：使用 `<template>` 标签定义可复用的 HTML 片段，直到 JavaScript 显式插入时才被渲染。
    - **延迟加载**：模板内容在页面加载时不立即呈现，而是根据需要动态添加到文档中。
 
@@ -48,7 +51,7 @@ Web Components 是一套旨在促进组件化开发的技术集合，它允许�
 <template id="button-template">
   <style>
     button {
-      background-color: #4CAF50;
+      background-color: #4caf50;
       border: none;
       color: white;
       padding: 15px 32px;
@@ -93,16 +96,16 @@ customElements.define('my-button', MyButton);
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Components 示例</title>
-  <script type="module" src="./my-button.js"></script>
-</head>
-<body>
-  <!-- 使用自定义按钮组件 -->
-  <my-button data-label="Example Button">点击我</my-button>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Components 示例</title>
+    <script type="module" src="./my-button.js"></script>
+  </head>
+  <body>
+    <!-- 使用自定义按钮组件 -->
+    <my-button data-label="Example Button">点击我</my-button>
+  </body>
 </html>
 ```
 

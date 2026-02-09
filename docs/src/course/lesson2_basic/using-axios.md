@@ -312,6 +312,7 @@ export const errorMessageResponseInterceptor = (
 这两个拦截器的设计思路如下：
 
 - **authenticateResponseInterceptor**：
+
   - **认证处理**：处理 401 错误，支持 token 刷新和重新认证。
   - **队列管理**：在 token 刷新期间，将请求加入队列，等待刷新完成后再重新发送。
   - **错误处理**：处理 token 刷新失败的情况，强制登出或跳转登录页面。

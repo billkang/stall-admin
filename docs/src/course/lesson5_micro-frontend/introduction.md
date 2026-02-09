@@ -128,16 +128,18 @@ export function fetchLinksFromHtml(app, microAppHead) {
     fetchLinkPromise.push(fetchSource(url));
   }
 
-  Promise.all(fetchLinkPromise).then((res) => {
-    for (let i = 0; i < res.length; i++) {
-      const code = res[i];
-      const link2Style = document.createElement('style');
-      link2Style.textContent = code;
-      microAppHead.appendChild(link2Style);
-    }
-  }).catch((e) => {
-    console.error('加载CSS出错', e);
-  });
+  Promise.all(fetchLinkPromise)
+    .then((res) => {
+      for (let i = 0; i < res.length; i++) {
+        const code = res[i];
+        const link2Style = document.createElement('style');
+        link2Style.textContent = code;
+        microAppHead.appendChild(link2Style);
+      }
+    })
+    .catch((e) => {
+      console.error('加载CSS出错', e);
+    });
 }
 ```
 
@@ -150,24 +152,29 @@ export function fetchScriptsFromHtml(app) {
   const fetchScriptPromise = [];
 
   for (const [url, info] of scriptEntries) {
-    fetchScriptPromise.push(info.code ? Promise.resolve(info.code) : fetchSource(url));
+    fetchScriptPromise.push(
+      info.code ? Promise.resolve(info.code) : fetchSource(url),
+    );
   }
 
-  Promise.all(fetchScriptPromise).then((res) => {
-    for (let i = 0; i < res.length; i++) {
-      const code = res[i];
-      // 在沙箱中执行JS代码
-      executeScriptInSandbox(code, app);
-    }
-  }).catch((e) => {
-    console.error('加载JS出错', e);
-  });
+  Promise.all(fetchScriptPromise)
+    .then((res) => {
+      for (let i = 0; i < res.length; i++) {
+        const code = res[i];
+        // 在沙箱中执行JS代码
+        executeScriptInSandbox(code, app);
+      }
+    })
+    .catch((e) => {
+      console.error('加载JS出错', e);
+    });
 }
 ```
 
 ### （二）JavaScript 隔离
 
 1. **环境快照**
+
    - **演示代码**：
 
      ```js
@@ -183,11 +190,12 @@ export function fetchScriptsFromHtml(app) {
    - **缺点**：不适合多实例场景，频繁切换可能影响性能。
 
 2. **代理和闭包**
+
    - **演示代码**：
 
      ```js
      function executeScriptInSandbox(code) {
-       (function() {
+       (function () {
          const proxy = new Proxy(window, {
            get(target, prop) {
              return prop === 'sandbox' ? this : target[prop];
@@ -198,9 +206,9 @@ export function fetchScriptsFromHtml(app) {
              } else {
                target[prop] = value;
              }
-           }
+           },
          });
-         with(proxy) {
+         with (proxy) {
            eval(code);
          }
        })();
@@ -211,13 +219,14 @@ export function fetchScriptsFromHtml(app) {
    - **缺点**：实现复杂，需深度封装浏览器原生对象。
 
 3. **iFrame**
+
    - **演示代码**：
 
      ```html
      <iframe id="sandbox" style="display: none;"></iframe>
      <script>
        const iframe = document.getElementById('sandbox');
-       iframe.onload = function() {
+       iframe.onload = function () {
          const iframeWindow = iframe.contentWindow;
          iframeWindow.eval('console.log("Hello from iframe!");');
        };
@@ -234,6 +243,7 @@ export function fetchScriptsFromHtml(app) {
 Shadow DOM 是一种浏览器内置技术，允许开发者创建封闭的 DOM 和样式作用域，从而实现样式隔离。
 
 - **核心原理**：
+
   1. **独立 DOM 树**：通过 `attachShadow()` 方法创建一个独立的 DOM 树，样式仅作用于该树内的元素。
   2. **样式封装**：Shadow DOM 内的样式不会影响外部 DOM，从而实现样式隔离。
   3. **性能优化**：Shadow DOM 提供了天然的样式隔离，减少了样式冲突的可能性，提升了性能。
@@ -241,7 +251,9 @@ Shadow DOM 是一种浏览器内置技术，允许开发者创建封闭的 DOM �
 - **实现示例**：
 
   ```javascript
-  const shadowRoot = document.createElement('div').attachShadow({ mode: 'open' });
+  const shadowRoot = document
+    .createElement('div')
+    .attachShadow({ mode: 'open' });
   shadowRoot.innerHTML = `
     <style>
       :host .my-class {
@@ -270,6 +282,7 @@ CSS Modules 是一种通过模块化方式管理样式的工具，确保样式�
 Scoped CSS 是一种通过 `scoped` 属性限制样式作用域的机制，确保样式仅应用于当前组件或模块。
 
 - **核心原理**：当在 `<style>` 标签中添加 `scoped` 属性时，Vue 会使用 PostCSS 对 CSS 进行转换。这个过程包括：
+
   1. 为组件的元素添加一个唯一的 `data-*` 属性（例如 `data-v-f3f3eg9`）。
   2. 重写 CSS 选择器，使其包含这个唯一属性。
 
@@ -280,7 +293,9 @@ Scoped CSS 是一种通过 `scoped` 属性限制样式作用域的机制，确�
     <div class="example">Hello</div>
   </template>
   <style scoped>
-    .example { color: red; }
+    .example {
+      color: red;
+    }
   </style>
   ```
 
@@ -291,7 +306,9 @@ Scoped CSS 是一种通过 `scoped` 属性限制样式作用域的机制，确�
   ```
 
   ```css
-  .example[data-v-f3f3eg9] { color: red; }
+  .example[data-v-f3f3eg9] {
+    color: red;
+  }
   ```
 
   在上述代码中，`.example` 的样式仅作用于带有 `data-v-f3f3eg9` 属性的元素。
@@ -317,7 +334,7 @@ Scoped CSS 是一种通过 `scoped` 属性限制样式作用域的机制，确�
   转换后：
 
   ```css
-  div[data-qiankun="appName"] .my-class {
+  div[data-qiankun='appName'] .my-class {
     color: red;
   }
   ```
@@ -346,27 +363,27 @@ micro-app 通过 `EventEmitter` 或 `window.postMessage` 实现主应用和子�
 
 - **主应用中使用**：
 
-     ```javascript
-     import { EventEmitter } from 'micro-app';
+  ```javascript
+  import { EventEmitter } from 'micro-app';
 
-     const eventEmitter = new EventEmitter();
+  const eventEmitter = new EventEmitter();
 
-     // 发布事件
-     eventEmitter.emit('dataUpdated', { data: 'Hello from main app' });
-     ```
+  // 发布事件
+  eventEmitter.emit('dataUpdated', { data: 'Hello from main app' });
+  ```
 
 - **子应用中使用**：
 
-     ```javascript
-     import { EventEmitter } from 'micro-app';
+  ```javascript
+  import { EventEmitter } from 'micro-app';
 
-     const eventEmitter = new EventEmitter();
+  const eventEmitter = new EventEmitter();
 
-     // 订阅事件
-     eventEmitter.on('dataUpdated', (data) => {
-       console.log('Received data:', data);
-     });
-     ```
+  // 订阅事件
+  eventEmitter.on('dataUpdated', (data) => {
+    console.log('Received data:', data);
+  });
+  ```
 
 - **优点**：适合主应用和子应用之间的双向通信，事件机制灵活。
 
@@ -374,19 +391,19 @@ micro-app 通过 `EventEmitter` 或 `window.postMessage` 实现主应用和子�
 
 - **主应用中使用**：
 
-     ```javascript
-     window.postMessage({ type: 'DATA', data: 'Hello from main app' }, '*');
-     ```
+  ```javascript
+  window.postMessage({ type: 'DATA', data: 'Hello from main app' }, '*');
+  ```
 
 - **子应用中使用**：
 
-     ```javascript
-     window.addEventListener('message', (event) => {
-       if (event.data.type === 'DATA') {
-         console.log('Received data:', event.data.data);
-       }
-     });
-     ```
+  ```javascript
+  window.addEventListener('message', (event) => {
+    if (event.data.type === 'DATA') {
+      console.log('Received data:', event.data.data);
+    }
+  });
+  ```
 
 - **优点**：适合跨域通信，主应用和子应用之间可以直接传递消息。
 
@@ -399,67 +416,69 @@ qiankun 提供了多种通信方式，包括 `initGlobalState`、`props` 属性�
 - **简介**：`initGlobalState` 是 qiankun 提供的全局状态管理方法，基于 `mitt` 库实现了一个简单的事件总线机制，允许主应用和子应用之间共享数据并响应数据变化。
 - **主应用中使用**：
 
-     ```javascript
-     import { initGlobalState } from 'qiankun';
+  ```javascript
+  import { initGlobalState } from 'qiankun';
 
-     // 初始化全局状态
-     const state = {
-       testId: null,
-     };
-     const actions = initGlobalState(state);
+  // 初始化全局状态
+  const state = {
+    testId: null,
+  };
+  const actions = initGlobalState(state);
 
-     // 监听全局状态变化
-     actions.onGlobalStateChange((state, prev) => {
-       console.log('onGlobalStateChange', state, prev);
-     });
+  // 监听全局状态变化
+  actions.onGlobalStateChange((state, prev) => {
+    console.log('onGlobalStateChange', state, prev);
+  });
 
-     // 在主应用中更新状态
-     registerMicroApps(
-       [
-         // 子应用配置
-       ],
-       {
-         afterMount: (app) => {
-           actions.setGlobalState({ testId: 11111 });
-         },
-       }
-     );
-     ```
+  // 在主应用中更新状态
+  registerMicroApps(
+    [
+      // 子应用配置
+    ],
+    {
+      afterMount: (app) => {
+        actions.setGlobalState({ testId: 11111 });
+      },
+    },
+  );
+  ```
 
 - **子应用中使用**：
 
-     ```javascript
-     import { createApp } from 'vue';
-     import App from './App.vue';
+  ```javascript
+  import { createApp } from 'vue';
+  import App from './App.vue';
 
-     let instance = null;
-     const actions = {};
+  let instance = null;
+  const actions = {};
 
-     function render(props = {}) {
-       if (props) {
-         actions.onGlobalStateChange = props.onGlobalStateChange;
-         actions.setGlobalState = props.setGlobalState;
-       }
+  function render(props = {}) {
+    if (props) {
+      actions.onGlobalStateChange = props.onGlobalStateChange;
+      actions.setGlobalState = props.setGlobalState;
+    }
 
-       instance = createApp(App);
-       instance.mount(props.container ? props.container.querySelector('#app') : '#app');
-     }
+    instance = createApp(App);
+    instance.mount(
+      props.container ? props.container.querySelector('#app') : '#app',
+    );
+  }
 
-     // 在子应用中更新状态
-     export async function bootstrap() {
-       console.log('[vue] vue app bootstraped');
-     }
+  // 在子应用中更新状态
+  export async function bootstrap() {
+    console.log('[vue] vue app bootstraped');
+  }
 
-     export async function mount(props) {
-       console.log('[vue] props from main framework', props);
-       render(props);
-     }
+  export async function mount(props) {
+    console.log('[vue] props from main framework', props);
+    render(props);
+  }
 
-     export async function unmount() {
-       instance.$destroy();
-       instance = null;
-     }
-     ```
+  export async function unmount() {
+    instance.$destroy();
+    instance = null;
+  }
+  ```
 
 - **优点**：简单易用，与 qiankun 的其他机制（如生命周期管理）集成良好，适合主应用和子应用之间的全局状态共享。
 
@@ -467,30 +486,30 @@ qiankun 提供了多种通信方式，包括 `initGlobalState`、`props` 属性�
 
 - **主应用中使用**：
 
-     ```javascript
-     registerMicroApps([
-       {
-         name: 'silvia-micro',
-         entry: '//localhost:5174',
-         container: '#container',
-         activeRule: '/silvia-micro',
-         props: {
-           mainInfo: {
-             name: 'zhangsan',
-           },
-         },
-       },
-     ]);
-     ```
+  ```javascript
+  registerMicroApps([
+    {
+      name: 'silvia-micro',
+      entry: '//localhost:5174',
+      container: '#container',
+      activeRule: '/silvia-micro',
+      props: {
+        mainInfo: {
+          name: 'zhangsan',
+        },
+      },
+    },
+  ]);
+  ```
 
 - **子应用中使用**：
 
-     ```javascript
-     function render(props = {}) {
-       console.log('props from main app', props);
-       // 使用 props 数据
-     }
-     ```
+  ```javascript
+  function render(props = {}) {
+    console.log('props from main app', props);
+    // 使用 props 数据
+  }
+  ```
 
 - **优点**：适合单向数据流，主应用可以向子应用传递初始数据。
 
@@ -498,25 +517,25 @@ qiankun 提供了多种通信方式，包括 `initGlobalState`、`props` 属性�
 
 - **主应用中使用**：
 
-     ```javascript
-     const event = new CustomEvent('microAppMessage', {
-       detail: {
-         message: '这是主应用发送的消息',
-       },
-     });
+  ```javascript
+  const event = new CustomEvent('microAppMessage', {
+    detail: {
+      message: '这是主应用发送的消息',
+    },
+  });
 
-     const click = () => {
-       window.dispatchEvent(event);
-     };
-     ```
+  const click = () => {
+    window.dispatchEvent(event);
+  };
+  ```
 
 - **子应用中使用**：
 
-     ```javascript
-     window.addEventListener('microAppMessage', (event) => {
-       console.log('微应用收到消息:', event.detail.message);
-     });
-     ```
+  ```javascript
+  window.addEventListener('microAppMessage', (event) => {
+    console.log('微应用收到消息:', event.detail.message);
+  });
+  ```
 
 - **优点**：灵活，适合主应用和子应用之间的单向消息传递。
 

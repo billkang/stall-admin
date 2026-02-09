@@ -1,5 +1,8 @@
+import type { Ref } from 'vue';
+
 import type { TablePagination } from '../types';
-import { ref, unref, type Ref } from 'vue';
+
+import { ref, unref } from 'vue';
 
 export function useTableFetchData(fn: Function, tableRef?: Ref<any>) {
   const loading = ref<boolean>(false);
@@ -12,7 +15,8 @@ export function useTableFetchData(fn: Function, tableRef?: Ref<any>) {
   async function fetchData(params: Record<string, any> = {}) {
     try {
       loading.value = true;
-      const { current, pageSize } = (tableRef && unref(tableRef)?.innerPagination) || { current: 1, pageSize: 15 };
+      const { current, pageSize } = (tableRef &&
+        unref(tableRef)?.innerPagination) || { current: 1, pageSize: 15 };
       const formData = (tableRef && unref(tableRef)?.formData) || {};
 
       const data = await fn({

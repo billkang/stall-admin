@@ -44,7 +44,7 @@
 
 ### 1. 使用 `props` 传递数据
 
-* **定义和接收** ：父组件通过 `props` 将数据传递给子组件。
+- **定义和接收** ：父组件通过 `props` 将数据传递给子组件。
 
 ```vue
 // ParentComponent.vue
@@ -57,13 +57,13 @@ import UserCard from './UserCard.vue';
 
 export default {
   components: {
-    UserCard
+    UserCard,
   },
   data() {
     return {
-      user: { name: 'Alice', age: 25 }
+      user: { name: 'Alice', age: 25 },
     };
-  }
+  },
 };
 </script>
 ```
@@ -84,9 +84,9 @@ export default {
   props: {
     userInfo: {
       type: Object,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 };
 </script>
 ```
@@ -108,8 +108,8 @@ export default {
   methods: {
     handleClick() {
       this.$emit('click-event', 'Event data');
-    }
-  }
+    },
+  },
 };
 </script>
 ```
@@ -127,13 +127,13 @@ import ChildComponent from './ChildComponent.vue';
 
 export default {
   components: {
-    ChildComponent
+    ChildComponent,
   },
   methods: {
     handleEvent(data) {
       console.log('Received event data:', data);
-    }
-  }
+    },
+  },
 };
 </script>
 ```
@@ -182,8 +182,8 @@ import Card from './Card.vue';
 
 export default {
   components: {
-    Card
-  }
+    Card,
+  },
 };
 </script>
 ```
@@ -223,7 +223,7 @@ export function useForm(initialValues, validate) {
     values,
     errors,
     handleChange,
-    handleSubmit
+    handleSubmit,
   };
 }
 ```
@@ -264,7 +264,7 @@ export default {
   setup() {
     const initialValues = {
       username: '',
-      password: ''
+      password: '',
     };
 
     const validate = (key, value) => {
@@ -279,7 +279,7 @@ export default {
 
     const { values, errors, handleChange, handleSubmit } = useForm(
       initialValues,
-      validate
+      validate,
     );
 
     const onSubmit = (formValues) => {
@@ -292,9 +292,9 @@ export default {
       errors,
       handleChange,
       handleSubmit,
-      onSubmit
+      onSubmit,
     };
-  }
+  },
 };
 </script>
 ```
@@ -332,8 +332,8 @@ Scoped slots 允许子组件将数据传递给父组件，并由父组件渲染�
 export default {
   props: {
     data: Array,
-    columns: Array
-  }
+    columns: Array,
+  },
 };
 </script>
 ```
@@ -356,18 +356,18 @@ import DataTable from './DataTable.vue';
 
 export default {
   components: {
-    DataTable
+    DataTable,
   },
   data() {
     return {
       columns: [
         { title: 'Name', key: 'name' },
-        { title: 'Age', key: 'age' }
+        { title: 'Age', key: 'age' },
       ],
       data: [
         { name: 'Alice', age: 25 },
-        { name: 'Bob', age: 30 }
-      ]
+        { name: 'Bob', age: 30 },
+      ],
     };
   },
   methods: {
@@ -376,8 +376,8 @@ export default {
     },
     remove(row) {
       console.log('Delete:', row);
-    }
-  }
+    },
+  },
 };
 </script>
 ```
@@ -393,7 +393,7 @@ export default {
 export default {
   render() {
     return h('div', { class: 'grid' }, this.$slots.default());
-  }
+  },
 };
 ```
 
@@ -403,12 +403,8 @@ export default {
 // ButtonGroup.js
 export default {
   render() {
-    return (
-      <div class="button-group">
-        {this.$slots.default()}
-      </div>
-    );
-  }
+    return <div class="button-group">{this.$slots.default()}</div>;
+  },
 };
 ```
 
@@ -427,7 +423,7 @@ export default {
     const theme = ref('dark');
     provide('theme', theme);
     return { theme };
-  }
+  },
 };
 </script>
 ```
@@ -442,7 +438,7 @@ export default {
   setup() {
     const theme = inject('theme');
     return { theme };
-  }
+  },
 };
 </script>
 ```
@@ -482,7 +478,7 @@ export function useForm(initialValues, validate) {
     values,
     errors,
     handleChange,
-    handleSubmit
+    handleSubmit,
   };
 }
 ```
@@ -534,7 +530,7 @@ export default {
     const initialValues = {
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
     };
 
     const validate = (key, value) => {
@@ -557,7 +553,7 @@ export default {
 
     const { values, errors, handleChange, handleSubmit } = useForm(
       initialValues,
-      validate
+      validate,
     );
 
     const onSubmit = (formValues) => {
@@ -570,9 +566,9 @@ export default {
       errors,
       handleChange,
       handleSubmit,
-      onSubmit
+      onSubmit,
     };
-  }
+  },
 };
 </script>
 ```
@@ -618,7 +614,7 @@ export function useTable(props) {
     loading,
     selectedRowKeys,
     handleRowClick,
-    handleSelectChange
+    handleSelectChange,
   };
 }
 ```
@@ -644,27 +640,34 @@ import { Table } from 'ant-design-vue';
 export default {
   name: 'DataTable',
   components: {
-    'a-table': Table
+    'a-table': Table,
   },
   props: {
     columns: Array,
     dataSource: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
-    loading: Boolean
+    loading: Boolean,
   },
   setup(props) {
-    const { data, columns, loading, selectedRowKeys, handleRowClick, handleSelectChange } = useTable(props);
+    const {
+      data,
+      columns,
+      loading,
+      selectedRowKeys,
+      handleRowClick,
+      handleSelectChange,
+    } = useTable(props);
     return {
       data,
       columns,
       loading,
       selectedRowKeys,
       handleRowClick,
-      handleSelectChange
+      handleSelectChange,
     };
-  }
+  },
 };
 </script>
 ```
@@ -691,7 +694,7 @@ export function useModal() {
   return {
     visible,
     open,
-    close
+    close,
   };
 }
 ```
@@ -724,17 +727,17 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Modal'
-    }
+      default: 'Modal',
+    },
   },
   setup() {
     const { visible, open, close } = useModal();
     return {
       visible,
       open,
-      close
+      close,
     };
-  }
+  },
 };
 </script>
 
@@ -776,7 +779,7 @@ export default {
 }
 
 .modal-footer button {
-  background: #4CAF50;
+  background: #4caf50;
   border: none;
   color: white;
   padding: 8px 16px;
@@ -803,12 +806,12 @@ import Modal from './components/Modal.vue';
 
 export default {
   components: {
-    Modal
+    Modal,
   },
   data() {
     return {
       modalTitle: 'Custom Modal',
-      modalVisible: false
+      modalVisible: false,
     };
   },
   methods: {
@@ -817,8 +820,8 @@ export default {
     },
     closeModal() {
       this.modalVisible = false;
-    }
-  }
+    },
+  },
 };
 </script>
 ```
@@ -841,7 +844,7 @@ export function useSelect(options) {
   return {
     selected,
     options,
-    selectOption
+    selectOption,
   };
 }
 ```
@@ -878,12 +881,12 @@ export default {
   props: {
     options: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     placeholder: {
       type: String,
-      default: 'Select an option'
-    }
+      default: 'Select an option',
+    },
   },
   setup(props) {
     const { selected, options, selectOption } = useSelect(props.options);
@@ -897,7 +900,9 @@ export default {
 
     const handleSelect = (value) => {
       selectOption(value);
-      selectedLabel.value = props.options.find((option) => option.value === value).label;
+      selectedLabel.value = props.options.find(
+        (option) => option.value === value,
+      ).label;
       isOpen.value = false;
     };
 
@@ -908,9 +913,9 @@ export default {
       isOpen,
       selectedLabel,
       toggleDropdown,
-      handleSelect
+      handleSelect,
     };
-  }
+  },
 };
 </script>
 
@@ -977,7 +982,7 @@ export default {
       :options="[
         { value: '1', label: 'Option 1' },
         { value: '2', label: 'Option 2' },
-        { value: '3', label: 'Option 3' }
+        { value: '3', label: 'Option 3' },
       ]"
       placeholder="Choose an option"
     />
@@ -989,8 +994,8 @@ import CustomSelect from './components/CustomSelect.vue';
 
 export default {
   components: {
-    CustomSelect
-  }
+    CustomSelect,
+  },
 };
 </script>
 ```
@@ -1012,9 +1017,9 @@ export default {
 export default {
   data() {
     return {
-      staticContent: 'This content will not change'
+      staticContent: 'This content will not change',
     };
-  }
+  },
 };
 </script>
 ```
@@ -1034,9 +1039,9 @@ export default {
   data() {
     return {
       dynamicData: 1,
-      staticData: 'Static content'
+      staticData: 'Static content',
     };
-  }
+  },
 };
 </script>
 ```
@@ -1056,9 +1061,9 @@ export default {
 export default {
   data() {
     return {
-      currentComponent: 'LoginPanel'
+      currentComponent: 'LoginPanel',
     };
-  }
+  },
 };
 </script>
 ```

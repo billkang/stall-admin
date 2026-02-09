@@ -1,22 +1,15 @@
-<template>
-  <div class="dashboard">
-    <div ref="lineChart" class="chart"></div>
-    <div ref="pieChart" class="chart"></div>
-    <div ref="barChart" class="chart"></div>
-  </div>
-</template>
-
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+
 import * as echarts from 'echarts';
 
 interface WorkerMessage {
+  anomaly: boolean;
   summary: {
+    regions: [string, number][];
     total: number;
     types: Record<string, number>;
-    regions: [string, number][];
   };
-  anomaly: boolean;
 }
 
 interface WorkerTask {
@@ -24,14 +17,21 @@ interface WorkerTask {
   resolve: (value: WorkerMessage) => void;
 }
 
+const props = defineProps({
+  workerUrl: {
+    required: true,
+    type: String,
+  },
+});
+
 class WorkerScheduler {
-  private pool: { instance: Worker; busy: boolean }[];
+  private pool: { busy: boolean; instance: Worker }[];
   private queue: WorkerTask[];
 
   constructor(workerUrl: string, maxWorkers = 4) {
     this.pool = Array.from({ length: maxWorkers }, () => ({
+      busy: false,
       instance: new Worker(workerUrl),
-      busy: false
     }));
     this.queue = [];
   }
@@ -42,7 +42,9 @@ class WorkerScheduler {
 
       if (availableWorker) {
         availableWorker.busy = true;
-        availableWorker.instance.onmessage = (e: MessageEvent<WorkerMessage>) => {
+        availableWorker.instance.onmessage = (
+          e: MessageEvent<WorkerMessage>,
+        ) => {
           availableWorker.busy = false;
           resolve(e.data);
           this.processQueue();
@@ -54,6 +56,10 @@ class WorkerScheduler {
     });
   }
 
+  terminateAll() {
+    this.pool.forEach((worker) => worker.instance.terminate());
+  }
+
   private processQueue() {
     if (this.queue.length > 0) {
       const task = this.queue.shift()!;
@@ -62,18 +68,14 @@ class WorkerScheduler {
   }
 }
 
-const props = defineProps({
-  workerUrl: {
-    type: String,
-    required: true,
-  },
-});
-
+const lineChartEl = ref<HTMLDivElement | null>(null);
+const pieChartEl = ref<HTMLDivElement | null>(null);
+const barChartEl = ref<HTMLDivElement | null>(null);
 const lineChart = ref<echarts.ECharts | null>(null);
 const pieChart = ref<echarts.ECharts | null>(null);
 const barChart = ref<echarts.ECharts | null>(null);
-const socket = ref<WebSocket | null>(null);
-const workerScheduler = ref<WorkerScheduler | null>(null);
+const socket = ref<null | WebSocket>(null);
+const workerScheduler = ref<null | WorkerScheduler>(null);
 
 // 初始化Worker调度器
 const initWorkerScheduler = () => {
@@ -82,20 +84,23 @@ const initWorkerScheduler = () => {
 
 // 初始化图表
 const initCharts = () => {
-  lineChart.value = echarts.init(lineChart.value!, null, { renderer: 'webgl' });
-  pieChart.value = echarts.init(pieChart.value!, null, { renderer: 'webgl' });
-  barChart.value = echarts.init(barChart.value!, null, { renderer: 'webgl' });
+  if (!lineChartEl.value || !pieChartEl.value || !barChartEl.value) return;
+  // echarts 5 类型定义中 RendererType 未包含 'webgl'，运行时支持
+  const initOpts = { renderer: 'webgl' } as any;
+  lineChart.value = echarts.init(lineChartEl.value, null, initOpts);
+  pieChart.value = echarts.init(pieChartEl.value, null, initOpts);
+  barChart.value = echarts.init(barChartEl.value, null, initOpts);
 
   // 设置初始图表选项
   lineChart.value.setOption({
+    series: [{ data: Array.from({ length: 60 }).fill(0), type: 'line' }],
     xAxis: {
-      type: 'category',
-      data: Array(60)
+      data: Array.from({ length: 60 })
         .fill(null)
         .map((_, i) => i + 1),
+      type: 'category',
     },
     yAxis: { type: 'value' },
-    series: [{ data: Array(60).fill(0), type: 'line' }],
   });
 
   pieChart.value.setOption({
@@ -105,16 +110,16 @@ const initCharts = () => {
     },
     series: [
       {
-        type: 'pie',
         data: [],
+        type: 'pie',
       },
     ],
   });
 
   barChart.value.setOption({
-    xAxis: { type: 'category', data: [] },
-    yAxis: { type: 'value' },
     series: [{ data: [], type: 'bar' }],
+    xAxis: { data: [], type: 'category' },
+    yAxis: { type: 'value' },
   });
 };
 
@@ -125,7 +130,9 @@ const connectWebSocket = () => {
   socket.value.onmessage = async ({ data }) => {
     try {
       if (workerScheduler.value) {
-        const transactionData = JSON.parse(data).filter(item => item.type === 'transaction')[0].data;
+        const transactionData = JSON.parse(data).find(
+          (item: { type: string }) => item.type === 'transaction',
+        ).data;
         const result = await workerScheduler.value.dispatch(transactionData);
         updateCharts(result);
       }
@@ -136,19 +143,24 @@ const connectWebSocket = () => {
 };
 
 // 更新图表
-const updateCharts = ({ summary, anomaly }: WorkerMessage) => {
+const updateCharts = ({ anomaly, summary }: WorkerMessage) => {
   if (lineChart.value) {
     // 更新主趋势图
-    const lineData = lineChart.value.getOption().series![0].data.slice(1) as number[];
+    const seriesArr = lineChart.value.getOption().series as unknown as
+      | Array<{ data: number[] }>
+      | undefined;
+    const series0 = seriesArr?.[0];
+    const lineData = (series0?.data ?? []).slice(1) as number[];
     lineData.push(summary.total);
     lineChart.value.setOption({ series: [{ data: lineData }] });
   }
 
   if (pieChart.value) {
     // 更新饼图
-    const pieData = Object.entries(summary.types).map(
-      ([type, count]) => ({ name: type, value: count })
-    );
+    const pieData = Object.entries(summary.types).map(([type, count]) => ({
+      name: type,
+      value: count,
+    }));
     pieChart.value.setOption({ series: [{ data: pieData }] });
   }
 
@@ -157,8 +169,8 @@ const updateCharts = ({ summary, anomaly }: WorkerMessage) => {
     const barCategories = summary.regions.map(([region]) => region);
     const barData = summary.regions.map(([, amount]) => amount);
     barChart.value.setOption({
-      xAxis: { data: barCategories },
       series: [{ data: barData }],
+      xAxis: { data: barCategories },
     });
   }
 
@@ -177,11 +189,17 @@ onMounted(() => {
 
 onUnmounted(() => {
   socket.value?.close();
-  if (workerScheduler.value) {
-    workerScheduler.value.pool.forEach((worker) => worker.instance.terminate());
-  }
+  workerScheduler.value?.terminateAll();
 });
 </script>
+
+<template>
+  <div class="dashboard">
+    <div ref="lineChartEl" class="chart"></div>
+    <div ref="pieChartEl" class="chart"></div>
+    <div ref="barChartEl" class="chart"></div>
+  </div>
+</template>
 
 <style scoped>
 .dashboard {

@@ -79,19 +79,19 @@ import { ElForm, ElFormItem, ElInput, ElButton, FormRules } from 'element-plus';
 const props = defineProps({
   initialValues: {
     type: Object,
-    default: () => ({})
+    default: () => ({}),
   },
   rules: {
     type: Object as PropType<FormRules>,
-    default: () => ({})
-  }
+    default: () => ({}),
+  },
 });
 
 const emit = defineEmits(['submit']);
 
 const formState = reactive({
   username: props.initialValues.username || '',
-  password: props.initialValues.password || ''
+  password: props.initialValues.password || '',
 });
 
 const formRef = ref<InstanceType<typeof ElForm>>();
@@ -125,9 +125,9 @@ const routes: RouteRecordRaw[] = [
     name: 'Dashboard',
     component: Dashboard,
     meta: {
-      authority: ['admin', 'editor']
-    }
-  }
+      authority: ['admin', 'editor'],
+    },
+  },
 ];
 ```
 
@@ -140,7 +140,7 @@ async function generateAccess() {
   return await generateAccessible(preferences.app.accessMode, {
     fetchMenuListAsync: async () => {
       return await getAllMenus();
-    }
+    },
   });
 }
 ```

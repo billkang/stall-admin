@@ -12,7 +12,7 @@
 
 ```typescript
 function add(a: number, b: number): number {
-    return a + b;
+  return a + b;
 }
 ```
 
@@ -31,11 +31,11 @@ const newNumbers = [...numbers, 4];
 
 ```typescript
 function map<T, U>(arr: T[], fn: (value: T) => U): U[] {
-    const result: U[] = [];
-    for (let i = 0; i < arr.length; i++) {
-        result.push(fn(arr[i]));
-    }
-    return result;
+  const result: U[] = [];
+  for (let i = 0; i < arr.length; i++) {
+    result.push(fn(arr[i]));
+  }
+  return result;
 }
 ```
 
@@ -45,7 +45,9 @@ function map<T, U>(arr: T[], fn: (value: T) => U): U[] {
 
 ```typescript
 function compose<T>(...fns: ((x: T) => T)[]): (x: T) => T {
-    return fns.reduceRight((composedFn, nextFn) => (x: T) => nextFn(composedFn(x)));
+  return fns.reduceRight(
+    (composedFn, nextFn) => (x: T) => nextFn(composedFn(x)),
+  );
 }
 ```
 
@@ -55,7 +57,7 @@ function compose<T>(...fns: ((x: T) => T)[]): (x: T) => T {
 
 ```typescript
 function lazySquare(x: number): () => number {
-    return () => x * x;
+  return () => x * x;
 }
 ```
 
@@ -67,9 +69,9 @@ function lazySquare(x: number): () => number {
 
 ```typescript
 function curryMultiply(a: number): (b: number) => number {
-    return function(b: number): number {
-        return a * b;
-    };
+  return function (b: number): number {
+    return a * b;
+  };
 }
 ```
 
@@ -79,7 +81,9 @@ function curryMultiply(a: number): (b: number) => number {
 
 ```typescript
 function compose<T>(...fns: ((x: T) => T)[]): (x: T) => T {
-    return fns.reduceRight((composedFn, nextFn) => (x: T) => nextFn(composedFn(x)));
+  return fns.reduceRight(
+    (composedFn, nextFn) => (x: T) => nextFn(composedFn(x)),
+  );
 }
 ```
 
@@ -93,7 +97,7 @@ function compose<T>(...fns: ((x: T) => T)[]): (x: T) => T {
 
 ```typescript
 const numbers = [1, 2, 3, 4, 5];
-const doubled = numbers.map(num => num * 2);
+const doubled = numbers.map((num) => num * 2);
 console.log(doubled); // 输出: [2, 4, 6, 8, 10]
 ```
 
@@ -101,7 +105,7 @@ console.log(doubled); // 输出: [2, 4, 6, 8, 10]
 
 ```typescript
 const numbers = [1, 2, 3, 4, 5];
-const greaterThanTwo = numbers.filter(num => num > 2);
+const greaterThanTwo = numbers.filter((num) => num > 2);
 console.log(greaterThanTwo); // 输出: [3, 4, 5]
 ```
 
@@ -119,19 +123,19 @@ console.log(sum); // 输出: 15
 
 ```typescript
 function memoize<T extends (...args: any[]) => any>(fn: T): T {
-    const cache = new Map<string, ReturnType<T>>();
-    return ((...args: Parameters<T>): ReturnType<T> => {
-        const key = JSON.stringify(args);
-        if (!cache.has(key)) {
-            cache.set(key, fn(...args));
-        }
-        return cache.get(key) as ReturnType<T>;
-    }) as T;
+  const cache = new Map<string, ReturnType<T>>();
+  return ((...args: Parameters<T>): ReturnType<T> => {
+    const key = JSON.stringify(args);
+    if (!cache.has(key)) {
+      cache.set(key, fn(...args));
+    }
+    return cache.get(key) as ReturnType<T>;
+  }) as T;
 }
 
 const slowFunction = (x: number): number => {
-    console.log("Calculating...");
-    return x * x;
+  console.log('Calculating...');
+  return x * x;
 };
 
 const fastFunction = memoize(slowFunction);
@@ -145,7 +149,7 @@ console.log(fastFunction(5)); // 输出: 25 (不再计算)
 
 ```typescript
 function factorial(n: number): number {
-    return n === 0 ? 1 : n * factorial(n - 1);
+  return n === 0 ? 1 : n * factorial(n - 1);
 }
 ```
 
@@ -155,7 +159,7 @@ function factorial(n: number): number {
 
 ```typescript
 const numbers = [1, 2, 3];
-const doubled = numbers.map(num => num * 2);
+const doubled = numbers.map((num) => num * 2);
 console.log(doubled); // 输出: [2, 4, 6]
 ```
 

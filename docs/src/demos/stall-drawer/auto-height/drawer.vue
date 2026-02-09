@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import { useStallDrawer, StallButton } from '@stall/common-ui';
+import { StallButton, useStallDrawer } from '@stall/common-ui';
 
 const list = ref<number[]>([]);
 

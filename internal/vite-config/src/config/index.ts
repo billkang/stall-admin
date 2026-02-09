@@ -7,8 +7,8 @@ import { defineApplicationConfig } from './application';
 import { defineLibraryConfig } from './library';
 
 export * from './application';
-export * from './library';
 export * from './jssdk';
+export * from './library';
 
 function defineConfig(
   userConfigPromise?: DefineConfig,

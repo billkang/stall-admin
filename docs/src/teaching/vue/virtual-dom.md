@@ -43,8 +43,8 @@ const vnode = {
   props: { id: 'app', class: 'container' },
   children: [
     { tag: 'h1', props: {}, children: ['Hello, Virtual DOM!'] },
-    { tag: 'p', props: {}, children: ['This is a paragraph.'] }
-  ]
+    { tag: 'p', props: {}, children: ['This is a paragraph.'] },
+  ],
 };
 ```
 
@@ -115,7 +115,7 @@ function render(vnode, container) {
 
   // 渲染子节点
   if (Array.isArray(vnode.children)) {
-    vnode.children.forEach(child => {
+    vnode.children.forEach((child) => {
       if (typeof child === 'string') {
         el.appendChild(document.createTextNode(child));
       } else if (child !== null && typeof child === 'object') {
@@ -138,7 +138,10 @@ function diff(oldVNode, newVNode, parent) {
     parent.removeChild(oldVNode.el);
   } else if (oldVNode.tag !== newVNode.tag) {
     // 节点类型不同，直接替换
-    parent.replaceChild(render(newVNode, document.createElement('div')), oldVNode.el);
+    parent.replaceChild(
+      render(newVNode, document.createElement('div')),
+      oldVNode.el,
+    );
   } else {
     // 更新属性
     const el = oldVNode.el;
@@ -169,8 +172,12 @@ function diff(oldVNode, newVNode, parent) {
     }
 
     // 递归对比子节点
-    const oldChildren = Array.isArray(oldVNode.children) ? oldVNode.children : [];
-    const newChildren = Array.isArray(newVNode.children) ? newVNode.children : [];
+    const oldChildren = Array.isArray(oldVNode.children)
+      ? oldVNode.children
+      : [];
+    const newChildren = Array.isArray(newVNode.children)
+      ? newVNode.children
+      : [];
 
     const commonLength = Math.min(oldChildren.length, newChildren.length);
     for (let i = 0; i < commonLength; i++) {

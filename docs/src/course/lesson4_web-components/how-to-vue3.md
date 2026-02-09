@@ -151,15 +151,15 @@ customElements.define('my-custom-component', MyCustomElement);
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vue 3 Web Component</title>
-</head>
-<body>
-  <my-custom-component></my-custom-component>
-  <script src="path/to/bundle.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue 3 Web Component</title>
+  </head>
+  <body>
+    <my-custom-component></my-custom-component>
+    <script src="path/to/bundle.js"></script>
+  </body>
 </html>
 ```
 

@@ -20,17 +20,17 @@
 
 ```javascript
 function SuperType() {
-    this.colors = ["red", "blue", "green"];
+  this.colors = ['red', 'blue', 'green'];
 }
-SuperType.prototype.sayColors = function() {
-    console.log(this.colors);
+SuperType.prototype.sayColors = function () {
+  console.log(this.colors);
 };
 
 function SubType() {}
 SubType.prototype = new SuperType();
 
 let instance1 = new SubType();
-instance1.colors.push("black");
+instance1.colors.push('black');
 
 let instance2 = new SubType();
 console.log(instance2.colors); // ["red", "blue", "green", "black"]
@@ -229,21 +229,21 @@ SubType Prototype:
 
 ```javascript
 function SuperType(name) {
-    this.name = name;
-    this.colors = ["red", "blue", "green"];
+  this.name = name;
+  this.colors = ['red', 'blue', 'green'];
 }
 
 function SubType(name, age) {
-    SuperType.call(this, name);
-    this.age = age;
+  SuperType.call(this, name);
+  this.age = age;
 }
 
-let instance1 = new SubType("张三", 20);
+let instance1 = new SubType('张三', 20);
 console.log(instance1.name); // 张三
 console.log(instance1.age); // 20
 console.log(instance1.colors); // ["red", "blue", "green"]
 
-let instance2 = new SubType("李四", 25);
+let instance2 = new SubType('李四', 25);
 console.log(instance2.name); // 李四
 console.log(instance2.age); // 25
 console.log(instance2.colors); // ["red", "blue", "green"]
@@ -399,30 +399,30 @@ New Instance (instance2):
 
 ```javascript
 function SuperType(name) {
-    this.name = name;
-    this.colors = ["red", "blue", "green"];
+  this.name = name;
+  this.colors = ['red', 'blue', 'green'];
 }
-SuperType.prototype.sayName = function() {
-    console.log(this.name);
+SuperType.prototype.sayName = function () {
+  console.log(this.name);
 };
 
 function SubType(name, age) {
-    SuperType.call(this, name);
-    this.age = age;
+  SuperType.call(this, name);
+  this.age = age;
 }
 SubType.prototype = new SuperType();
 SubType.prototype.constructor = SubType;
-SubType.prototype.sayAge = function() {
-    console.log(this.age);
+SubType.prototype.sayAge = function () {
+  console.log(this.age);
 };
 
-let instance1 = new SubType("张三", 20);
-instance1.colors.push("black");
+let instance1 = new SubType('张三', 20);
+instance1.colors.push('black');
 console.log(instance1.name); // 张三
 console.log(instance1.age); // 20
 console.log(instance1.colors); // ["red", "blue", "green", "black"]
 
-let instance2 = new SubType("李四", 25);
+let instance2 = new SubType('李四', 25);
 console.log(instance2.name); // 李四
 console.log(instance2.age); // 25
 console.log(instance2.colors); // ["red", "blue", "green"]
@@ -706,16 +706,16 @@ New Instance (instance2):
 
 ```javascript
 let person = {
-    name: "张三",
-    friends: ["李四", "王五"]
+  name: '张三',
+  friends: ['李四', '王五'],
 };
 
 let anotherPerson = Object.create(person);
-anotherPerson.name = "李四";
-anotherPerson.friends.push("赵六");
+anotherPerson.name = '李四';
+anotherPerson.friends.push('赵六');
 
 let yetAnotherPerson = Object.create(person);
-yetAnotherPerson.name = "王五";
+yetAnotherPerson.name = '王五';
 
 console.log(yetAnotherPerson.friends); // ["李四", "王五", "赵六"]
 ```
@@ -873,16 +873,16 @@ person:
 
 ```javascript
 function createAnother(original) {
-    let clone = Object.create(original);
-    clone.sayHi = function() {
-        console.log("Hi!");
-    };
-    return clone;
+  let clone = Object.create(original);
+  clone.sayHi = function () {
+    console.log('Hi!');
+  };
+  return clone;
 }
 
 let person = {
-    name: "张三",
-    friends: ["李四", "王五"]
+  name: '张三',
+  friends: ['李四', '王五'],
 };
 
 let anotherPerson = createAnother(person);
@@ -1025,36 +1025,36 @@ Output: Hi!
 
 ```javascript
 function inheritPrototype(subType, superType) {
-    let prototype = Object.create(superType.prototype);
-    prototype.constructor = subType;
-    subType.prototype = prototype;
+  let prototype = Object.create(superType.prototype);
+  prototype.constructor = subType;
+  subType.prototype = prototype;
 }
 
 function SuperType(name) {
-    this.name = name;
-    this.colors = ["red", "blue", "green"];
+  this.name = name;
+  this.colors = ['red', 'blue', 'green'];
 }
-SuperType.prototype.sayName = function() {
-    console.log(this.name);
+SuperType.prototype.sayName = function () {
+  console.log(this.name);
 };
 
 function SubType(name, age) {
-    SuperType.call(this, name);
-    this.age = age;
+  SuperType.call(this, name);
+  this.age = age;
 }
 inheritPrototype(SubType, SuperType);
 
-SubType.prototype.sayAge = function() {
-    console.log(this.age);
+SubType.prototype.sayAge = function () {
+  console.log(this.age);
 };
 
-let instance1 = new SubType("张三", 20);
-instance1.colors.push("black");
+let instance1 = new SubType('张三', 20);
+instance1.colors.push('black');
 console.log(instance1.name); // 张三
 console.log(instance1.age); // 20
 console.log(instance1.colors); // ["red", "blue", "green", "black"]
 
-let instance2 = new SubType("李四", 25);
+let instance2 = new SubType('李四', 25);
 console.log(instance2.name); // 李四
 console.log(instance2.age); // 25
 console.log(instance2.colors); // ["red", "blue", "green"]

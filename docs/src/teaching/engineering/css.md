@@ -46,18 +46,24 @@ body {
 // 嵌套规则
 nav ul {
   list-style-type: none;
-  li { display: inline; }
-  a { color: $primary-color; }
+  li {
+    display: inline;
+  }
+  a {
+    color: $primary-color;
+  }
 }
 
 // 混入 (Mixin)
 @mixin border-radius($radius) {
   -webkit-border-radius: $radius;
-     -moz-border-radius: $radius;
-          border-radius: $radius;
+  -moz-border-radius: $radius;
+  border-radius: $radius;
 }
 
-.box { @include border-radius(10px); }
+.box {
+  @include border-radius(10px);
+}
 
 // 继承
 .error {
@@ -97,18 +103,24 @@ body {
 nav ul {
   margin: 0;
   padding: 0;
-  li { display: inline; }
-  a { color: darken(@base-color, 10%); }
+  li {
+    display: inline;
+  }
+  a {
+    color: darken(@base-color, 10%);
+  }
 }
 
 // 混合 (Mixin)
 .border-radius (@radius: 5px) {
   -webkit-border-radius: @radius;
-     -moz-border-radius: @radius;
-          border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
 }
 
-.box { .border-radius(10px); }
+.box {
+  .border-radius(10px);
+}
 ```
 
 ---
@@ -159,7 +171,21 @@ header {
 经过 PostCSS 处理后，它会根据你的设置自动添加必要的浏览器前缀，并且在生产环境中还会压缩代码：
 
 ```css
-:root{--main-color:#3498db}header{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;color:var(--main-color)}
+:root {
+  --main-color: #3498db;
+}
+header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  color: var(--main-color);
+}
 ```
 
 ---

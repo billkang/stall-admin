@@ -6,9 +6,9 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import { EchartsUI, useEcharts } from '@stall/plugins/echarts';
 
 const chartRef = ref<EchartsUIType>();
-const socket = ref<WebSocket | null>(null);
+const socket = ref<null | WebSocket>(null);
 
-const { renderEcharts, chartInstance } = useEcharts(chartRef);
+const { chartInstance, renderEcharts } = useEcharts(chartRef);
 
 // WebSocket连接管理
 const connectWebSocket = () => {
@@ -16,7 +16,10 @@ const connectWebSocket = () => {
 
   socket.value.onmessage = async ({ data }) => {
     try {
-      const result = JSON.parse(data).filter(item => item.type === 'visit-source')[0].data.list ?? [];
+      const result =
+        JSON.parse(data).find(
+          (item: { type: string }) => item.type === 'visit-source',
+        ).data.list ?? [];
       chartInstance.value?.setOption({
         series: [
           {
@@ -82,8 +85,8 @@ const initCharts = () => {
 };
 
 onMounted(() => {
-  // connectWebSocket();
-  // initCharts();
+  initCharts();
+  connectWebSocket();
 });
 
 onUnmounted(() => {

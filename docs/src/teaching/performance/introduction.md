@@ -85,25 +85,25 @@ React、Vue等前端框架的兴起，使得单页应用成为主流开发模式
 const path = require('path');
 
 module.exports = {
-    entry: {
-        app: './src/index.js',
-        vendor: ['react', 'lodash'] // 第三方库
+  entry: {
+    app: './src/index.js',
+    vendor: ['react', 'lodash'], // 第三方库
+  },
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /node_modules/,
+          name: 'vendor',
+          chunks: 'all',
+        },
+      },
     },
-    output: {
-        filename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'dist')
-    },
-    optimization: {
-        splitChunks: {
-            cacheGroups: {
-                vendor: {
-                    test: /node_modules/,
-                    name: 'vendor',
-                    chunks: 'all'
-                }
-            }
-        }
-    }
+  },
 };
 ```
 
@@ -116,20 +116,20 @@ module.exports = {
 ```css
 /* 雪碧图CSS示例 */
 .sprite-icon {
-    background-image: url('sprite.png');
-    background-repeat: no-repeat;
+  background-image: url('sprite.png');
+  background-repeat: no-repeat;
 }
 
 .icon-1 {
-    background-position: 0 0;
-    width: 32px;
-    height: 32px;
+  background-position: 0 0;
+  width: 32px;
+  height: 32px;
 }
 
 .icon-2 {
-    background-position: -32px 0;
-    width: 32px;
-    height: 32px;
+  background-position: -32px 0;
+  width: 32px;
+  height: 32px;
 }
 ```
 
@@ -140,7 +140,7 @@ module.exports = {
 ```css
 /* 内联 Base64 编码的图片 */
 .background {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...');
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...');
 }
 ```
 
@@ -150,27 +150,35 @@ module.exports = {
 
 ```html
 <!-- 懒加载图片 -->
-<img src="placeholder.jpg" data-src="real-image.jpg" loading="lazy" alt="A lazy-loaded image">
+<img
+  src="placeholder.jpg"
+  data-src="real-image.jpg"
+  loading="lazy"
+  alt="A lazy-loaded image"
+/>
 ```
 
 ```javascript
 // JavaScript实现图片懒加载
-document.addEventListener('DOMContentLoaded', function() {
-    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.removeAttribute('loading');
-                observer.unobserve(img);
-            }
-        });
-    }, { rootMargin: '200px' });
+document.addEventListener('DOMContentLoaded', function () {
+  const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          img.src = img.dataset.src;
+          img.removeAttribute('loading');
+          observer.unobserve(img);
+        }
+      });
+    },
+    { rootMargin: '200px' },
+  );
 
-    lazyImages.forEach(img => {
-        observer.observe(img);
-    });
+  lazyImages.forEach((img) => {
+    observer.observe(img);
+  });
 });
 ```
 
@@ -192,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ```javascript
 // Webpack代码分割示例
 import('./module').then((module) => {
-    // 使用模块...
+  // 使用模块...
 });
 ```
 
@@ -239,8 +247,8 @@ convert input.jpg output.webp
 ```html
 <!-- 使用WebP图片 -->
 <picture>
-    <source srcset="image.webp" type="image/webp">
-    <img src="image.jpg" alt="A modern image format">
+  <source srcset="image.webp" type="image/webp" />
+  <img src="image.jpg" alt="A modern image format" />
 </picture>
 ```
 
@@ -250,9 +258,12 @@ convert input.jpg output.webp
 
 ```html
 <!-- 响应式图片 -->
-<img srcset="small.jpg 480w, medium.jpg 768w, large.jpg 1024w"
-     sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, 1024px"
-     src="medium.jpg" alt="Responsive image">
+<img
+  srcset="small.jpg 480w, medium.jpg 768w, large.jpg 1024w"
+  sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, 1024px"
+  src="medium.jpg"
+  alt="Responsive image"
+/>
 ```
 
 #### 6. 构建工具优化
@@ -264,10 +275,10 @@ convert input.jpg output.webp
 ```javascript
 // Webpack配置中的Tree Shaking
 module.exports = {
-    mode: 'production',
-    optimization: {
-        usedExports: true,
-    },
+  mode: 'production',
+  optimization: {
+    usedExports: true,
+  },
 };
 ```
 
@@ -280,38 +291,38 @@ module.exports = {
 const path = require('path');
 
 module.exports = {
-    entry: {
-        app: './src/index.js'
+  entry: {
+    app: './src/index.js',
+  },
+  output: {
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      minSize: 30000,
+      maxSize: 0,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: '~',
+      name: true,
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+          filename: 'vendors.bundle.js',
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true,
+        },
+      },
     },
-    output: {
-        filename: '[name].bundle.js',
-        chunkFilename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'dist')
-    },
-    optimization: {
-        splitChunks: {
-            chunks: 'all',
-            minSize: 30000,
-            maxSize: 0,
-            minChunks: 1,
-            maxAsyncRequests: 5,
-            maxInitialRequests: 3,
-            automaticNameDelimiter: '~',
-            name: true,
-            cacheGroups: {
-                vendors: {
-                    test: /[\\/]node_modules[\\/]/,
-                    priority: -10,
-                    filename: 'vendors.bundle.js'
-                },
-                default: {
-                    minChunks: 2,
-                    priority: -20,
-                    reuseExistingChunk: true
-                }
-            }
-        }
-    }
+  },
 };
 ```
 
@@ -325,13 +336,13 @@ const TerserPlugin = require('terser-webpack-plugin');
 const ImageminPlugin = require('imagemin-webpack-plugin');
 
 module.exports = {
-    optimization: {
-        minimize: true,
-        minimizer: [new TerserPlugin()],
-    },
-    plugins: [
-        new ImageminPlugin({ disable: process.env.NODE_ENV === 'development' }),
-    ],
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
+  plugins: [
+    new ImageminPlugin({ disable: process.env.NODE_ENV === 'development' }),
+  ],
 };
 ```
 
@@ -393,8 +404,8 @@ server {
 
 ```html
 <!-- 使用预加载和预取 -->
-<link rel="preload" href="font.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="prefetch" href="next-page.html">
+<link rel="preload" href="font.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="prefetch" href="next-page.html" />
 ```
 
 #### 5. 优化DNS解析
@@ -403,7 +414,7 @@ server {
 
 ```html
 <!-- DNS预解析 -->
-<link rel="dns-prefetch" href="//example.com">
+<link rel="dns-prefetch" href="//example.com" />
 ```
 
 #### 6. 为静态资源设置独立二级域名
@@ -412,7 +423,7 @@ server {
 
 ```html
 <!-- 静态资源使用独立二级域名 -->
-<img src="https://static.example.com/image.jpg" alt="Static image">
+<img src="https://static.example.com/image.jpg" alt="Static image" />
 ```
 
 ### （三）DOM操作和渲染优化
@@ -425,7 +436,7 @@ server {
 // 使用DocumentFragment进行批量操作
 const fragment = document.createDocumentFragment();
 for (let i = 0; i < elements.length; i++) {
-    fragment.appendChild(elements[i]);
+  fragment.appendChild(elements[i]);
 }
 document.body.appendChild(fragment);
 ```
@@ -433,16 +444,16 @@ document.body.appendChild(fragment);
 ```css
 /* 使用transform进行动画 */
 @keyframes slideIn {
-    from {
-        transform: translateX(-100%);
-    }
-    to {
-        transform: translateX(0);
-    }
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .slide-in {
-    animation: slideIn 0.5s ease-out;
+  animation: slideIn 0.5s ease-out;
 }
 ```
 
@@ -453,12 +464,12 @@ document.body.appendChild(fragment);
 ```css
 /* 高效的选择器 */
 .button {
-    /* 样式 */
+  /* 样式 */
 }
 
 /* 不推荐使用过于复杂的选择器 */
-div.container > ul.items li:nth-child(odd) a[rel="external"] {
-    /* 样式 */
+div.container > ul.items li:nth-child(odd) a[rel='external'] {
+  /* 样式 */
 }
 ```
 
@@ -469,11 +480,11 @@ div.container > ul.items li:nth-child(odd) a[rel="external"] {
 ```jsx
 // React组件示例
 function App() {
-    return (
-        <div className="App">
-            <h1>Hello World</h1>
-        </div>
-    );
+  return (
+    <div className="App">
+      <h1>Hello World</h1>
+    </div>
+  );
 }
 ```
 
@@ -484,18 +495,18 @@ function App() {
 ```html
 <!-- 事件委托示例 -->
 <ul id="list">
-    <li>Item 1</li>
-    <li>Item 2</li>
-    <li>Item 3</li>
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li>Item 3</li>
 </ul>
 ```
 
 ```javascript
 // JavaScript实现事件委托
-document.getElementById('list').addEventListener('click', function(event) {
-    if (event.target.tagName === 'LI') {
-        console.log('List item clicked:', event.target.textContent);
-    }
+document.getElementById('list').addEventListener('click', function (event) {
+  if (event.target.tagName === 'LI') {
+    console.log('List item clicked:', event.target.textContent);
+  }
 });
 ```
 
@@ -508,32 +519,38 @@ document.getElementById('list').addEventListener('click', function(event) {
 ```javascript
 // 防抖函数
 function debounce(fn, delay) {
-    let timeoutId;
-    return function (...args) {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => fn.apply(this, args), delay);
-    };
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), delay);
+  };
 }
 
 // 节流函数
 function throttle(fn, limit) {
-    let inThrottle;
-    return function (...args) {
-        if (!inThrottle) {
-            fn.apply(this, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    };
+  let inThrottle;
+  return function (...args) {
+    if (!inThrottle) {
+      fn.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
 }
 
-window.addEventListener('resize', debounce(() => {
+window.addEventListener(
+  'resize',
+  debounce(() => {
     console.log('Window resized');
-}, 300));
+  }, 300),
+);
 
-window.addEventListener('scroll', throttle(() => {
+window.addEventListener(
+  'scroll',
+  throttle(() => {
     console.log('Window scrolled');
-}, 1000));
+  }, 1000),
+);
 ```
 
 #### 2. 移除未使用的代码和资源
@@ -543,10 +560,10 @@ window.addEventListener('scroll', throttle(() => {
 ```javascript
 // Webpack配置中的Tree Shaking
 module.exports = {
-    mode: 'production',
-    optimization: {
-        usedExports: true,
-    },
+  mode: 'production',
+  optimization: {
+    usedExports: true,
+  },
 };
 ```
 
@@ -566,8 +583,8 @@ module.exports = {
 ```javascript
 // 使用requestAnimationFrame进行动画
 function animate() {
-    // 动画逻辑
-    requestAnimationFrame(animate);
+  // 动画逻辑
+  requestAnimationFrame(animate);
 }
 requestAnimationFrame(animate);
 ```
@@ -580,7 +597,7 @@ requestAnimationFrame(animate);
 
 ```html
 <!-- 提前加载首屏需要的CSS -->
-<link rel="stylesheet" href="critical.css">
+<link rel="stylesheet" href="critical.css" />
 ```
 
 #### 2. 推迟非关键资源
@@ -594,11 +611,11 @@ requestAnimationFrame(animate);
 
 ```javascript
 // 动态加载非关键资源
-document.addEventListener('DOMContentLoaded', function() {
-    const script = document.createElement('script');
-    script.src = 'non-critical.js';
-    script.async = true;
-    document.head.appendChild(script);
+document.addEventListener('DOMContentLoaded', function () {
+  const script = document.createElement('script');
+  script.src = 'non-critical.js';
+  script.async = true;
+  document.head.appendChild(script);
 });
 ```
 
@@ -609,31 +626,33 @@ document.addEventListener('DOMContentLoaded', function() {
 ```javascript
 // Service Worker注册
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(function(registration) {
-        console.log('Service Worker registered with scope:', registration.scope);
-    }).catch(function(error) {
-        console.log('Service Worker registration failed:', error);
+  navigator.serviceWorker
+    .register('/sw.js')
+    .then(function (registration) {
+      console.log('Service Worker registered with scope:', registration.scope);
+    })
+    .catch(function (error) {
+      console.log('Service Worker registration failed:', error);
     });
 }
 ```
 
 ```javascript
 // Service Worker缓存策略示例
-self.addEventListener('fetch', function(event) {
-    event.respondWith(
-        caches.match(event.request)
-            .then(function(response) {
-                if (response) {
-                    return response;
-                }
-                return fetch(event.request).then(function(response) {
-                    caches.open('my-cache').then(function(cache) {
-                        cache.put(event.request, response.clone());
-                    });
-                    return response;
-                });
-            })
-    );
+self.addEventListener('fetch', function (event) {
+  event.respondWith(
+    caches.match(event.request).then(function (response) {
+      if (response) {
+        return response;
+      }
+      return fetch(event.request).then(function (response) {
+        caches.open('my-cache').then(function (cache) {
+          cache.put(event.request, response.clone());
+        });
+        return response;
+      });
+    }),
+  );
 });
 ```
 
@@ -644,18 +663,18 @@ self.addEventListener('fetch', function(event) {
 ```javascript
 // Next.js SSR示例
 export default function Home({ data }) {
-    return (
-        <div>
-            <h1>{data.title}</h1>
-            <p>{data.content}</p>
-        </div>
-    );
+  return (
+    <div>
+      <h1>{data.title}</h1>
+      <p>{data.content}</p>
+    </div>
+  );
 }
 
 export async function getServerSideProps() {
-    const res = await fetch('https://api.example.com/data');
-    const data = await res.json();
-    return { props: { data } };
+  const res = await fetch('https://api.example.com/data');
+  const data = await res.json();
+  return { props: { data } };
 }
 ```
 
@@ -666,23 +685,34 @@ export async function getServerSideProps() {
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Website</title>
     <style>
-        /* 直接嵌入的Critical Path CSS */
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        .hero { background-color: #f8f9fa; padding: 40px; text-align: center; }
-        h1 { font-size: 24px; color: #333; }
+      /* 直接嵌入的Critical Path CSS */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .hero {
+        background-color: #f8f9fa;
+        padding: 40px;
+        text-align: center;
+      }
+      h1 {
+        font-size: 24px;
+        color: #333;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="hero">
-        <h1>Welcome to My Website</h1>
+      <h1>Welcome to My Website</h1>
     </div>
     <!-- 其他内容 -->
-</body>
+  </body>
 </html>
 ```
 
@@ -693,9 +723,9 @@ export async function getServerSideProps() {
 ```javascript
 // 动态导入模块
 document.getElementById('load-more').addEventListener('click', () => {
-    import('./more-content').then((module) => {
-        // 使用模块...
-    });
+  import('./more-content').then((module) => {
+    // 使用模块...
+  });
 });
 ```
 
@@ -705,16 +735,16 @@ document.getElementById('load-more').addEventListener('click', () => {
 
 ```html
 <!-- 提前加载重要的资源 -->
-<link rel="preload" href="main.js" as="script">
-<link rel="preload" href="logo.png" as="image">
+<link rel="preload" href="main.js" as="script" />
+<link rel="preload" href="logo.png" as="image" />
 ```
 
 ### （六）性能监控与度量
 
 #### 1. 使用性能分析工具
 
-* **Lighthouse**：Google的Lighthouse是一个开源的自动化工具，可以帮助审计网站的性能。
-* **Chrome DevTools**：利用Chrome DevTools的Performance面板，分析页面加载性能，找出瓶颈。
+- **Lighthouse**：Google的Lighthouse是一个开源的自动化工具，可以帮助审计网站的性能。
+- **Chrome DevTools**：利用Chrome DevTools的Performance面板，分析页面加载性能，找出瓶颈。
 
 ```bash
 # 使用Lighthouse CLI
@@ -728,17 +758,17 @@ lighthouse https://example.com --view
 ```javascript
 // 监控 Largest Contentful Paint (LCP)
 if ('getEntriesByType' in performance) {
-    const entries = performance.getEntriesByType('largest-contentful-paint');
-    if (entries.length > 0) {
-        console.log(`Largest Contentful Paint time: ${entries[0].renderTime}ms`);
-    }
+  const entries = performance.getEntriesByType('largest-contentful-paint');
+  if (entries.length > 0) {
+    console.log(`Largest Contentful Paint time: ${entries[0].renderTime}ms`);
+  }
 }
 
 // 使用PerformanceObserver监听CLS
 const observer = new PerformanceObserver((list) => {
-    for (let entry of list.getEntries()) {
-        console.log(`CLS value: ${entry.value}`);
-    }
+  for (let entry of list.getEntries()) {
+    console.log(`CLS value: ${entry.value}`);
+  }
 });
 observer.observe({ entryTypes: 'layout-shift', buffered: true });
 ```

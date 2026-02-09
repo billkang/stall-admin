@@ -22,17 +22,17 @@ export default defineComponent({
 
 <style>
 .child-vite-vue3-test-btn {
-  height: 40px;
-  width: 100px;
-  background-color: red;
-  border-radius: 10px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  color: #fff;
+  justify-content: center;
+  width: 100px;
+  height: 40px;
+  margin: 0 auto;
   font-size: 20px;
   font-weight: bolder;
-  margin: 0 auto;
+  color: #fff;
   user-select: none;
+  background-color: red;
+  border-radius: 10px;
 }
 </style>

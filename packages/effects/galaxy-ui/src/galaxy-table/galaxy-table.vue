@@ -1,127 +1,32 @@
-<template>
-  <div class="stall-galaxy-table-container" :class="{ 'pagination-top': pagePosition === 'tr' }" ref="tableContainerRef">
-    <header>
-      <div class="table-header__left-section">
-        <Filter
-          v-if="permission.filter"
-          :disabled="loading"
-          :uuid="uuid"
-          :columns="columns"
-          :filter="filter"
-          :multiMode="multiMode"
-          @change-mode="handleChangeMode"
-          @custom-search="handleCustomSearch"
-          @search="handleSearch">
-          <template #filter-before>
-            <slot name="filter-before"></slot>
-          </template>
-          <template #filter-after>
-            <slot name="filter-after"></slot>
-          </template>
-        </Filter>
-      </div>
-      <div class="table-header__right-section">
-        <Space :size="8">
-          <slot name="header-btns-before"></slot>
-
-          <Button
-            v-if="showRowSelection && optional?.visible && !!permission.delete"
-            :disabled="loading || selectedRowKeys.length < 1"
-            @click="handleDeleteBatch">
-            {{ textReplacement?.btn?.deleteBatch || '删除' }}
-          </Button>
-
-          <slot name="header-btns-after"></slot>
-        </Space>
-      </div>
-    </header>
-
-    <main>
-      <Setting v-if="optional?.visible" v-model="openSetting" :uuid="uuid" :columns="columns" />
-
-      <Table
-        v-bind="$props"
-        :row-key="rowKey"
-        :mode="mode"
-        :default-selected-keys="defaultSelectedKeys"
-        :row-selection="showRowSelection ? { selectedRowKeys, showCheckedAll, type: rowSelectionType } : undefined"
-        :loading="loading"
-        :size="tableSize"
-        :columns="sortedColumns.filter((c: any) => c.visible)"
-        :data="dataSource"
-        :pagination="innerPagination"
-        :page-position="pagePosition"
-        :virtualListProps="virtualListProps"
-        :draggable="draggable"
-        :scroll="scroll"
-        :loadMore="loadMore"
-        :stripe="stripe"
-        :column-resizable="columnResizable"
-        @change="handleChange"
-        @sorter-change="handleSorterChange"
-        @page-change="handlePageChange"
-        @page-size-change="handlePageSizeChange"
-        @select="handleSelect"
-        @select-all="handleSelectAll"
-        @selection-change="handleSelectionChange">
-        <template #card-item="{ record, index }">
-          <slot name="card-item" :record="record" :index="index"></slot>
-        </template>
-        <template #columns>
-          <slot name="columns"></slot>
-        </template>
-        <template v-if="optional?.visible" #optional-title="{ column }">
-          <div class="header-cell-action">
-            {{ column.title }}
-
-            <IconSettings v-if="optional?.visible" class="table__setting" @click="handleOpenSetting" />
-          </div>
-        </template>
-        <template v-if="optional?.visible" #optional="{ record }">
-          <Space>
-            <slot name="table-action-before" :record="record"></slot>
-            <Button
-              v-if="typeof permission.edit === 'function' ? permission.edit(record) : permission.edit"
-              type="text"
-              @click="handleEdit(record)">
-              {{ textReplacement?.btn?.edit || '编辑' }}
-            </Button>
-            <Button
-              v-if="typeof permission.delete === 'function' ? permission.delete(record) : permission.delete"
-              type="text"
-              @click="handleDelete(record)">
-              {{ textReplacement?.btn?.delete || '删除' }}
-            </Button>
-            <slot name="table-action-after" :record="record"></slot>
-          </Space>
-        </template>
-        <template v-if="optional?.visible" #pagination-total="slotProps">
-          <slot name="pagination-total" :total="slotProps.total">
-            <span v-if="selectedRowKeys.length > 0">
-              {{ `已选择 ${selectedRowKeys.length} 个${label}` }}
-            </span>
-            <span v-else>{{ `共 ${slotProps.total} 个${label}` }}</span>
-          </slot>
-        </template>
-      </Table>
-    </main>
-  </div>
-</template>
-
 <script lang="ts">
-import type { PropType } from 'vue';
-import type { TableData, TableColumnData, TableDraggable, TableChangeExtra, PaginationProps } from '@arco-design/web-vue';
-import type { TablePermission, TableSwitchConfirm, TableTextReplacement } from './types';
-import { defineComponent, ref, onBeforeUnmount } from 'vue';
-import { Space, Button, Table } from '@arco-design/web-vue';
-import { IconSettings } from '@arco-design/web-vue/es/icon';
-import { useTableInit } from './hooks/useTableInit';
-import { useTable } from './hooks/useTable';
-import { useTableSetting } from './hooks/useTableSetting';
-import Filter from './filter.vue';
-import Setting from './setting.vue';
+import type {
+  PaginationProps,
+  TableChangeExtra,
+  TableColumnData,
+  TableData,
+  TableDraggable,
+} from '@arco-design/web-vue';
 import type { VirtualListProps } from '@arco-design/web-vue/es/_components/virtual-list-v2/interface';
 import type { TableOperationColumn } from '@arco-design/web-vue/es/table/interface';
+
+import type { PropType } from 'vue';
+
+import type {
+  TablePermission,
+  TableSwitchConfirm,
+  TableTextReplacement,
+} from './types';
+
+import { defineComponent, onBeforeUnmount, ref } from 'vue';
+
+import { Button, Space, Table } from '@arco-design/web-vue';
+import { IconSettings } from '@arco-design/web-vue/es/icon';
+
+import Filter from './filter.vue';
+import { useTable } from './hooks/useTable';
+import { useTableInit } from './hooks/useTableInit';
+import { useTableSetting } from './hooks/useTableSetting';
+import Setting from './setting.vue';
 
 export default defineComponent({
   name: 'GalaxyTable',
@@ -184,7 +89,9 @@ export default defineComponent({
      * 数据懒加载函数，传入时开启懒加载功能
      */
     loadMore: {
-      type: Function as PropType<(record: TableData, done: (children?: TableData[]) => void) => void>,
+      type: Function as PropType<
+        (record: TableData, done: (children?: TableData[]) => void) => void
+      >,
     },
     showCheckedAll: {
       type: Boolean,
@@ -224,7 +131,10 @@ export default defineComponent({
      */
     rowClass: {
       type: [String, Array, Object, Function] as PropType<
-        string | any[] | Record<string, any> | ((record: TableData, rowIndex: number) => any)
+        | ((record: TableData, rowIndex: number) => any)
+        | any[]
+        | Record<string, any>
+        | string
       >,
     },
     /**
@@ -233,11 +143,11 @@ export default defineComponent({
     spanMethod: {
       type: Function as PropType<
         (data: {
-          record: TableData;
           column: TableColumnData | TableOperationColumn;
-          rowIndex: number;
           columnIndex: number;
-        }) => { rowspan?: number; colspan?: number } | void
+          record: TableData;
+          rowIndex: number;
+        }) => void | { colspan?: number; rowspan?: number }
       >,
     },
     /**
@@ -255,10 +165,10 @@ export default defineComponent({
      */
     filter: {
       type: Object as PropType<{
-        selector: boolean;
+        inputSearch: boolean;
         moreFilter: boolean;
         myFilter: boolean;
-        inputSearch: boolean;
+        selector: boolean;
         summary: boolean;
       }>,
       default: () => ({
@@ -280,17 +190,17 @@ export default defineComponent({
      * 默认已选择的行（非受控模式）优先于 `rowSelection`
      */
     defaultSelectedKeys: {
-      type: Array as PropType<(string | number)[]>,
+      type: Array as PropType<(number | string)[]>,
     },
     /**
      * 表格的滚动属性配置
      */
     scroll: {
       type: Object as PropType<{
+        maxHeight?: number | string;
+        minWidth?: number | string;
         x?: number | string;
         y?: number | string;
-        minWidth?: number | string;
-        maxHeight?: number | string;
       }>,
     },
     /**
@@ -322,10 +232,17 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ['search', 'change', 'edit', 'delete', 'delete-batch', 'delete-cancel'],
+  emits: [
+    'search',
+    'change',
+    'edit',
+    'delete',
+    'delete-batch',
+    'delete-cancel',
+  ],
   expose: ['formData', 'innerPagination', 'selectedRowKeys'],
   setup(props, { emit }) {
-    const mode = ref<'table' | 'card'>('table');
+    const mode = ref<'card' | 'table'>('table');
 
     const { tableContainerRef } = useTableInit();
     const {
@@ -344,15 +261,20 @@ export default defineComponent({
       handlePageChange,
       handlePageSizeChange,
     } = useTable({ props, emit });
-    const { formData, sortedColumns, tableSize, dispose, handleCustomSearch } = useTableSetting(props);
+    const { formData, sortedColumns, tableSize, dispose, handleCustomSearch } =
+      useTableSetting(props);
 
     onBeforeUnmount(() => dispose());
 
-    function handleChangeMode(_mode: 'table' | 'card') {
+    function handleChangeMode(_mode: 'card' | 'table') {
       mode.value = _mode;
     }
 
-    function handleChange(data: TableData[], extra: TableChangeExtra, currentData: TableData[]) {
+    function handleChange(
+      data: TableData[],
+      extra: TableChangeExtra,
+      currentData: TableData[],
+    ) {
       emit('change', data, extra, currentData);
     }
 
@@ -383,6 +305,146 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <div
+    class="stall-galaxy-table-container"
+    :class="{ 'pagination-top': pagePosition === 'tr' }"
+    ref="tableContainerRef"
+  >
+    <header>
+      <div class="table-header__left-section">
+        <Filter
+          v-if="permission.filter"
+          :disabled="loading"
+          :uuid="uuid"
+          :columns="columns"
+          :filter="filter"
+          :multi-mode="multiMode"
+          @change-mode="handleChangeMode"
+          @custom-search="handleCustomSearch"
+          @search="handleSearch"
+        >
+          <template #filter-before>
+            <slot name="filter-before"></slot>
+          </template>
+          <template #filter-after>
+            <slot name="filter-after"></slot>
+          </template>
+        </Filter>
+      </div>
+      <div class="table-header__right-section">
+        <Space :size="8">
+          <slot name="header-btns-before"></slot>
+
+          <Button
+            v-if="showRowSelection && optional?.visible && !!permission.delete"
+            :disabled="loading || selectedRowKeys.length === 0"
+            @click="handleDeleteBatch"
+          >
+            {{ textReplacement?.btn?.deleteBatch || '删除' }}
+          </Button>
+
+          <slot name="header-btns-after"></slot>
+        </Space>
+      </div>
+    </header>
+
+    <main>
+      <Setting
+        v-if="optional?.visible"
+        v-model="openSetting"
+        :uuid="uuid"
+        :columns="columns"
+      />
+
+      <Table
+        v-bind="$props"
+        :row-key="rowKey"
+        :mode="mode"
+        :default-selected-keys="defaultSelectedKeys"
+        :row-selection="
+          showRowSelection
+            ? { selectedRowKeys, showCheckedAll, type: rowSelectionType }
+            : undefined
+        "
+        :loading="loading"
+        :size="tableSize"
+        :columns="sortedColumns.filter((c: any) => c.visible)"
+        :data="dataSource"
+        :pagination="innerPagination"
+        :page-position="pagePosition"
+        :virtual-list-props="virtualListProps"
+        :draggable="draggable"
+        :scroll="scroll"
+        :load-more="loadMore"
+        :stripe="stripe"
+        :column-resizable="columnResizable"
+        @change="handleChange"
+        @sorter-change="handleSorterChange"
+        @page-change="handlePageChange"
+        @page-size-change="handlePageSizeChange"
+        @select="handleSelect"
+        @select-all="handleSelectAll"
+        @selection-change="handleSelectionChange"
+      >
+        <template #card-item="{ record, index }">
+          <slot name="card-item" :record="record" :index="index"></slot>
+        </template>
+        <template #columns>
+          <slot name="columns"></slot>
+        </template>
+        <template v-if="optional?.visible" #optional-title="{ column }">
+          <div class="header-cell-action">
+            {{ column.title }}
+
+            <IconSettings
+              v-if="optional?.visible"
+              class="table__setting"
+              @click="handleOpenSetting"
+            />
+          </div>
+        </template>
+        <template v-if="optional?.visible" #optional="{ record }">
+          <Space>
+            <slot name="table-action-before" :record="record"></slot>
+            <Button
+              v-if="
+                typeof permission.edit === 'function'
+                  ? permission.edit(record)
+                  : permission.edit
+              "
+              type="text"
+              @click="handleEdit(record)"
+            >
+              {{ textReplacement?.btn?.edit || '编辑' }}
+            </Button>
+            <Button
+              v-if="
+                typeof permission.delete === 'function'
+                  ? permission.delete(record)
+                  : permission.delete
+              "
+              type="text"
+              @click="handleDelete(record)"
+            >
+              {{ textReplacement?.btn?.delete || '删除' }}
+            </Button>
+            <slot name="table-action-after" :record="record"></slot>
+          </Space>
+        </template>
+        <template v-if="optional?.visible" #pagination-total="slotProps">
+          <slot name="pagination-total" :total="slotProps.total">
+            <span v-if="selectedRowKeys.length > 0">
+              {{ `已选择 ${selectedRowKeys.length} 个${label}` }}
+            </span>
+            <span v-else>{{ `共 ${slotProps.total} 个${label}` }}</span>
+          </slot>
+        </template>
+      </Table>
+    </main>
+  </div>
+</template>
 
 <style lang="less">
 @import '@arco-design/web-vue/es/index.less'; // 引入 Arco Design 样式

@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { Card, CardContent, CardHeader, CardTitle } from '@stall-core/shadcn-ui';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@stall-core/shadcn-ui';
 
 interface Props {
   title: string;

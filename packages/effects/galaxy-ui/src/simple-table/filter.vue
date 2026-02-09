@@ -1,42 +1,15 @@
-<template>
-  <div
-    class="stall-galaxy-table__filter"
-    :class="{ disabled }"
-    v-if="filterableColumns.length > 0">
-    <!-- 自定义插槽：过滤器前置内容 -->
-    <Space :size="8">
-      <slot name="filter-before"></slot>
-
-      <!-- 更多筛选器 -->
-      <template v-if="displayMoreFilter">
-        <!-- 渲染更多筛选器的下拉菜单 -->
-        <FilterMoreFilterDropdown
-          v-if="innerFilter.moreFilter"
-          :uuid="uuid"
-          :filterableColumns="filterableColumns"
-          @reset="handleReset"
-          @submit="handleSearch" />
-      </template>
-
-      <!-- 自定义插槽：过滤器后置内容 -->
-      <slot name="filter-after"></slot>
-    </Space>
-  </div>
-
-  <!-- 筛选结果摘要 -->
-  <FilterSummary
-    v-if="innerFilter.summary"
-    :uuid="uuid"
-    :columns="columns"
-    @search="handleSearch" />
-</template>
-
 <script lang="ts">
-import { computed, defineComponent, type PropType } from 'vue';
+import type { PropType } from 'vue';
+
+import type { FormData } from './hooks/useTableSetting';
+
+import { computed, defineComponent } from 'vue';
+
 import { Space } from '@arco-design/web-vue';
-import { type FormData, useTableSetting } from './hooks/useTableSetting';
+
 import FilterMoreFilterDropdown from './filter-more-filter-dropdown.vue';
 import FilterSummary from './filter-summary.vue';
+import { useTableSetting } from './hooks/useTableSetting';
 
 export default defineComponent({
   components: {
@@ -59,9 +32,9 @@ export default defineComponent({
     },
     filter: {
       type: Object as PropType<{
-        selector: boolean;
-        moreFilter: boolean;
         inputSearch: boolean;
+        moreFilter: boolean;
+        selector: boolean;
         summary: boolean;
       }>,
       default: () => ({
@@ -80,13 +53,22 @@ export default defineComponent({
     // 计算属性：选择器列
     const selectorColumns = computed(() => {
       return filterableColumns.value
-        .filter((col: any) => col.filterable?.componentType === 'select' || col.filterable?.filters)
+        .filter(
+          (col: any) =>
+            col.filterable?.componentType === 'select' ||
+            col.filterable?.filters,
+        )
         .slice(0, 2); // 最多显示两个选择器
     });
 
     // 计算属性：内部筛选器配置
     const innerFilter = computed(() => {
-      const { selector = true, moreFilter = true, inputSearch = true, summary = true } = props.filter;
+      const {
+        selector = true,
+        moreFilter = true,
+        inputSearch = true,
+        summary = true,
+      } = props.filter;
 
       return {
         selector,
@@ -98,10 +80,9 @@ export default defineComponent({
 
     // 计算属性：是否显示更多筛选器
     const displayMoreFilter = computed(() => {
-      return (
-        filterableColumns.value.filter(
-          (col: any) => col.filterable?.componentType !== 'input' || col.filterable?.filters,
-        ).length > 0
+      return filterableColumns.value.some(
+        (col: any) =>
+          col.filterable?.componentType !== 'input' || col.filterable?.filters,
       );
     });
 
@@ -126,3 +107,39 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <div
+    class="stall-galaxy-table__filter"
+    :class="{ disabled }"
+    v-if="filterableColumns.length > 0"
+  >
+    <!-- 自定义插槽：过滤器前置内容 -->
+    <Space :size="8">
+      <slot name="filter-before"></slot>
+
+      <!-- 更多筛选器 -->
+      <template v-if="displayMoreFilter">
+        <!-- 渲染更多筛选器的下拉菜单 -->
+        <FilterMoreFilterDropdown
+          v-if="innerFilter.moreFilter"
+          :uuid="uuid"
+          :filterable-columns="filterableColumns"
+          @reset="handleReset"
+          @submit="handleSearch"
+        />
+      </template>
+
+      <!-- 自定义插槽：过滤器后置内容 -->
+      <slot name="filter-after"></slot>
+    </Space>
+  </div>
+
+  <!-- 筛选结果摘要 -->
+  <FilterSummary
+    v-if="innerFilter.summary"
+    :uuid="uuid"
+    :columns="columns"
+    @search="handleSearch"
+  />
+</template>

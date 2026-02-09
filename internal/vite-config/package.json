@@ -32,9 +32,9 @@
   },
   "devDependencies": {
     "@pnpm/workspace.read-manifest": "catalog:",
+    "@stall/node-utils": "workspace:*",
     "@types/archiver": "catalog:",
     "@types/html-minifier-terser": "catalog:",
-    "@stall/node-utils": "workspace:*",
     "@vitejs/plugin-vue": "catalog:",
     "@vitejs/plugin-vue-jsx": "catalog:",
     "dayjs": "catalog:",

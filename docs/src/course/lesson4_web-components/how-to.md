@@ -63,16 +63,16 @@ customElements.define('my-button', MyButton);
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Components 示例</title>
-  <script src="my-button.js" defer></script>
-</head>
-<body>
-  <h1>Web Components 示例</h1>
-  <my-button>点击我</my-button>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Components 示例</title>
+    <script src="my-button.js" defer></script>
+  </head>
+  <body>
+    <h1>Web Components 示例</h1>
+    <my-button>点击我</my-button>
+  </body>
 </html>
 ```
 
@@ -90,7 +90,9 @@ class MyButton extends HTMLElement {
 
   connectedCallback() {
     this.render();
-    this.shadowRoot.querySelector('button').addEventListener('click', this.handleClick);
+    this.shadowRoot
+      .querySelector('button')
+      .addEventListener('click', this.handleClick);
   }
 
   handleClick() {
@@ -117,7 +119,9 @@ class MyButton extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.shadowRoot.querySelector('button').removeEventListener('click', this.handleClick);
+    this.shadowRoot
+      .querySelector('button')
+      .removeEventListener('click', this.handleClick);
   }
 }
 
@@ -198,11 +202,13 @@ class CustomForm extends HTMLElement {
     e.preventDefault();
     const formData = new FormData(this._form);
     const data = Object.fromEntries(formData.entries());
-    this.dispatchEvent(new CustomEvent('form-submit', {
-      bubbles: true,
-      composed: true,
-      detail: data
-    }));
+    this.dispatchEvent(
+      new CustomEvent('form-submit', {
+        bubbles: true,
+        composed: true,
+        detail: data,
+      }),
+    );
   }
 }
 
@@ -214,22 +220,22 @@ customElements.define('custom-form', CustomForm);
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Components 示例</title>
-  <script src="custom-form.js" defer></script>
-</head>
-<body>
-  <h1>Web Components 示例</h1>
-  <custom-form></custom-form>
-  <script>
-    const form = document.querySelector('custom-form');
-    form.addEventListener('form-submit', (e) => {
-      console.log('Form submitted:', e.detail);
-    });
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Components 示例</title>
+    <script src="custom-form.js" defer></script>
+  </head>
+  <body>
+    <h1>Web Components 示例</h1>
+    <custom-form></custom-form>
+    <script>
+      const form = document.querySelector('custom-form');
+      form.addEventListener('form-submit', (e) => {
+        console.log('Form submitted:', e.detail);
+      });
+    </script>
+  </body>
 </html>
 ```
 
@@ -285,13 +291,16 @@ customElements.define('styled-component', StyledComponent);
 class DataComponent extends HTMLElement {
   constructor() {
     super();
-    this._data = new Proxy({}, {
-      set: (target, property, value) => {
-        target[property] = value;
-        this._render();
-        return true;
-      }
-    });
+    this._data = new Proxy(
+      {},
+      {
+        set: (target, property, value) => {
+          target[property] = value;
+          this._render();
+          return true;
+        },
+      },
+    );
     this.attachShadow({ mode: 'open' });
   }
 

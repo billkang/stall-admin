@@ -55,18 +55,18 @@ sayHi();
 
 宏任务是 JavaScript 中较大的任务单元，常见的宏任务包括：
 
-* 整体代码块：例如，整个脚本的初始执行。
-* setTimeout 和 setInterval：延迟执行的回调函数。
-* requestAnimationFrame：用于在浏览器重绘之前执行动画。
-* I/O 操作：如文件读写等。
+- 整体代码块：例如，整个脚本的初始执行。
+- setTimeout 和 setInterval：延迟执行的回调函数。
+- requestAnimationFrame：用于在浏览器重绘之前执行动画。
+- I/O 操作：如文件读写等。
 
 #### 微任务（microtask）
 
 微任务是较轻量级的任务，具有更高的优先级。常见的微任务包括：
 
-* Promise 的回调函数：无论 Promise 是处于 fulfilled 还是 rejected 状态，其回调函数都会被放入微任务队列中。
-* MutationObserver：用于观察 DOM 变化的回调函数。
-* process.nextTick（在 Node.js 中）：特意设计的微任务，用于在当前操作完成后立即执行。
+- Promise 的回调函数：无论 Promise 是处于 fulfilled 还是 rejected 状态，其回调函数都会被放入微任务队列中。
+- MutationObserver：用于观察 DOM 变化的回调函数。
+- process.nextTick（在 Node.js 中）：特意设计的微任务，用于在当前操作完成后立即执行。
 
 ## 四、事件循环（Event Loop）
 

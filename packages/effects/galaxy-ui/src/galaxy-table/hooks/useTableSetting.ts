@@ -1,17 +1,27 @@
-import type { UnwrapNestedRefs } from 'vue';
 import type { TableColumnData } from '@arco-design/web-vue';
-import { ref, reactive, computed, watch } from 'vue';
 
-export type TableTextControl = 'wrap' | 'ellipsis';
+import type { UnwrapNestedRefs } from 'vue';
+
+import { computed, reactive, ref, watch } from 'vue';
+
+export type TableTextControl = 'ellipsis' | 'wrap';
 export type TableSize = 'large' | 'small';
-export type FormData = Record<string, string | number | boolean | null>;
+export type FormData = Record<string, boolean | null | number | string>;
 
 // 兼容 0.0.82 版本之前 的col.filters, col.filterSearch 和 col.filterType 字段
-type TableColumnDataOld = TableColumnData & { filters?: any[]; filterSearch?: boolean; filterType?: string };
+type TableColumnDataOld = TableColumnData & {
+  filters?: any[];
+  filterSearch?: boolean;
+  filterType?: string;
+};
 
 const CACHE_TABLE_SETTING: Record<string, any> = {};
 
-function initTableSetting(uuid: string, columns: TableColumnDataOld[], optional?: { visible: boolean; width: number }) {
+function initTableSetting(
+  uuid: string,
+  columns: TableColumnDataOld[],
+  optional?: { visible: boolean; width: number },
+) {
   // localStorage-keys
   let SETTING_SIZE_KEY: string;
   let SETTING_TEXT_CONTROL_KEY: string;
@@ -31,22 +41,25 @@ function initTableSetting(uuid: string, columns: TableColumnDataOld[], optional?
   // 2. filterable.visible 明确设置为true
   const filterableColumns = computed(() =>
     sortedColumns.value.filter(
-      c =>
+      (c) =>
         (c.filterable?.componentType || c.filterable?.filters?.length) &&
-        ((!!c.visible && c.filterable?.visible !== false) || !!c.filterable?.visible),
+        ((!!c.visible && c.filterable?.visible !== false) ||
+          !!c.filterable?.visible),
     ),
   );
   const inputSearchColumns = computed(() =>
-    filterableColumns.value.filter(c => c.filterable?.componentType === 'input'),
+    filterableColumns.value.filter(
+      (c) => c.filterable?.componentType === 'input',
+    ),
   );
 
   // 监听过滤列表的变化，当他们变的不可见时，不支持搜索
   watch(
     () => sortedColumns,
-    newColumns => {
+    (newColumns) => {
       newColumns.value
-        .filter(c => c.filterable?.visible !== false) // 首先过滤掉那些明确不能被筛选的 col
-        .forEach(c => {
+        .filter((c) => c.filterable?.visible !== false) // 首先过滤掉那些明确不能被筛选的 col
+        .forEach((c) => {
           // 如果 col 变为不可见，也不需要出现在最终的 search 事件返回的 data 中
           if (c.dataIndex && !c.visible) {
             formData[c.dataIndex] = null;
@@ -67,7 +80,9 @@ function initTableSetting(uuid: string, columns: TableColumnDataOld[], optional?
   function getMergedColumns(columns: TableColumnDataOld[]) {
     let cachedColumns: TableColumnData[] | undefined;
     try {
-      cachedColumns = JSON.parse(window.localStorage.getItem(SETTING_SORT_KEY) || '');
+      cachedColumns = JSON.parse(
+        window.localStorage.getItem(SETTING_SORT_KEY) || '',
+      );
     } catch {}
 
     let mergedColumns: any[];
@@ -75,61 +90,80 @@ function initTableSetting(uuid: string, columns: TableColumnDataOld[], optional?
     // 如果 columns 长度没有变化（cachedColumns包含一个optional列，所以长度多1），则以缓存的columns为主
     if (
       cachedColumns &&
-      (optional?.visible ? cachedColumns.length === columns.length + 1 : cachedColumns.length === columns.length)
+      (optional?.visible
+        ? cachedColumns.length === columns.length + 1
+        : cachedColumns.length === columns.length)
     ) {
-      mergedColumns = [
-        ...cachedColumns.map((col: TableColumnData) => {
-          if (col.dataIndex === 'optional') {
-            return col;
-          }
+      mergedColumns = cachedColumns.map((col: TableColumnData) => {
+        if (col.dataIndex === 'optional') {
+          return col;
+        }
 
-          const newCol = columns.find((c: TableColumnDataOld) => c.dataIndex === col.dataIndex);
+        const newCol = columns.find(
+          (c: TableColumnDataOld) => c.dataIndex === col.dataIndex,
+        );
 
-          const _ellipsis = !!newCol?.ellipsis || col.ellipsis || textControl.value === 'ellipsis';
-          const _filterable =
-            newCol?.filterable || newCol?.filters || newCol?.filterSearch || newCol?.filterType
-              ? {
-                  ...newCol?.filterable,
-                  filters: newCol?.filters || newCol?.filterable?.filters,
-                  componentType: !!newCol?.filterSearch
-                    ? 'input'
-                    : newCol?.filterType || newCol?.filterable?.componentType,
-                }
-              : col.filterable;
+        const _ellipsis =
+          !!newCol?.ellipsis ||
+          col.ellipsis ||
+          textControl.value === 'ellipsis';
+        const _filterable =
+          newCol?.filterable ||
+          newCol?.filters ||
+          newCol?.filterSearch ||
+          newCol?.filterType
+            ? {
+                ...newCol?.filterable,
+                filters: newCol?.filters || newCol?.filterable?.filters,
+                componentType: newCol?.filterSearch
+                  ? 'input'
+                  : newCol?.filterType || newCol?.filterable?.componentType,
+              }
+            : col.filterable;
 
-          return {
-            visible: newCol?.visible !== undefined && newCol?.visible !== null ? newCol?.visible : true,
-            ...col,
-            ...newCol,
-            ellipsis: _ellipsis,
-            filterable: _filterable,
-          };
-        }),
-      ];
+        return {
+          visible:
+            newCol?.visible !== undefined && newCol?.visible !== null
+              ? newCol?.visible
+              : true,
+          ...col,
+          ...newCol,
+          ellipsis: _ellipsis,
+          filterable: _filterable,
+        };
+      });
     } else {
-      mergedColumns = [
-        ...columns.map((col: TableColumnDataOld) => {
-          const cachedCol = cachedColumns?.find((c: TableColumnData) => c.dataIndex === col.dataIndex);
+      mergedColumns = columns.map((col: TableColumnDataOld) => {
+        const cachedCol = cachedColumns?.find(
+          (c: TableColumnData) => c.dataIndex === col.dataIndex,
+        );
 
-          const _ellipsis = !!col.ellipsis || cachedCol?.ellipsis || textControl.value === 'ellipsis';
-          const _filterable =
-            col.filterable || col.filters || col.filterSearch || col.filterType
-              ? {
-                  ...col.filterable,
-                  filters: col.filters || col.filterable?.filters,
-                  componentType: !!col.filterSearch ? 'input' : col.filterType || col.filterable?.componentType,
-                }
-              : cachedCol?.filterable;
+        const _ellipsis =
+          !!col.ellipsis ||
+          cachedCol?.ellipsis ||
+          textControl.value === 'ellipsis';
+        const _filterable =
+          col.filterable || col.filters || col.filterSearch || col.filterType
+            ? {
+                ...col.filterable,
+                filters: col.filters || col.filterable?.filters,
+                componentType: col.filterSearch
+                  ? 'input'
+                  : col.filterType || col.filterable?.componentType,
+              }
+            : cachedCol?.filterable;
 
-          return {
-            visible: col.visible !== undefined && col.visible !== null ? col.visible : true,
-            ...cachedCol,
-            ...col,
-            ellipsis: _ellipsis,
-            filterable: _filterable,
-          };
-        }),
-      ];
+        return {
+          visible:
+            col.visible !== undefined && col.visible !== null
+              ? col.visible
+              : true,
+          ...cachedCol,
+          ...col,
+          ellipsis: _ellipsis,
+          filterable: _filterable,
+        };
+      });
 
       if (optional?.visible) {
         mergedColumns.push({
@@ -155,15 +189,19 @@ function initTableSetting(uuid: string, columns: TableColumnDataOld[], optional?
     SETTING_CUSTOM_FILTER_KEY = `GTABLE__SETTING_CUSTOM_FILTER__${uuid}`;
 
     // 设置 table-size table-text-control
-    tableSize.value = (window.localStorage.getItem(SETTING_SIZE_KEY) as TableSize) || 'small';
-    textControl.value = (window.localStorage.getItem(SETTING_TEXT_CONTROL_KEY) as TableTextControl) || 'wrap';
+    tableSize.value =
+      (window.localStorage.getItem(SETTING_SIZE_KEY) as TableSize) || 'small';
+    textControl.value =
+      (window.localStorage.getItem(
+        SETTING_TEXT_CONTROL_KEY,
+      ) as TableTextControl) || 'wrap';
 
     // 初始化-列表项
     sortedColumns.value = getMergedColumns(columns);
 
     // 初始化formData
     const cols: FormData = {};
-    filterableColumns.value.forEach(c => {
+    filterableColumns.value.forEach((c) => {
       cols[`${c.dataIndex}`] = null;
     });
     formData = reactive(cols);
@@ -180,9 +218,9 @@ function initTableSetting(uuid: string, columns: TableColumnDataOld[], optional?
     window.localStorage.setItem(SETTING_TEXT_CONTROL_KEY, type);
 
     sortedColumns.value
-      .filter(c => c.dataIndex !== 'optional')
-      .forEach(col => {
-        const original = columns.find(c => c.dataIndex === col.dataIndex);
+      .filter((c) => c.dataIndex !== 'optional')
+      .forEach((col) => {
+        const original = columns.find((c) => c.dataIndex === col.dataIndex);
         col.ellipsis = !!original?.ellipsis || type === 'ellipsis';
       });
   }
@@ -194,16 +232,16 @@ function initTableSetting(uuid: string, columns: TableColumnDataOld[], optional?
 
   // 重置formData
   function resetFormData(newData?: FormData) {
-    Object.keys(formData).forEach(key => (formData[key] = null));
+    Object.keys(formData).forEach((key) => (formData[key] = null));
 
     if (newData) {
-      Object.keys(newData).forEach(key => (formData[key] = newData[key]));
+      Object.keys(newData).forEach((key) => (formData[key] = newData[key]));
     }
   }
 
   // 重置formData
   function cleanFormDataByKey(key: string) {
-    Object.keys(formData).forEach(_key => {
+    Object.keys(formData).forEach((_key) => {
       if (_key === key) {
         formData[key] = null;
       }
@@ -242,7 +280,7 @@ function initTableSetting(uuid: string, columns: TableColumnDataOld[], optional?
   function saveCustomFilter(name: string, formData: FormData) {
     if (customFilters.has(name)) {
       const text = '已存在同名筛选';
-      throw Error(text);
+      throw new Error(text);
     }
 
     customFilters.set(name, { ...formData });
@@ -265,7 +303,7 @@ function initTableSetting(uuid: string, columns: TableColumnDataOld[], optional?
 
   async function handleCustomSearch(data: Record<string, any>) {
     const { key, value } = data;
-    const col = filterableColumns.value.find(col => col.dataIndex === key);
+    const col = filterableColumns.value.find((col) => col.dataIndex === key);
     if (col?.filterable?.customSearch) {
       await col.filterable.customSearch(value, col);
     }
@@ -292,9 +330,9 @@ function initTableSetting(uuid: string, columns: TableColumnDataOld[], optional?
 }
 
 export function useTableSetting(props: {
-  uuid: string;
   columns?: TableColumnDataOld[];
   optional?: { visible: boolean; width: number };
+  uuid: string;
 }) {
   const { uuid, columns, optional } = props;
   const cacheSetting = CACHE_TABLE_SETTING[uuid];
@@ -307,7 +345,7 @@ export function useTableSetting(props: {
     return CACHE_TABLE_SETTING[uuid];
   } else {
     if (!cacheSetting) {
-      throw Error(`unknow table_setting for: ${uuid}`);
+      throw new Error(`unknow table_setting for: ${uuid}`);
     }
 
     return cacheSetting;

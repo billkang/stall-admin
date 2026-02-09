@@ -4,10 +4,11 @@ import type { DefineLibraryOptions } from '../typing';
 
 import { readPackageJSON } from '@stall/node-utils';
 
-import { defineConfig, mergeConfig } from 'vite';
-import dts from 'vite-plugin-dts';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
+import { defineConfig, mergeConfig } from 'vite';
+import dts from 'vite-plugin-dts';
+
 import { getCommonConfig } from './common';
 
 function defineJSSDKConfig(userConfigPromise?: DefineLibraryOptions) {
@@ -25,13 +26,13 @@ function defineJSSDKConfig(userConfigPromise?: DefineLibraryOptions) {
 
     const packageConfig: UserConfig = {
       build: {
-        minify: false,
         lib: {
           entry: 'src/index.ts',
+          fileName: 'jssdk',
           formats: ['es'],
           name: 'jssdk',
-          fileName: 'jssdk',
         },
+        minify: false,
         rollupOptions: {
           external: (id) => {
             return externalPackages.some(
@@ -42,17 +43,17 @@ function defineJSSDKConfig(userConfigPromise?: DefineLibraryOptions) {
       },
       plugins: [
         vue({
+          customElement: true,
           template: {
             compilerOptions: {
               isCustomElement: (tag: string) => tag.startsWith('dcp-jssdk-'),
             },
           },
-          customElement: true,
         }),
         vueJsx(),
         dts({
-          rollupTypes: true,
           logLevel: 'error',
+          rollupTypes: true,
         }),
       ],
     };

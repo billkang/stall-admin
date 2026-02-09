@@ -19,17 +19,17 @@
 
 ```javascript
 function createPerson(name, age) {
-    let obj = new Object();
-    obj.name = name;
-    obj.age = age;
-    obj.sayName = function() {
-        console.log(this.name);
-    };
-    return obj;
+  let obj = new Object();
+  obj.name = name;
+  obj.age = age;
+  obj.sayName = function () {
+    console.log(this.name);
+  };
+  return obj;
 }
 
-let person1 = createPerson("张三", 20);
-let person2 = createPerson("李四", 25);
+let person1 = createPerson('张三', 20);
+let person2 = createPerson('李四', 25);
 ```
 
 ### 内存分配示意图
@@ -155,15 +155,15 @@ JavaScript 中每个函数都可以作为构造函数使用，通过 `new` 关�
 
 ```javascript
 function Person(name, age) {
-    this.name = name;
-    this.age = age;
-    this.sayName = function() {
-        console.log(this.name);
-    };
+  this.name = name;
+  this.age = age;
+  this.sayName = function () {
+    console.log(this.name);
+  };
 }
 
-let person1 = new Person("张三", 20);
-let person2 = new Person("李四", 25);
+let person1 = new Person('张三', 20);
+let person2 = new Person('李四', 25);
 ```
 
 ### 内存分配示意图
@@ -288,10 +288,10 @@ Global Execution Context:
 
 ```javascript
 function Person() {}
-Person.prototype.name = "张三";
+Person.prototype.name = '张三';
 Person.prototype.age = 20;
-Person.prototype.sayName = function() {
-    console.log(this.name);
+Person.prototype.sayName = function () {
+  console.log(this.name);
 };
 
 let person1 = new Person();
@@ -427,15 +427,15 @@ Global Execution Context:
 
 ```javascript
 function Person(name, age) {
-    this.name = name;
-    this.age = age;
+  this.name = name;
+  this.age = age;
 }
-Person.prototype.sayName = function() {
-    console.log(this.name);
+Person.prototype.sayName = function () {
+  console.log(this.name);
 };
 
-let person1 = new Person("张三", 20);
-let person2 = new Person("李四", 25);
+let person1 = new Person('张三', 20);
+let person2 = new Person('李四', 25);
 ```
 
 ### 内存分配示意图
@@ -571,18 +571,18 @@ Global Execution Context:
 
 ```javascript
 function Person(name, age) {
-    if (typeof Person._initialized === "undefined") {
-        Person.prototype.sayName = function() {
-            console.log(this.name);
-        };
-        Person._initialized = true;
-    }
-    this.name = name;
-    this.age = age;
+  if (typeof Person._initialized === 'undefined') {
+    Person.prototype.sayName = function () {
+      console.log(this.name);
+    };
+    Person._initialized = true;
+  }
+  this.name = name;
+  this.age = age;
 }
 
-let person1 = new Person("张三", 20);
-let person2 = new Person("李四", 25);
+let person1 = new Person('张三', 20);
+let person2 = new Person('李四', 25);
 ```
 
 ### 内存分配示意图
@@ -718,17 +718,17 @@ Global Execution Context:
 
 ```javascript
 function Person(name, age) {
-    let obj = new Object();
-    obj.name = name;
-    obj.age = age;
-    obj.sayName = function() {
-        console.log(this.name);
-    };
-    return obj;
+  let obj = new Object();
+  obj.name = name;
+  obj.age = age;
+  obj.sayName = function () {
+    console.log(this.name);
+  };
+  return obj;
 }
 
-let person1 = new Person("张三", 20);
-let person2 = new Person("李四", 25);
+let person1 = new Person('张三', 20);
+let person2 = new Person('李四', 25);
 ```
 
 ### 内存分配示意图

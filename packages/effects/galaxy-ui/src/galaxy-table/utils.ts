@@ -1,4 +1,7 @@
-export function recursiveCheckNodeClass(node: Node & { classList: any }, className: string): boolean {
+export function recursiveCheckNodeClass(
+  node: Node & { classList: any },
+  className: string,
+): boolean {
   if (!node) {
     return false;
   }

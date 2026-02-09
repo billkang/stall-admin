@@ -1,129 +1,31 @@
-<template>
-  <Dropdown
-    :popup-visible="isOpenOverlay"
-    position="bottom"
-    trigger="click"
-    @click.stop="handleToggle"
-    @popup-visible-change="handlePopupVisibleChange">
-    <!-- 触发器内容 -->
-    <div
-      class="flex stall-galaxy-table-filter__more-filter"
-      :class="{ 'focused-filter': focusedFilter === 'moreFilter' }">
-      <!-- 图标 -->
-      <IconAlignCenter />
-
-      <!-- 标题 -->
-      <div class="dropdown-title">
-        更多筛选
-        <!-- 筛选数量 -->
-        <span v-if="filterCount > 0" class="filter-count">{{ filterCount }}</span>
-      </div>
-
-      <!-- 箭头图标 -->
-      <IconUp v-if="isOpenOverlay" />
-      <IconDown v-else />
-    </div>
-
-    <!-- 弹出内容 -->
-    <template #content>
-      <div class="stall-galaxy-table-filter__more-filter-overlay">
-        <!-- 表单 -->
-        <Form :model="formData" layout="vertical" class="stall-dropdown-menu">
-          <!-- 表单项 -->
-          <FormItem
-            :class="{ 'grid-rang-picker': column.filterable?.componentType === 'rang-picker' }"
-            v-for="column in filterableColumns"
-            :key="column.dataIndex"
-            :name="column.dataIndex"
-            :label="`${column.title || ''}`"
-            label-col-flex="30px">
-              <!-- 根据 componentType 渲染不同组件 -->
-              <template v-if="column.filterable?.componentType">
-                <Input
-                  v-if="column.filterable.componentType === 'input'"
-                  v-model="formData[column.dataIndex!]"
-                  allow-clear />
-                <DatePicker
-                  v-else-if="column.filterable.componentType === 'date-picker'"
-                  v-model="formData[column.dataIndex!]"
-                  allow-clear />
-                <TimePicker
-                  v-else-if="column.filterable.componentType === 'time-picker'"
-                  v-model="formData[column.dataIndex!]"
-                  allow-clear />
-                <RangePicker
-                  v-else-if="column.filterable.componentType === 'rang-picker'"
-                  v-model="formData[column.dataIndex!]"
-                  :time-picker-props="{
-                    defaultValue: ['00:00:00', '00:00:00'],
-                  }"
-                  showTime
-                  allow-clear />
-                <Select
-                  v-else-if="column.filterable?.filters"
-                  v-model="formData[column.dataIndex!]"
-                  :multiple="column.filterable.multiple === true"
-                  allowClear>
-                  <SelectOption v-for="opt in column.filterable.filters" :value="opt.value" :key="opt.value">
-                    {{ opt.text }}
-                  </SelectOption>
-                </Select>
-              </template>
-              <!-- 兼容没有设置 componentType 的情况 -->
-              <template v-else-if="column.filterable?.filters">
-                <Select
-                  v-model="formData[column.dataIndex!]"
-                  :multiple="column.filterable.multiple === true"
-                  allowClear>
-                  <SelectOption v-for="opt in column.filterable.filters" :value="opt.value" :key="opt.value">
-                    {{ opt.text }}
-                  </SelectOption>
-                </Select>
-            </template>
-          </FormItem>
-          <!-- 表单底部 -->
-          <div class="form-footer">
-            <div class="left"></div>
-            <div class="right">
-              <Space :size="8">
-                <!-- 重置按钮 -->
-                <Button @click="handleReset">重置</Button>
-                <!-- 筛选按钮 -->
-                <Button type="primary" @click="handleSubmit">筛选</Button>
-              </Space>
-            </div>
-          </div>
-        </Form>
-      </div>
-    </template>
-  </Dropdown>
-</template>
-
 <script lang="ts">
-import type { PropType, ComputedRef } from 'vue';
-import { defineComponent, ref, computed, onMounted } from 'vue';
+import type { ComputedRef, PropType } from 'vue';
+
+import { computed, defineComponent, onMounted, ref } from 'vue';
+
 import {
+  Button,
+  DatePicker,
   Dropdown,
   Form,
   FormItem,
+  Input,
+  RangePicker,
   Select,
   Option as SelectOption,
   Space,
-  Input,
-  DatePicker,
-  RangePicker,
   TimePicker,
-  Button,
-  Tooltip
+  Tooltip,
 } from '@arco-design/web-vue';
 import {
   IconAlignCenter,
-  IconUp,
   IconDown,
-  IconQuestionCircle
+  IconQuestionCircle,
+  IconUp,
 } from '@arco-design/web-vue/es/icon';
-import { useTableSetting } from './hooks/useTableSetting';
+
 import { useTable } from './hooks/useTable';
+import { useTableSetting } from './hooks/useTableSetting';
 
 export default defineComponent({
   components: {
@@ -157,14 +59,15 @@ export default defineComponent({
   emits: ['reset', 'custom-search', 'submit'], // 定义组件触发的事件
   setup(props, { emit }) {
     // 获取表格的聚焦过滤器状态和相关方法
-    const { handleClickFilter, focusedFilter, handleClearFocusedFilter } = useTable({ props, emit });
+    const { handleClickFilter, focusedFilter, handleClearFocusedFilter } =
+      useTable({ props, emit });
 
     // 获取表单数据和重置方法
     const { formData, resetFormData } = useTableSetting(props);
 
     // 计算属性：筛选条件的数量
     const filterCount: ComputedRef<number> = computed(() => {
-      return Object.values(formData).filter(v => !!v).length; // 统计非空值的数量
+      return Object.values(formData).filter((v) => !!v).length; // 统计非空值的数量
     });
 
     // 控制【更多筛选】菜单是否可见
@@ -213,3 +116,127 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <Dropdown
+    :popup-visible="isOpenOverlay"
+    position="bottom"
+    trigger="click"
+    @click.stop="handleToggle"
+    @popup-visible-change="handlePopupVisibleChange"
+  >
+    <!-- 触发器内容 -->
+    <div
+      class="stall-galaxy-table-filter__more-filter flex"
+      :class="{ 'focused-filter': focusedFilter === 'moreFilter' }"
+    >
+      <!-- 图标 -->
+      <IconAlignCenter />
+
+      <!-- 标题 -->
+      <div class="dropdown-title">
+        更多筛选
+        <!-- 筛选数量 -->
+        <span v-if="filterCount > 0" class="filter-count">{{
+          filterCount
+        }}</span>
+      </div>
+
+      <!-- 箭头图标 -->
+      <IconUp v-if="isOpenOverlay" />
+      <IconDown v-else />
+    </div>
+
+    <!-- 弹出内容 -->
+    <template #content>
+      <div class="stall-galaxy-table-filter__more-filter-overlay">
+        <!-- 表单 -->
+        <Form :model="formData" layout="vertical" class="stall-dropdown-menu">
+          <!-- 表单项 -->
+          <FormItem
+            :class="{
+              'grid-rang-picker':
+                column.filterable?.componentType === 'rang-picker',
+            }"
+            v-for="column in filterableColumns"
+            :key="column.dataIndex"
+            :name="column.dataIndex"
+            :label="`${column.title || ''}`"
+            label-col-flex="30px"
+          >
+            >
+            <!-- 根据 componentType 渲染不同组件 -->
+            <template v-if="column.filterable?.componentType">
+              <Input
+                v-if="column.filterable.componentType === 'input'"
+                v-model="formData[column.dataIndex!]"
+                allow-clear
+              />
+              <DatePicker
+                v-else-if="column.filterable.componentType === 'date-picker'"
+                v-model="formData[column.dataIndex!]"
+                allow-clear
+              />
+              <TimePicker
+                v-else-if="column.filterable.componentType === 'time-picker'"
+                v-model="formData[column.dataIndex!]"
+                allow-clear
+              />
+              <RangePicker
+                v-else-if="column.filterable.componentType === 'rang-picker'"
+                v-model="formData[column.dataIndex!]"
+                :time-picker-props="{
+                  defaultValue: ['00:00:00', '00:00:00'],
+                }"
+                show-time
+                allow-clear
+              />
+              <Select
+                v-else-if="column.filterable?.filters"
+                v-model="formData[column.dataIndex!]"
+                :multiple="column.filterable.multiple === true"
+                allow-clear
+              >
+                <SelectOption
+                  v-for="opt in column.filterable.filters"
+                  :value="opt.value"
+                  :key="opt.value"
+                >
+                  {{ opt.text }}
+                </SelectOption>
+              </Select>
+            </template>
+            <!-- 兼容没有设置 componentType 的情况 -->
+            <template v-else-if="column.filterable?.filters">
+              <Select
+                v-model="formData[column.dataIndex!]"
+                :multiple="column.filterable.multiple === true"
+                allow-clear
+              >
+                <SelectOption
+                  v-for="opt in column.filterable.filters"
+                  :value="opt.value"
+                  :key="opt.value"
+                >
+                  {{ opt.text }}
+                </SelectOption>
+              </Select>
+            </template>
+          </FormItem>
+          <!-- 表单底部 -->
+          <div class="form-footer">
+            <div class="left"></div>
+            <div class="right">
+              <Space :size="8">
+                <!-- 重置按钮 -->
+                <Button @click="handleReset">重置</Button>
+                <!-- 筛选按钮 -->
+                <Button type="primary" @click="handleSubmit">筛选</Button>
+              </Space>
+            </div>
+          </div>
+        </Form>
+      </div>
+    </template>
+  </Dropdown>
+</template>

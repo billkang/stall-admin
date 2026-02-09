@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useStallModal, StallButton } from '@stall/common-ui';
+import { StallButton, useStallModal } from '@stall/common-ui';
 
 import ExtraModal from './modal.vue';
 

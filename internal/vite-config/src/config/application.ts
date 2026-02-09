@@ -75,9 +75,6 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
         legalComments: 'none',
       },
       plugins,
-      worker: {
-        format: 'es',
-      },
       server: {
         host: true,
         port,
@@ -89,6 +86,9 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
             './src/{views,layouts,router,store,api,adapter}/*',
           ],
         },
+      },
+      worker: {
+        format: 'es',
       },
     };
 

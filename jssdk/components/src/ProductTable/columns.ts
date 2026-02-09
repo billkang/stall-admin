@@ -1,4 +1,4 @@
-import {h} from 'vue';
+import { h } from 'vue';
 
 export const columns = [
   {
@@ -7,8 +7,6 @@ export const columns = [
   },
   {
     dataIndex: 'imageUrl',
-    title: 'imageUrl',
-    width: 120,
     render: ({ record }: any) => {
       return h(
         'img',
@@ -16,11 +14,13 @@ export const columns = [
           src: record.imageUrl,
           style: {
             width: '80px',
-          }
+          },
         },
         [],
       );
-    }
+    },
+    title: 'imageUrl',
+    width: 120,
   },
   {
     dataIndex: 'category',

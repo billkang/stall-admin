@@ -1,14 +1,14 @@
 export const columns = [
   {
-    title: '姓名',
     dataIndex: 'userName',
+    title: '姓名',
   },
   {
-    title: 'email',
     dataIndex: 'email',
+    title: 'email',
   },
   {
-    title: '供应商',
     dataIndex: 'supplier',
+    title: '供应商',
   },
 ];

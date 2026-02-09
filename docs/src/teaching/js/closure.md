@@ -21,11 +21,11 @@
 
 ```javascript
 function createCounter() {
-    let count = 0;
-    return function() {
-        count += 1;
-        return count;
-    };
+  let count = 0;
+  return function () {
+    count += 1;
+    return count;
+  };
 }
 
 const counter = createCounter();
@@ -41,9 +41,9 @@ console.log(counter()); // 输出: 2
 
 ```javascript
 for (let i = 1; i <= 3; i++) {
-    setTimeout(function() {
-        console.log(i); // 每个闭包都保留了当前i的值
-    }, i * 1000);
+  setTimeout(function () {
+    console.log(i); // 每个闭包都保留了当前i的值
+  }, i * 1000);
 }
 ```
 
@@ -55,9 +55,9 @@ for (let i = 1; i <= 3; i++) {
 
 ```javascript
 function makeAdder(x) {
-    return function(y) {
-        return x + y;
-    };
+  return function (y) {
+    return x + y;
+  };
 }
 
 const add5 = makeAdder(5);
@@ -71,16 +71,16 @@ console.log(add5(2)); // 输出: 7
 使用 IIFE 来实现模块化设计，封装私有变量和方法。
 
 ```javascript
-var module = (function() {
-    var privateMethod = function() {
-        console.log('This is a private method.');
-    };
+var module = (function () {
+  var privateMethod = function () {
+    console.log('This is a private method.');
+  };
 
-    return {
-        publicMethod: function() {
-            privateMethod(); // 访问同一个立即调用函数表达式(IIFE)内部的私有方法
-        }
-    };
+  return {
+    publicMethod: function () {
+      privateMethod(); // 访问同一个立即调用函数表达式(IIFE)内部的私有方法
+    },
+  };
 })();
 
 module.publicMethod(); // 输出: This is a private method.
@@ -102,12 +102,12 @@ module.publicMethod(); // 输出: This is a private method.
 var globalVar = 'global';
 
 function globalFn() {
-    console.log(globalVar); // 访问全局变量
+  console.log(globalVar); // 访问全局变量
 }
 
 function otherFn() {
-    var globalVar = 'innerVar'; // 局部变量，遮蔽了全局变量
-    globalFn(); // 调用globalFn，输出的是全局变量'global'
+  var globalVar = 'innerVar'; // 局部变量，遮蔽了全局变量
+  globalFn(); // 调用globalFn，输出的是全局变量'global'
 }
 
 otherFn(); // 输出: global
@@ -119,11 +119,12 @@ otherFn(); // 输出: global
 
 ```javascript
 for (var i = 1; i <= 3; i++) {
-    (function(i) { // 创建一个新的作用域并传入当前的i值
-        setTimeout(function() {
-            console.log(i); // 每个闭包都保留了传入的i的值
-        }, i * 1000);
-    })(i); // 立即执行函数，传入当前的i值
+  (function (i) {
+    // 创建一个新的作用域并传入当前的i值
+    setTimeout(function () {
+      console.log(i); // 每个闭包都保留了传入的i的值
+    }, i * 1000);
+  })(i); // 立即执行函数，传入当前的i值
 }
 ```
 
@@ -137,10 +138,10 @@ for (var i = 1; i <= 3; i++) {
 
 ```javascript
 function processLargeData() {
-    let largeData = new Array(1000000).fill('data'); // 大量数据
-    return function() {
-        console.log(largeData.length);
-    };
+  let largeData = new Array(1000000).fill('data'); // 大量数据
+  return function () {
+    console.log(largeData.length);
+  };
 }
 
 let processor = processLargeData();
@@ -154,11 +155,14 @@ processor = null; // 解除对 largeData 的引用
 
 ```javascript
 for (let i = 0; i < 1000; i++) {
-    setTimeout((function(i) {
-        return function() {
-            console.log(i); // 每次迭代都创建一个新的闭包
-        };
-    })(i), 1000);
+  setTimeout(
+    (function (i) {
+      return function () {
+        console.log(i); // 每次迭代都创建一个新的闭包
+      };
+    })(i),
+    1000,
+  );
 }
 ```
 
@@ -168,15 +172,15 @@ for (let i = 0; i < 1000; i++) {
 
 ```javascript
 class Example {
-    constructor(name) {
-        this.name = name;
-    }
+  constructor(name) {
+    this.name = name;
+  }
 
-    printNameAsync() {
-        setTimeout(() => {
-            console.log(this.name); // 箭头函数保留了正确的 this
-        }, 100);
-    }
+  printNameAsync() {
+    setTimeout(() => {
+      console.log(this.name); // 箭头函数保留了正确的 this
+    }, 100);
+  }
 }
 
 const example = new Example('example');

@@ -63,8 +63,8 @@ const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API || '/api',
   timeout: 5000,
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 });
 ```
 
@@ -72,25 +72,25 @@ const service = axios.create({
 
 ```javascript
 service.interceptors.request.use(
-  config => {
+  (config) => {
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  error => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 service.interceptors.response.use(
-  response => response.data,
-  error => {
+  (response) => response.data,
+  (error) => {
     // 统一处理错误
     if (error.response.status === 401) {
       // 处理未授权
     }
     return Promise.reject(error);
-  }
+  },
 );
 ```
 
@@ -114,7 +114,7 @@ import { getUserData, postUserData } from './service';
 
 export const api = {
   getUserData,
-  postUserData
+  postUserData,
 };
 ```
 
@@ -123,11 +123,14 @@ export const api = {
 ```javascript
 import { api } from './api';
 
-api.getUserData().then(data => {
-  console.log(data);
-}).catch(error => {
-  console.error(error);
-});
+api
+  .getUserData()
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 ```
 
 ## 四、Axios 的环境兼容性及适配器实现
@@ -148,7 +151,7 @@ function xhrAdapter(config) {
     request.open(config.method.toUpperCase(), config.url, true);
 
     // 设置请求头
-    Object.keys(config.headers).forEach(key => {
+    Object.keys(config.headers).forEach((key) => {
       if (config.headers[key] !== null) {
         request.setRequestHeader(key, config.headers[key]);
       }
@@ -170,15 +173,17 @@ function xhrAdapter(config) {
           statusText: request.statusText,
           headers: parseHeaders(request.getAllResponseHeaders()),
           config: config,
-          request: request
+          request: request,
         });
       } else {
-        reject(createError(
-          `Request failed with status code ${request.status}`,
-          config,
-          null,
-          request
-        ));
+        reject(
+          createError(
+            `Request failed with status code ${request.status}`,
+            config,
+            null,
+            request,
+          ),
+        );
       }
     };
 
@@ -195,7 +200,7 @@ function parseHeaders(headersString) {
   if (!headersString) {
     return headers;
   }
-  headersString.split('\r\n').forEach(line => {
+  headersString.split('\r\n').forEach((line) => {
     let [key, val] = line.split(': ');
     if (key) {
       headers[key.toLowerCase()] = val;
@@ -228,10 +233,10 @@ const https = require('https');
 function httpAdapter(config) {
   return new Promise((resolve, reject) => {
     const lib = /^https/.test(config.url) ? https : http;
-    const request = lib.request(config, response => {
+    const request = lib.request(config, (response) => {
       let data = '';
 
-      response.on('data', chunk => {
+      response.on('data', (chunk) => {
         data += chunk;
       });
 
@@ -242,12 +247,12 @@ function httpAdapter(config) {
           statusText: response.statusMessage,
           headers: response.headers,
           config: config,
-          request: request
+          request: request,
         });
       });
     });
 
-    request.on('error', error => {
+    request.on('error', (error) => {
       reject(error);
     });
 
@@ -271,7 +276,10 @@ function createAdapter() {
   if (typeof XMLHttpRequest !== 'undefined') {
     // 浏览器环境
     return require('./adapters/xhr'); // 使用 XMLHttpRequest
-  } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
+  } else if (
+    typeof process !== 'undefined' &&
+    Object.prototype.toString.call(process) === '[object process]'
+  ) {
     // Node.js 环境
     return require('./adapters/http'); // 使用 http 模块
   }
@@ -282,7 +290,7 @@ function Axios(config) {
   this.defaults = config;
   this.interceptors = {
     request: new InterceptorManager(),
-    response: new InterceptorManager()
+    response: new InterceptorManager(),
   };
 
   // 动态选择适配器
@@ -294,13 +302,16 @@ Axios.prototype.request = function request(config) {
   // 处理配置...
 
   // 执行适配器
-  return this.adapter(config).then(function onAdapterResolution(response) {
-    // 处理响应...
-    return response;
-  }, function onAdapterRejection(reason) {
-    // 处理错误...
-    return Promise.reject(reason);
-  });
+  return this.adapter(config).then(
+    function onAdapterResolution(response) {
+      // 处理响应...
+      return response;
+    },
+    function onAdapterRejection(reason) {
+      // 处理错误...
+      return Promise.reject(reason);
+    },
+  );
 };
 ```
 

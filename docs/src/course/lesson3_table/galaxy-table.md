@@ -29,17 +29,20 @@ Galaxy Table 由多个组件和 Hooks 构成，以下是各部分的功能和它
 ### **4.1 组件功能**
 
 - **`GalaxyTable` 组件**：
+
   - 核心表格容器，负责渲染表格头部、内容和底部。
   - 提供插槽（如筛选器、操作列）和 Props（如列配置、数据源、分页配置）。
   - 集成了筛选器、分页器和列设置功能。
   - 通过自定义 Hooks（`useTable` 和 `useTableSetting`）管理表格状态和业务逻辑。
 
 - **`Filter` 组件**：
+
   - 提供多列筛选功能，支持选择器、输入搜索和自定义筛选器。
   - 通过插槽允许用户扩展筛选器的内容。
   - 负责收集用户筛选条件并通过事件传递给父组件。
 
 - **`Setting` 组件**：
+
   - 提供表格设置功能，包括列的显示/隐藏、排序和表格样式调整（如显示密度、文本控制方式）。
   - 使用树形结构管理列的显示状态。
   - 通过事件通知父组件设置的变化。
@@ -229,7 +232,8 @@ Galaxy Table 的设计基于以下思路：
         :filterableColumns="filterableColumns"
         @custom-search="handleCustomSearch"
         @reset="handleReset"
-        @submit="handleSearch" />
+        @submit="handleSearch"
+      />
     </Space>
 
     <!-- 筛选结果摘要 -->

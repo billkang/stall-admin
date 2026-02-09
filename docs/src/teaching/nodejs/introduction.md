@@ -12,8 +12,8 @@ Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境，它允许�
 
 ### （二）Node.js 的历史
 
-* 创始人：由 Ryan Dahl 于 2009 年创立。
-* 初衷：为了解决传统服务器架构在处理大量并发连接时遇到的性能问题。
+- 创始人：由 Ryan Dahl 于 2009 年创立。
+- 初衷：为了解决传统服务器架构在处理大量并发连接时遇到的性能问题。
 
 ## 三、Node.js 的核心特性
 
@@ -309,21 +309,21 @@ program.parse(process.argv);
 
 1. 创建 Dockerfile：
 
-  ```bash
-  FROM node:14
-  WORKDIR /app
-  COPY package.json .
-  RUN npm install
-  COPY . .
-  CMD ["node", "app.js"]
-  ```
+```bash
+FROM node:14
+WORKDIR /app
+COPY package.json .
+RUN npm install
+COPY . .
+CMD ["node", "app.js"]
+```
 
 2. 构建和运行容器：
 
-  ```bash
-  docker build -t my-node-service .
-  docker run -p 3000:3000 my-node-service
-  ```
+```bash
+docker build -t my-node-service .
+docker run -p 3000:3000 my-node-service
+```
 
 ## 七、Node.js 的优势
 

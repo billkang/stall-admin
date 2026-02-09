@@ -8,11 +8,11 @@ TypeScript 是由微软开发的一种开源编程语言，它是 JavaScript 的
 
 ### 2. TypeScript 的主要特点是什么？
 
-* **静态类型系统**：TypeScript 的核心特点是其静态类型系统，能够在编译阶段发现潜在的类型错误。
-* **类型推断**：TypeScript 支持类型推断，编译器可以根据赋值语句推断变量的类型。
-* **面向对象编程**：TypeScript 支持基于类的面向对象编程，包括封装、继承和多态等特性。
-* **模块化**：TypeScript 支持 ES6 模块语法，使用 import 和 export 关键字来导入和导出模块。
-* **丰富的生态系统**：TypeScript 拥有丰富的生态系统，包括各种工具、插件和库，支持开发者在不同场景下的需求。
+- **静态类型系统**：TypeScript 的核心特点是其静态类型系统，能够在编译阶段发现潜在的类型错误。
+- **类型推断**：TypeScript 支持类型推断，编译器可以根据赋值语句推断变量的类型。
+- **面向对象编程**：TypeScript 支持基于类的面向对象编程，包括封装、继承和多态等特性。
+- **模块化**：TypeScript 支持 ES6 模块语法，使用 import 和 export 关键字来导入和导出模块。
+- **丰富的生态系统**：TypeScript 拥有丰富的生态系统，包括各种工具、插件和库，支持开发者在不同场景下的需求。
 
 ### 3. TypeScript 与 JavaScript 的关系是什么？
 
@@ -24,19 +24,19 @@ TypeScript 是 JavaScript 的严格超集，这意味着任何有效的 JavaScri
 
 TypeScript 支持以下基础类型：
 
-* **number**：数字类型，包括整数和浮点数。
-* **string**：字符串类型，表示文本。
-* **boolean**：布尔类型，值为 true 或 false。
-* **array**：数组类型，可以用 T[] 或 Array\<T\> 表示。
-* **tuple**：元组类型，表示已知数量和类型的数组，例如 [string, number]。
-* **enum**：枚举类型，用于定义一组命名常量。
-* **any**：表示任意类型，用于绕过类型检查。
-* **void**：表示没有返回值的函数。
-* **null 和 undefined**：分别表示空值和未定义。
+- **number**：数字类型，包括整数和浮点数。
+- **string**：字符串类型，表示文本。
+- **boolean**：布尔类型，值为 true 或 false。
+- **array**：数组类型，可以用 T[] 或 Array\<T\> 表示。
+- **tuple**：元组类型，表示已知数量和类型的数组，例如 [string, number]。
+- **enum**：枚举类型，用于定义一组命名常量。
+- **any**：表示任意类型，用于绕过类型检查。
+- **void**：表示没有返回值的函数。
+- **null 和 undefined**：分别表示空值和未定义。
 
 ### 5. 什么是联合类型和交叉类型？
 
-* **联合类型（Union Types）**：允许变量可以是多种类型之一，用 | 表示。
+- **联合类型（Union Types）**：允许变量可以是多种类型之一，用 | 表示。
 
 ```TypeScript
 let value: string | number;
@@ -44,7 +44,7 @@ value = "Hello";  // 合法
 value = 42;  // 合法
 ```
 
-* **交叉类型（Intersection Types）**：将多个类型合并为一个类型，用 & 表示。它通常用于对象的类型组合。
+- **交叉类型（Intersection Types）**：将多个类型合并为一个类型，用 & 表示。它通常用于对象的类型组合。
 
 ```TypeScript
 interface Person {
@@ -59,7 +59,7 @@ const worker: Worker = { name: "Alice", employeeId: 123 };
 
 ### 6. 什么是可选属性和只读属性？
 
-* **可选属性**：通过在属性名后加 ? 表示。
+- **可选属性**：通过在属性名后加 ? 表示。
 
 ```TypeScript
 interface User {
@@ -68,7 +68,7 @@ interface User {
 }
 ```
 
-* **只读属性**：使用 readonly 关键字声明只读属性，赋值后不可修改。
+- **只读属性**：使用 readonly 关键字声明只读属性，赋值后不可修改。
 
 ```TypeScript
 interface User {
@@ -138,19 +138,19 @@ class Person {
 
 ### 12. 泛型的使用场景有哪些？
 
-* **函数**：可以通过泛型函数处理不同类型的数据，且保持类型安全。
-* **接口**：通过泛型接口可以定义一组适用于不同类型的函数或数据结构。
-* **类**：泛型类使得类可以操作不同类型的数据，而不需要重复定义类的实现。
+- **函数**：可以通过泛型函数处理不同类型的数据，且保持类型安全。
+- **接口**：通过泛型接口可以定义一组适用于不同类型的函数或数据结构。
+- **类**：泛型类使得类可以操作不同类型的数据，而不需要重复定义类的实现。
 
-### 13.  泛型的语法是什么？
+### 13. 泛型的语法是什么？
 
-* **泛型函数**：通过尖括号 <> 定义泛型类型。
-* **泛型接口**：在接口中使用泛型，使得接口可以接受多种不同类型。
-* **泛型类**：通过泛型使得类的实例可以操作不同的数据类型。
+- **泛型函数**：通过尖括号 <> 定义泛型类型。
+- **泛型接口**：在接口中使用泛型，使得接口可以接受多种不同类型。
+- **泛型类**：通过泛型使得类的实例可以操作不同的数据类型。
 
-### 14.  泛型的示例
+### 14. 泛型的示例
 
-* 泛型函数
+- 泛型函数
 
 ```TypeScript
 function identity<T>(value: T): T {
@@ -161,7 +161,7 @@ const num = identity(42); // T 被推断为 number
 const str = identity("hello"); // T 被推断为 string
 ```
 
-* 泛型接口
+- 泛型接口
 
 ```TypeScript
 interface Box<T> {
@@ -172,7 +172,7 @@ const numberBox: Box<number> = { value: 42 };
 const stringBox: Box<string> = { value: "hello" };
 ```
 
-* 泛型类
+- 泛型类
 
 ```TypeScript
 class GenericBox<T> {
@@ -237,14 +237,14 @@ console.log(subtract(5, 3)); // 输出: 2
 
 ### 18. 装饰器的使用场景有哪些？
 
-* **类装饰器**：用于在类上添加元数据或行为。
-* **方法装饰器**：用于在方法上添加元数据或行为。
-* **属性装饰器**：用于在属性上添加元数据或行为。
-* **参数装饰器**：用于在方法参数上添加元数据或行为。
+- **类装饰器**：用于在类上添加元数据或行为。
+- **方法装饰器**：用于在方法上添加元数据或行为。
+- **属性装饰器**：用于在属性上添加元数据或行为。
+- **参数装饰器**：用于在方法参数上添加元数据或行为。
 
 ### 19. 装饰器的示例
 
-* 类装饰器
+- 类装饰器
 
 ```TypeScript
 function logClass(target: Function) {
@@ -261,12 +261,12 @@ class MyClass {}
 
 tsconfig.json 是 TypeScript 项目的核心配置文件，用于指定编译器的行为。常见的配置选项包括：
 
-* **target**：指定编译后的 JavaScript 版本。
-* **module**：指定模块系统。
-* **strict**：启用严格类型检查。
-* **esModuleInterop**：启用 ES 模块互操作。
-* **skipLibCheck**：跳过库文件的类型检查。
-* **forceConsistentCasingInFileNames**：强制文件名大小写一致。
+- **target**：指定编译后的 JavaScript 版本。
+- **module**：指定模块系统。
+- **strict**：启用严格类型检查。
+- **esModuleInterop**：启用 ES 模块互操作。
+- **skipLibCheck**：跳过库文件的类型检查。
+- **forceConsistentCasingInFileNames**：强制文件名大小写一致。
 
 ### 21. tsconfig.json 示例
 
@@ -311,23 +311,23 @@ npm install @types/react
 
 #### 定义方式：
 
-* interface 主要用于定义对象的形状，支持继承。
-* type 用于定义任意类型，包括原始类型、联合类型、元组等，不支持继承。
+- interface 主要用于定义对象的形状，支持继承。
+- type 用于定义任意类型，包括原始类型、联合类型、元组等，不支持继承。
 
 #### 联合类型和交叉类型：
 
-* interface 不能直接表达联合类型。
-* type 可以直接定义联合类型。
+- interface 不能直接表达联合类型。
+- type 可以直接定义联合类型。
 
 #### 声明合并：
 
-* interface 支持声明合并。
-* type 不支持声明合并。
+- interface 支持声明合并。
+- type 不支持声明合并。
 
 #### 使用场景：
 
-* interface 更适合定义对象结构，尤其是需要继承和合并时。
-* type 更适合用于简单的类型定义和复杂的类型组合。
+- interface 更适合定义对象结构，尤其是需要继承和合并时。
+- type 更适合用于简单的类型定义和复杂的类型组合。
 
 ### 25. TypeScript 的类型系统有哪些特点？
 

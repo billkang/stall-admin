@@ -10,9 +10,9 @@ import {
 } from '@stall/preferences';
 
 import {
+  StallTooltip,
   ToggleGroup,
   ToggleGroupItem,
-  StallTooltip,
 } from '@stall-core/shadcn-ui';
 
 import ThemeButton from './theme-button.vue';

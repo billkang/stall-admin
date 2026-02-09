@@ -25,10 +25,10 @@ TypeScript 的类型系统是其核心特性之一。通过静态类型检查，
 ```typescript
 let isDone: boolean = false;
 let count: number = 42;
-let name: string = "TypeScript";
+let name: string = 'TypeScript';
 
 let list: number[] = [1, 2, 3];
-let tuple: [string, number] = ["TypeScript", 2012];
+let tuple: [string, number] = ['TypeScript', 2012];
 ```
 
 ### （二）接口
@@ -48,7 +48,7 @@ function greet(person: Person) {
   console.log(`Hello, ${person.firstName} ${person.lastName}!`);
 }
 
-let user: Person = { firstName: "John", lastName: "Doe" };
+let user: Person = { firstName: 'John', lastName: 'Doe' };
 greet(user);
 ```
 
@@ -72,7 +72,7 @@ class Dog extends Animal {
   }
 }
 
-let dog = new Dog("Rex");
+let dog = new Dog('Rex');
 dog.move(10);
 dog.bark();
 ```
@@ -98,7 +98,7 @@ export function subtract(a: number, b: number): number {
 app.ts
 
 ```typescript
-import { add, subtract } from "./mathUtils";
+import { add, subtract } from './mathUtils';
 
 console.log(add(5, 3)); // 输出: 8
 console.log(subtract(5, 3)); // 输出: 2
@@ -111,7 +111,7 @@ console.log(subtract(5, 3)); // 输出: 2
 在 TypeScript 中，可以使用 let 和 const 关键字来声明变量，并指定其类型。例如：
 
 ```typescript
-let message: string = "Hello, TypeScript!";
+let message: string = 'Hello, TypeScript!';
 const pi: number = 3.14;
 ```
 
@@ -134,7 +134,7 @@ function greet(name: string): void {
 TypeScript 支持类型推断，编译器可以根据赋值语句推断变量的类型。例如：
 
 ```typescript
-let message = "Hello, TypeScript!"; // 类型推断为 string
+let message = 'Hello, TypeScript!'; // 类型推断为 string
 let count = 42; // 类型推断为 number
 ```
 
@@ -144,13 +144,13 @@ let count = 42; // 类型推断为 number
 
 ```typescript
 let numbers: number[] = [1, 2, 3];
-let strings: string[] = ["TypeScript", "JavaScript"];
+let strings: string[] = ['TypeScript', 'JavaScript'];
 ```
 
 元组是具有固定类型的数组。例如：
 
 ```typescript
-let tuple: [string, number] = ["TypeScript", 2012];
+let tuple: [string, number] = ['TypeScript', 2012];
 ```
 
 ### （五）枚举
@@ -162,7 +162,7 @@ enum Direction {
   Up,
   Down,
   Left,
-  Right
+  Right,
 }
 
 let direction: Direction = Direction.Up;
@@ -179,7 +179,7 @@ function identity<T>(arg: T): T {
   return arg;
 }
 
-let output = identity<string>("TypeScript");
+let output = identity<string>('TypeScript');
 console.log(output); // 输出: TypeScript
 ```
 
@@ -283,8 +283,8 @@ export default Counter;
 server.ts
 
 ```typescript
-import express, { Request, Response } from "express";
-import mongoose from "mongoose";
+import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
 
 interface User {
   name: string;
@@ -294,7 +294,7 @@ interface User {
 const app = express();
 app.use(express.json());
 
-mongoose.connect("mongodb://localhost:27017/mydatabase", {
+mongoose.connect('mongodb://localhost:27017/mydatabase', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -303,16 +303,16 @@ const userSchema = new mongoose.Schema<User>({
   name: String,
   email: String,
 });
-const User = mongoose.model<User>("User", userSchema);
+const User = mongoose.model<User>('User', userSchema);
 
-app.post("/users", async (req: Request, res: Response) => {
+app.post('/users', async (req: Request, res: Response) => {
   const user = new User(req.body);
   await user.save();
   res.status(201).json(user);
 });
 
 app.listen(3000, () => {
-  console.log("Server running at http://localhost:3000/");
+  console.log('Server running at http://localhost:3000/');
 });
 ```
 
@@ -324,15 +324,15 @@ app.listen(3000, () => {
 
 ### （一）优势
 
-* **类型安全**：通过静态类型系统，TypeScript 能够在编译阶段发现潜在的类型错误，提高代码的可靠性。
-* **代码可维护性**：TypeScript 的类型系统和面向对象特性使得代码更加模块化和可维护。
-* **强大的生态系统**：TypeScript 拥有丰富的生态系统，包括各种工具、插件和库，支持开发者在不同场景下的需求。
+- **类型安全**：通过静态类型系统，TypeScript 能够在编译阶段发现潜在的类型错误，提高代码的可靠性。
+- **代码可维护性**：TypeScript 的类型系统和面向对象特性使得代码更加模块化和可维护。
+- **强大的生态系统**：TypeScript 拥有丰富的生态系统，包括各种工具、插件和库，支持开发者在不同场景下的需求。
 
 ### （二）局限性
 
-* **学习曲线**：对于不熟悉静态类型系统的开发者，TypeScript 的学习曲线可能较陡。
-* **编译速度**：在大型项目中，TypeScript 的编译速度可能较慢，影响开发效率。
-* **类型系统复杂性**：TypeScript 的类型系统较为复杂，可能导致一些难以理解的类型错误。
+- **学习曲线**：对于不熟悉静态类型系统的开发者，TypeScript 的学习曲线可能较陡。
+- **编译速度**：在大型项目中，TypeScript 的编译速度可能较慢，影响开发效率。
+- **类型系统复杂性**：TypeScript 的类型系统较为复杂，可能导致一些难以理解的类型错误。
 
 ## 九、总结
 

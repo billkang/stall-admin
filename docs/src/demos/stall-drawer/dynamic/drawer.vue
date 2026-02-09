@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useStallDrawer, StallButton } from '@stall/common-ui';
+import { StallButton, useStallDrawer } from '@stall/common-ui';
 
 const [Drawer, drawerApi] = useStallDrawer({
   onCancel() {

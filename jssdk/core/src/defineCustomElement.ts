@@ -322,7 +322,8 @@ class VueElement extends BaseClass {
 
     // set initial attrs
     for (let i = 0; i < this.attributes.length; i++) {
-      this._setAttr(this.attributes[i].name);
+      const attr = this.attributes[i];
+      if (attr) this._setAttr(attr.name);
     }
 
     // watch future attr changes

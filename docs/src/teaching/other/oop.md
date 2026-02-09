@@ -14,33 +14,33 @@
 
 ```typescript
 class BankAccount {
-    private balance: number;
+  private balance: number;
 
-    constructor(initialBalance: number) {
-        this.balance = initialBalance;
-    }
+  constructor(initialBalance: number) {
+    this.balance = initialBalance;
+  }
 
-    public getBalance(): number {
-        return this.balance;
-    }
+  public getBalance(): number {
+    return this.balance;
+  }
 
-    public deposit(amount: number): void {
-        if (amount > 0) {
-            this.balance += amount;
-            console.log(`Deposited $${amount}. New balance: $${this.balance}`);
-        } else {
-            console.log("Invalid deposit amount.");
-        }
+  public deposit(amount: number): void {
+    if (amount > 0) {
+      this.balance += amount;
+      console.log(`Deposited $${amount}. New balance: $${this.balance}`);
+    } else {
+      console.log('Invalid deposit amount.');
     }
+  }
 
-    public withdraw(amount: number): void {
-        if (amount > 0 && amount <= this.balance) {
-            this.balance -= amount;
-            console.log(`Withdrew $${amount}. New balance: $${this.balance}`);
-        } else {
-            console.log("Invalid withdrawal amount or insufficient funds.");
-        }
+  public withdraw(amount: number): void {
+    if (amount > 0 && amount <= this.balance) {
+      this.balance -= amount;
+      console.log(`Withdrew $${amount}. New balance: $${this.balance}`);
+    } else {
+      console.log('Invalid withdrawal amount or insufficient funds.');
     }
+  }
 }
 
 const account = new BankAccount(1000);
@@ -57,40 +57,40 @@ console.log(account.getBalance()); // 1300
 
 ```typescript
 class Employee {
-    protected name: string;
-    protected salary: number;
+  protected name: string;
+  protected salary: number;
 
-    constructor(name: string, salary: number) {
-        this.name = name;
-        this.salary = salary;
-    }
+  constructor(name: string, salary: number) {
+    this.name = name;
+    this.salary = salary;
+  }
 
-    getSalary(): number {
-        return this.salary;
-    }
+  getSalary(): number {
+    return this.salary;
+  }
 }
 
 class Manager extends Employee {
-    private department: string;
+  private department: string;
 
-    constructor(name: string, salary: number, department: string) {
-        super(name, salary);
-        this.department = department;
-    }
+  constructor(name: string, salary: number, department: string) {
+    super(name, salary);
+    this.department = department;
+  }
 
-    getDepartment(): string {
-        return this.department;
-    }
+  getDepartment(): string {
+    return this.department;
+  }
 
-    getTotalCompensation(): number {
-        return this.salary * 1.2; // Managers get a 20% bonus
-    }
+  getTotalCompensation(): number {
+    return this.salary * 1.2; // Managers get a 20% bonus
+  }
 }
 
-const employee = new Employee("Alice", 50000);
+const employee = new Employee('Alice', 50000);
 console.log(employee.getSalary()); // 50000
 
-const manager = new Manager("Bob", 75000, "Marketing");
+const manager = new Manager('Bob', 75000, 'Marketing');
 console.log(manager.getDepartment()); // Marketing
 console.log(manager.getTotalCompensation()); // 90000 (75000 * 1.2)
 ```
@@ -103,44 +103,44 @@ console.log(manager.getTotalCompensation()); // 90000 (75000 * 1.2)
 
 ```typescript
 interface Employee {
-    getSalary(): number;
+  getSalary(): number;
 }
 
 class FullTimeEmployee implements Employee {
-    private salary: number;
+  private salary: number;
 
-    constructor(salary: number) {
-        this.salary = salary;
-    }
+  constructor(salary: number) {
+    this.salary = salary;
+  }
 
-    getSalary(): number {
-        return this.salary;
-    }
+  getSalary(): number {
+    return this.salary;
+  }
 }
 
 class PartTimeEmployee implements Employee {
-    private hourlyRate: number;
-    private hoursWorked: number;
+  private hourlyRate: number;
+  private hoursWorked: number;
 
-    constructor(hourlyRate: number, hoursWorked: number) {
-        this.hourlyRate = hourlyRate;
-        this.hoursWorked = hoursWorked;
-    }
+  constructor(hourlyRate: number, hoursWorked: number) {
+    this.hourlyRate = hourlyRate;
+    this.hoursWorked = hoursWorked;
+  }
 
-    getSalary(): number {
-        return this.hourlyRate * this.hoursWorked;
-    }
+  getSalary(): number {
+    return this.hourlyRate * this.hoursWorked;
+  }
 }
 
 function calculateTotalSalary(employees: Employee[]): number {
-    return employees.reduce((total, employee) => total + employee.getSalary(), 0);
+  return employees.reduce((total, employee) => total + employee.getSalary(), 0);
 }
 
 const employees: Employee[] = [
-    new FullTimeEmployee(60000),
-    new PartTimeEmployee(20, 100),
-    new FullTimeEmployee(55000),
-    new PartTimeEmployee(25, 80),
+  new FullTimeEmployee(60000),
+  new PartTimeEmployee(20, 100),
+  new FullTimeEmployee(55000),
+  new PartTimeEmployee(25, 80),
 ];
 
 console.log(calculateTotalSalary(employees)); // 60000 + (20*100) + 55000 + (25*80) = 60000 + 2000 + 55000 + 2000 = 119000
@@ -156,40 +156,40 @@ console.log(calculateTotalSalary(employees)); // 60000 + (20*100) + 55000 + (25*
 
 ```typescript
 class OrderProcessor {
-    private logger: Logger;
+  private logger: Logger;
 
-    constructor(logger: Logger) {
-        this.logger = logger;
-    }
+  constructor(logger: Logger) {
+    this.logger = logger;
+  }
 
-    process(order: Order): void {
-        this.logger.log(`Processing order ${order.id}`);
-        // 处理订单逻辑
-    }
+  process(order: Order): void {
+    this.logger.log(`Processing order ${order.id}`);
+    // 处理订单逻辑
+  }
 }
 
 interface Logger {
-    log(message: string): void;
+  log(message: string): void;
 }
 
 class ConsoleLogger implements Logger {
-    log(message: string): void {
-        console.log(`Console: ${message}`);
-    }
+  log(message: string): void {
+    console.log(`Console: ${message}`);
+  }
 }
 
 class FileLogger implements Logger {
-    log(message: string): void {
-        console.log(`File: ${message}`);
-    }
+  log(message: string): void {
+    console.log(`File: ${message}`);
+  }
 }
 
 class Order {
-    id: number;
+  id: number;
 
-    constructor(id: number) {
-        this.id = id;
-    }
+  constructor(id: number) {
+    this.id = id;
+  }
 }
 
 // 使用单一职责原则
@@ -207,31 +207,31 @@ orderProcessor.process(order); // Console: Processing order 123
 
 ```typescript
 abstract class PaymentGateway {
-    abstract processPayment(amount: number): void;
+  abstract processPayment(amount: number): void;
 }
 
 class CreditCardGateway extends PaymentGateway {
-    processPayment(amount: number): void {
-        console.log(`Processing $${amount} via Credit Card`);
-    }
+  processPayment(amount: number): void {
+    console.log(`Processing $${amount} via Credit Card`);
+  }
 }
 
 class PayPalGateway extends PaymentGateway {
-    processPayment(amount: number): void {
-        console.log(`Processing $${amount} via PayPal`);
-    }
+  processPayment(amount: number): void {
+    console.log(`Processing $${amount} via PayPal`);
+  }
 }
 
 class PaymentService {
-    private gateway: PaymentGateway;
+  private gateway: PaymentGateway;
 
-    constructor(gateway: PaymentGateway) {
-        this.gateway = gateway;
-    }
+  constructor(gateway: PaymentGateway) {
+    this.gateway = gateway;
+  }
 
-    makePayment(amount: number): void {
-        this.gateway.processPayment(amount);
-    }
+  makePayment(amount: number): void {
+    this.gateway.processPayment(amount);
+  }
 }
 
 // 使用开放封闭原则
@@ -250,41 +250,41 @@ paypalService.makePayment(200); // Processing $200 via PayPal
 
 ```typescript
 class Shape {
-    public calculateArea(): number {
-        throw new Error("Calculate area method not implemented");
-    }
+  public calculateArea(): number {
+    throw new Error('Calculate area method not implemented');
+  }
 }
 
 class Rectangle extends Shape {
-    private width: number;
-    private height: number;
+  private width: number;
+  private height: number;
 
-    constructor(width: number, height: number) {
-        super();
-        this.width = width;
-        this.height = height;
-    }
+  constructor(width: number, height: number) {
+    super();
+    this.width = width;
+    this.height = height;
+  }
 
-    public calculateArea(): number {
-        return this.width * this.height;
-    }
+  public calculateArea(): number {
+    return this.width * this.height;
+  }
 }
 
 class Circle extends Shape {
-    private radius: number;
+  private radius: number;
 
-    constructor(radius: number) {
-        super();
-        this.radius = radius;
-    }
+  constructor(radius: number) {
+    super();
+    this.radius = radius;
+  }
 
-    public calculateArea(): number {
-        return Math.PI * Math.pow(this.radius, 2);
-    }
+  public calculateArea(): number {
+    return Math.PI * Math.pow(this.radius, 2);
+  }
 }
 
 function printArea(shape: Shape): void {
-    console.log(`Area: ${shape.calculateArea()}`);
+  console.log(`Area: ${shape.calculateArea()}`);
 }
 
 const rectangle = new Rectangle(4, 5);
@@ -302,27 +302,27 @@ printArea(circle); // Area: 28.274333882308138
 
 ```typescript
 interface Printer {
-    print(): void;
+  print(): void;
 }
 
 interface Scanner {
-    scan(): void;
+  scan(): void;
 }
 
 class Photocopier implements Printer, Scanner {
-    print(): void {
-        console.log("Copying document...");
-    }
+  print(): void {
+    console.log('Copying document...');
+  }
 
-    scan(): void {
-        console.log("Scanning document...");
-    }
+  scan(): void {
+    console.log('Scanning document...');
+  }
 }
 
 class SimplePrinter implements Printer {
-    print(): void {
-        console.log("Printing document...");
-    }
+  print(): void {
+    console.log('Printing document...');
+  }
 }
 
 // 使用接口隔离原则
@@ -342,37 +342,37 @@ simplePrinter.print(); // Printing document...
 
 ```typescript
 interface Database {
-    save(data: string): void;
+  save(data: string): void;
 }
 
 class DatabaseService {
-    private db: Database;
+  private db: Database;
 
-    constructor(db: Database) {
-        this.db = db;
-    }
+  constructor(db: Database) {
+    this.db = db;
+  }
 
-    saveData(data: string): void {
-        this.db.save(data);
-    }
+  saveData(data: string): void {
+    this.db.save(data);
+  }
 }
 
 class MySQLDatabase implements Database {
-    save(data: string): void {
-        console.log(`Data saved to MySQL: ${data}`);
-    }
+  save(data: string): void {
+    console.log(`Data saved to MySQL: ${data}`);
+  }
 }
 
 class SQLiteDatabase implements Database {
-    save(data: string): void {
-        console.log(`Data saved to SQLite: ${data}`);
-    }
+  save(data: string): void {
+    console.log(`Data saved to SQLite: ${data}`);
+  }
 }
 
 // 使用依赖倒置原则
 const db = new MySQLDatabase();
 const service = new DatabaseService(db);
-service.saveData("Sample data"); // Data saved to MySQL: Sample data
+service.saveData('Sample data'); // Data saved to MySQL: Sample data
 ```
 
 ## 四、常用设计模式
@@ -385,38 +385,38 @@ service.saveData("Sample data"); // Data saved to MySQL: Sample data
 
 ```typescript
 class ConfigManager {
-    private static instance: ConfigManager;
-    private config: { [key: string]: any };
+  private static instance: ConfigManager;
+  private config: { [key: string]: any };
 
-    private constructor() {
-        this.config = {
-            apiUrl: "https://api.example.com",
-            timeout: 5000,
-        };
-    }
+  private constructor() {
+    this.config = {
+      apiUrl: 'https://api.example.com',
+      timeout: 5000,
+    };
+  }
 
-    public static getInstance(): ConfigManager {
-        if (!ConfigManager.instance) {
-            ConfigManager.instance = new ConfigManager();
-        }
-        return ConfigManager.instance;
+  public static getInstance(): ConfigManager {
+    if (!ConfigManager.instance) {
+      ConfigManager.instance = new ConfigManager();
     }
+    return ConfigManager.instance;
+  }
 
-    public getConfig(key: string): any {
-        return this.config[key];
-    }
+  public getConfig(key: string): any {
+    return this.config[key];
+  }
 
-    public setConfig(key: string, value: any): void {
-        this.config[key] = value;
-    }
+  public setConfig(key: string, value: any): void {
+    this.config[key] = value;
+  }
 }
 
 const config1 = ConfigManager.getInstance();
-console.log(config1.getConfig("apiUrl")); // https://api.example.com
+console.log(config1.getConfig('apiUrl')); // https://api.example.com
 
 const config2 = ConfigManager.getInstance();
-config2.setConfig("timeout", 10000);
-console.log(config1.getConfig("timeout")); // 10000
+config2.setConfig('timeout', 10000);
+console.log(config1.getConfig('timeout')); // 10000
 ```
 
 ### 2.工厂方法模式
@@ -427,40 +427,42 @@ console.log(config1.getConfig("timeout")); // 10000
 
 ```typescript
 abstract class Product {
-    public abstract getName(): string;
+  public abstract getName(): string;
 }
 
 class ConcreteProductA extends Product {
-    public getName(): string {
-        return "Product A";
-    }
+  public getName(): string {
+    return 'Product A';
+  }
 }
 
 class ConcreteProductB extends Product {
-    public getName(): string {
-        return "Product B";
-    }
+  public getName(): string {
+    return 'Product B';
+  }
 }
 
 abstract class Creator {
-    public abstract factoryMethod(): Product;
+  public abstract factoryMethod(): Product;
 
-    public someOperation(): void {
-        const product = this.factoryMethod();
-        console.log(`Creator: The same creator's code has just worked with ${product.getName()}`);
-    }
+  public someOperation(): void {
+    const product = this.factoryMethod();
+    console.log(
+      `Creator: The same creator's code has just worked with ${product.getName()}`,
+    );
+  }
 }
 
 class ConcreteCreatorA extends Creator {
-    public factoryMethod(): Product {
-        return new ConcreteProductA();
-    }
+  public factoryMethod(): Product {
+    return new ConcreteProductA();
+  }
 }
 
 class ConcreteCreatorB extends Creator {
-    public factoryMethod(): Product {
-        return new ConcreteProductB();
-    }
+  public factoryMethod(): Product {
+    return new ConcreteProductB();
+  }
 }
 
 const creatorA = new ConcreteCreatorA();
@@ -478,67 +480,67 @@ creatorB.someOperation(); // Creator: The same creator's code has just worked wi
 
 ```typescript
 interface GUIFactory {
-    createButton(): Button;
-    createCheckbox(): Checkbox;
+  createButton(): Button;
+  createCheckbox(): Checkbox;
 }
 
 interface Button {
-    render(): void;
+  render(): void;
 }
 
 interface Checkbox {
-    render(): void;
+  render(): void;
 }
 
 class WinFactory implements GUIFactory {
-    public createButton(): Button {
-        return new WinButton();
-    }
+  public createButton(): Button {
+    return new WinButton();
+  }
 
-    public createCheckbox(): Checkbox {
-        return new WinCheckbox();
-    }
+  public createCheckbox(): Checkbox {
+    return new WinCheckbox();
+  }
 }
 
 class MacFactory implements GUIFactory {
-    public createButton(): Button {
-        return new MacButton();
-    }
+  public createButton(): Button {
+    return new MacButton();
+  }
 
-    public createCheckbox(): Checkbox {
-        return new MacCheckbox();
-    }
+  public createCheckbox(): Checkbox {
+    return new MacCheckbox();
+  }
 }
 
 class WinButton implements Button {
-    public render(): void {
-        console.log("Rendering Windows button");
-    }
+  public render(): void {
+    console.log('Rendering Windows button');
+  }
 }
 
 class WinCheckbox implements Checkbox {
-    public render(): void {
-        console.log("Rendering Windows checkbox");
-    }
+  public render(): void {
+    console.log('Rendering Windows checkbox');
+  }
 }
 
 class MacButton implements Button {
-    public render(): void {
-        console.log("Rendering Mac button");
-    }
+  public render(): void {
+    console.log('Rendering Mac button');
+  }
 }
 
 class MacCheckbox implements Checkbox {
-    public render(): void {
-        console.log("Rendering Mac checkbox");
-    }
+  public render(): void {
+    console.log('Rendering Mac checkbox');
+  }
 }
 
 function createUI(factory: GUIFactory): void {
-    const button = factory.createButton();
-    const checkbox = factory.createCheckbox();
-    button.render();
-    checkbox.render();
+  const button = factory.createButton();
+  const checkbox = factory.createCheckbox();
+  button.render();
+  checkbox.render();
 }
 
 createUI(new WinFactory()); // Rendering Windows button, Rendering Windows checkbox
@@ -553,42 +555,42 @@ createUI(new MacFactory()); // Rendering Mac button, Rendering Mac checkbox
 
 ```typescript
 class User {
-    private observers: Array<(status: string) => void> = [];
+  private observers: Array<(status: string) => void> = [];
 
-    public addObserver(observer: (status: string) => void): void {
-        this.observers.push(observer);
-    }
+  public addObserver(observer: (status: string) => void): void {
+    this.observers.push(observer);
+  }
 
-    public removeObserver(observer: (status: string) => void): void {
-        const index = this.observers.indexOf(observer);
-        if (index !== -1) {
-            this.observers.splice(index, 1);
-        }
+  public removeObserver(observer: (status: string) => void): void {
+    const index = this.observers.indexOf(observer);
+    if (index !== -1) {
+      this.observers.splice(index, 1);
     }
+  }
 
-    public notifyObservers(status: string): void {
-        this.observers.forEach(observer => observer(status));
-    }
+  public notifyObservers(status: string): void {
+    this.observers.forEach((observer) => observer(status));
+  }
 
-    public updateUserStatus(status: string): void {
-        console.log(`User status updated to: ${status}`);
-        this.notifyObservers(status);
-    }
+  public updateUserStatus(status: string): void {
+    console.log(`User status updated to: ${status}`);
+    this.notifyObservers(status);
+  }
 }
 
 function sendEmailNotification(status: string): void {
-    console.log(`Sending email notification: Status is ${status}`);
+  console.log(`Sending email notification: Status is ${status}`);
 }
 
 function pushNotification(status: string): void {
-    console.log(`Sending push notification: Status is ${status}`);
+  console.log(`Sending push notification: Status is ${status}`);
 }
 
 const user = new User();
 user.addObserver(sendEmailNotification);
 user.addObserver(pushNotification);
 
-user.updateUserStatus("online"); // User status updated to: online
+user.updateUserStatus('online'); // User status updated to: online
 ```
 
 ### 5.装饰者模式
@@ -599,54 +601,54 @@ user.updateUserStatus("online"); // User status updated to: online
 
 ```typescript
 interface Coffee {
-    cost(): number;
-    description(): string;
+  cost(): number;
+  description(): string;
 }
 
 class SimpleCoffee implements Coffee {
-    cost(): number {
-        return 10;
-    }
+  cost(): number {
+    return 10;
+  }
 
-    description(): string {
-        return "Simple coffee";
-    }
+  description(): string {
+    return 'Simple coffee';
+  }
 }
 
 abstract class CoffeeDecorator implements Coffee {
-    protected coffee: Coffee;
+  protected coffee: Coffee;
 
-    constructor(coffee: Coffee) {
-        this.coffee = coffee;
-    }
+  constructor(coffee: Coffee) {
+    this.coffee = coffee;
+  }
 
-    cost(): number {
-        return this.coffee.cost();
-    }
+  cost(): number {
+    return this.coffee.cost();
+  }
 
-    description(): string {
-        return this.coffee.description();
-    }
+  description(): string {
+    return this.coffee.description();
+  }
 }
 
 class MilkDecorator extends CoffeeDecorator {
-    cost(): number {
-        return this.coffee.cost() + 2;
-    }
+  cost(): number {
+    return this.coffee.cost() + 2;
+  }
 
-    description(): string {
-        return `${this.coffee.description()}, with milk`;
-    }
+  description(): string {
+    return `${this.coffee.description()}, with milk`;
+  }
 }
 
 class SugarDecorator extends CoffeeDecorator {
-    cost(): number {
-        return this.coffee.cost() + 1;
-    }
+  cost(): number {
+    return this.coffee.cost() + 1;
+  }
 
-    description(): string {
-        return `${this.coffee.description()}, with sugar`;
-    }
+  description(): string {
+    return `${this.coffee.description()}, with sugar`;
+  }
 }
 
 const coffee = new MilkDecorator(new SugarDecorator(new SimpleCoffee()));
@@ -662,29 +664,29 @@ console.log(coffee.description()); // Simple coffee, with sugar, with milk
 
 ```typescript
 interface Payment {
-    pay(amount: number): void;
+  pay(amount: number): void;
 }
 
 class BankCard {
-    public payment(amount: number): void {
-        console.log(`Paid $${amount} via Bank Card`);
-    }
+  public payment(amount: number): void {
+    console.log(`Paid $${amount} via Bank Card`);
+  }
 }
 
 class BankCardAdapter implements Payment {
-    private bankCard: BankCard;
+  private bankCard: BankCard;
 
-    constructor(bankCard: BankCard) {
-        this.bankCard = bankCard;
-    }
+  constructor(bankCard: BankCard) {
+    this.bankCard = bankCard;
+  }
 
-    pay(amount: number): void {
-        this.bankCard.payment(amount);
-    }
+  pay(amount: number): void {
+    this.bankCard.payment(amount);
+  }
 }
 
 function makePayment(payment: Payment, amount: number): void {
-    payment.pay(amount);
+  payment.pay(amount);
 }
 
 const bankCard = new BankCard();
@@ -700,47 +702,47 @@ makePayment(adapter, 100); // Paid $100 via Bank Card
 
 ```typescript
 interface SortingStrategy {
-    sort(array: number[]): number[];
+  sort(array: number[]): number[];
 }
 
 class BubbleSortStrategy implements SortingStrategy {
-    sort(array: number[]): number[] {
-        const arr = [...array];
-        for (let i = 0; i < arr.length; i++) {
-            for (let j = 0; j < arr.length - i - 1; j++) {
-                if (arr[j] > arr[j + 1]) {
-                    [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                }
-            }
+  sort(array: number[]): number[] {
+    const arr = [...array];
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < arr.length - i - 1; j++) {
+        if (arr[j] > arr[j + 1]) {
+          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
         }
-        return arr;
+      }
     }
+    return arr;
+  }
 }
 
 class QuickSortStrategy implements SortingStrategy {
-    sort(array: number[]): number[] {
-        if (array.length <= 1) return array;
-        const pivot = array[0];
-        const left = array.slice(1).filter(x => x <= pivot);
-        const right = array.slice(1).filter(x => x > pivot);
-        return [...this.sort(left), pivot, ...this.sort(right)];
-    }
+  sort(array: number[]): number[] {
+    if (array.length <= 1) return array;
+    const pivot = array[0];
+    const left = array.slice(1).filter((x) => x <= pivot);
+    const right = array.slice(1).filter((x) => x > pivot);
+    return [...this.sort(left), pivot, ...this.sort(right)];
+  }
 }
 
 class Context {
-    private strategy: SortingStrategy;
+  private strategy: SortingStrategy;
 
-    constructor(strategy: SortingStrategy) {
-        this.strategy = strategy;
-    }
+  constructor(strategy: SortingStrategy) {
+    this.strategy = strategy;
+  }
 
-    setStrategy(strategy: SortingStrategy): void {
-        this.strategy = strategy;
-    }
+  setStrategy(strategy: SortingStrategy): void {
+    this.strategy = strategy;
+  }
 
-    executeStrategy(array: number[]): number[] {
-        return this.strategy.sort(array);
-    }
+  executeStrategy(array: number[]): number[] {
+    return this.strategy.sort(array);
+  }
 }
 
 const context = new Context(new BubbleSortStrategy());

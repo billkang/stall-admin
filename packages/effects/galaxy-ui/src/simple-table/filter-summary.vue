@@ -1,34 +1,17 @@
-<template>
-  <div v-if="visible" class="stall-galaxy-table-filter__summary">
-    <!-- 筛选结果标题 -->
-    <div class="label">筛选结果</div>
-
-    <!-- 筛选条件标签列表 -->
-    <Space class="tag-list">
-      <Tag
-        v-for="tag in tagList"
-        :key="tag.key"
-        closable
-        @close="handleClose(tag)">
-        {{ tag.title }} 包含 "{{ tag.value }}"
-      </Tag>
-    </Space>
-
-    <!-- 清空条件按钮 -->
-    <div class="clear-all" @click="handleClear">清空条件</div>
-  </div>
-</template>
-
 <script lang="ts">
-import { computed, defineComponent, type PropType } from 'vue';
+import type { PropType } from 'vue';
+
+import { computed, defineComponent } from 'vue';
+
 import { Space, Tag } from '@arco-design/web-vue';
+
 import { useTableSetting } from './hooks/useTableSetting';
 
 // 定义标签数据类型
 type TagData = {
-  key: string;       // 标签的唯一标识
-  title: string;     // 标签的标题
-  value: string;     // 标签的值
+  key: string; // 标签的唯一标识
+  title: string; // 标签的标题
+  value: string; // 标签的值
 };
 
 export default defineComponent({
@@ -49,20 +32,24 @@ export default defineComponent({
   emits: ['search'], // 定义组件触发的事件
   setup(props, { emit }) {
     // 获取表单数据和相关方法
-    const { formData, resetFormData, cleanFormDataByKey } = useTableSetting(props);
+    const { formData, resetFormData, cleanFormDataByKey } =
+      useTableSetting(props);
 
     // 计算属性：判断是否显示筛选结果
-    const visible = computed(() => Object.values(formData).filter(val => !!val).length > 0);
+    const visible = computed(() =>
+      Object.values(formData).some((val) => !!val),
+    );
 
     // 计算属性：筛选条件的标签列表
     const tagList = computed(() => {
       const tags: Array<TagData> = [];
 
       // 遍历表单数据
-      Object.entries(formData).forEach(d => {
+      Object.entries(formData).forEach((d) => {
         const [key, val] = d;
-        if (!!val) { // 如果值存在
-          const col = props.columns.find(c => c.dataIndex === key); // 找到对应的列配置
+        if (val) {
+          // 如果值存在
+          const col = props.columns.find((c) => c.dataIndex === key); // 找到对应的列配置
           if (col) {
             const { title, filterable } = col;
 
@@ -77,7 +64,9 @@ export default defineComponent({
 
               // 遍历筛选值
               list.forEach((val: string) => {
-                const item = filterable.filters!.find((d: any) => d.value === val); // 找到对应的筛选项
+                const item = filterable.filters!.find(
+                  (d: any) => d.value === val,
+                ); // 找到对应的筛选项
                 tagValue.push((item?.text as string) || `${val}`); // 获取筛选项的文本或值
               });
             } else {
@@ -89,7 +78,8 @@ export default defineComponent({
               }
             }
 
-            if (tagValue?.length > 0) { // 如果 tagValue 不为空
+            if (tagValue?.length > 0) {
+              // 如果 tagValue 不为空
               tags.push({
                 key,
                 title: title as string,
@@ -116,11 +106,33 @@ export default defineComponent({
     };
 
     return {
-      visible,       // 是否显示筛选结果
-      tagList,       // 标签列表
-      handleClose,   // 关闭单个标签的方法
-      handleClear,   // 清空所有筛选条件的方法
+      visible, // 是否显示筛选结果
+      tagList, // 标签列表
+      handleClose, // 关闭单个标签的方法
+      handleClear, // 清空所有筛选条件的方法
     };
   },
 });
 </script>
+
+<template>
+  <div v-if="visible" class="stall-galaxy-table-filter__summary">
+    <!-- 筛选结果标题 -->
+    <div class="label">筛选结果</div>
+
+    <!-- 筛选条件标签列表 -->
+    <Space class="tag-list">
+      <Tag
+        v-for="tag in tagList"
+        :key="tag.key"
+        closable
+        @close="handleClose(tag)"
+      >
+        {{ tag.title }} 包含 "{{ tag.value }}"
+      </Tag>
+    </Space>
+
+    <!-- 清空条件按钮 -->
+    <div class="clear-all" @click="handleClear">清空条件</div>
+  </div>
+</template>

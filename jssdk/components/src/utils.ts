@@ -1,6 +1,6 @@
 export function flatten(data: any[]) {
   const result: any[] = [];
-  data.forEach(d => {
+  data.forEach((d) => {
     if (Array.isArray(d)) {
       result.push(...flatten(d));
     } else {

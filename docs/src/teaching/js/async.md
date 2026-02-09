@@ -7,10 +7,10 @@
 按顺序执行，前一个任务必须完成后，下一个任务才能开始，这会导致阻塞后续代码的执行，直到当前任务完成。
 
 ```javascript
-console.log("Start");
+console.log('Start');
 const result = calculateSync(); // 假设这是一个耗时操作，程序将在这里卡住，直到计算完成
-console.log("Result:", result);
-console.log("End");
+console.log('Result:', result);
+console.log('End');
 // 输出顺序：Start → Result → End
 ```
 
@@ -19,9 +19,9 @@ console.log("End");
 非阻塞执行，任务不会等待前一个任务的完成，而是继续执行后续代码，当异步任务完成后，会通过回调或 Promise 等机制通知结果。
 
 ```javascript
-console.log("Start");
-setTimeout(() => console.log("Timeout完成"), 1000); // 异步操作，1秒后执行回调
-console.log("End");
+console.log('Start');
+setTimeout(() => console.log('Timeout完成'), 1000); // 异步操作，1秒后执行回调
+console.log('End');
 // 输出顺序：Start → End → Timeout完成
 ```
 
@@ -34,7 +34,7 @@ console.log("End");
 ```javascript
 function fetchData(callback) {
   setTimeout(() => {
-    callback("数据加载完成"); // 数据加载完成后调用回调函数
+    callback('数据加载完成'); // 数据加载完成后调用回调函数
   }, 1000);
 }
 
@@ -46,9 +46,12 @@ fetchData((data) => console.log(data)); // 1秒后输出
 当异步操作嵌套多层时，回调函数会层层嵌套，代码难以阅读和维护，也容易出错。
 
 ```javascript
-getUser(userId, (user) => { // 获取用户数据
-  getPosts(user.id, (posts) => { // 获取用户帖子
-    getComments(posts[0].id, (comments) => { // 获取帖子评论
+getUser(userId, (user) => {
+  // 获取用户数据
+  getPosts(user.id, (posts) => {
+    // 获取用户帖子
+    getComments(posts[0].id, (comments) => {
+      // 获取帖子评论
       console.log(comments);
     });
   });
@@ -73,7 +76,7 @@ Promise 是一个对象，表示异步操作的最终完成或失败。三种状
 const promise = new Promise((resolve, reject) => {
   setTimeout(() => {
     const success = true;
-    success ? resolve("成功!") : reject("失败!"); // 根据条件决定是否成功
+    success ? resolve('成功!') : reject('失败!'); // 根据条件决定是否成功
   }, 1000);
 });
 
@@ -88,10 +91,10 @@ promise
 
 ```javascript
 fetch(url)
-  .then(response => response.json()) // 将响应数据解析为 JSON
-  .then(data => processData(data)) // 处理解析后的数据
-  .then(result => console.log(result)) // 输出处理结果
-  .catch(error => console.error("链中任何错误:", error)); // 捕获整个链中的错误
+  .then((response) => response.json()) // 将响应数据解析为 JSON
+  .then((data) => processData(data)) // 处理解析后的数据
+  .then((result) => console.log(result)) // 输出处理结果
+  .catch((error) => console.error('链中任何错误:', error)); // 捕获整个链中的错误
 ```
 
 ### Promise 静态方法
@@ -100,15 +103,16 @@ fetch(url)
 
 ```javascript
 Promise.all([promise1, promise2, promise3])
-  .then(results => console.log(results))
-  .catch(error => console.error(error));
+  .then((results) => console.log(results))
+  .catch((error) => console.error(error));
 ```
 
 - `Promise.race` ：接受一个 Promise 对象的数组，返回一个新的 Promise，其结果取决于数组中最快完成的 Promise。
 
 ```javascript
-  Promise.race([promise1, promise2])
-    .then(result => console.log("第一个完成的结果:", result));
+Promise.race([promise1, promise2]).then((result) =>
+  console.log('第一个完成的结果:', result),
+);
 ```
 
 ## Async/Await
@@ -124,7 +128,7 @@ async function fetchData() {
     const data = await response.json(); // 等待解析完成
     console.log(data);
   } catch (error) {
-    console.error("捕获错误:", error);
+    console.error('捕获错误:', error);
   }
 }
 fetchData();
@@ -160,12 +164,12 @@ async function parallelTasks() {
 ### 执行顺序示例
 
 ```javascript
-console.log("Start");
-setTimeout(() => console.log("Timeout"), 0); // 宏任务，进入任务队列
+console.log('Start');
+setTimeout(() => console.log('Timeout'), 0); // 宏任务，进入任务队列
 Promise.resolve()
-  .then(() => console.log("Promise 1")) // 微任务，进入微任务队列
-  .then(() => console.log("Promise 2")); // 微任务，进入微任务队列
-console.log("End");
+  .then(() => console.log('Promise 1')) // 微任务，进入微任务队列
+  .then(() => console.log('Promise 2')); // 微任务，进入微任务队列
+console.log('End');
 // 输出顺序: Start → End → Promise 1 → Promise 2 → Timeout
 ```
 
@@ -176,8 +180,8 @@ console.log("End");
 `setTimeout` 和 `setInterval` 是常见的异步定时器。
 
 ```javascript
-setTimeout(() => console.log("延时1秒"), 1000); // 1秒后执行回调
-setInterval(() => console.log("每秒执行"), 1000); // 每秒执行一次回调
+setTimeout(() => console.log('延时1秒'), 1000); // 1秒后执行回调
+setInterval(() => console.log('每秒执行'), 1000); // 每秒执行一次回调
 ```
 
 ### 事件监听器
@@ -185,8 +189,9 @@ setInterval(() => console.log("每秒执行"), 1000); // 每秒执行一次回�
 通过 `addEventListener` 可以为 HTML 元素添加事件监听器，处理用户交互等事件。
 
 ```javascript
-button.addEventListener('click', () => { // 监听按钮点击事件
-  console.log("按钮被点击");
+button.addEventListener('click', () => {
+  // 监听按钮点击事件
+  console.log('按钮被点击');
 });
 ```
 
@@ -209,9 +214,9 @@ fs.readFile('file.txt', (err, data) => {
 
 ```javascript
 fetchData()
-  .then(data => console.log(data)) // 处理成功结果
-  .catch(err => console.error("捕获错误:", err)) // 处理错误
-  .finally(() => console.log("清理操作")); // 执行清理操作
+  .then((data) => console.log(data)) // 处理成功结果
+  .catch((err) => console.error('捕获错误:', err)) // 处理错误
+  .finally(() => console.log('清理操作')); // 执行清理操作
 ```
 
 ### Async/Await 错误处理

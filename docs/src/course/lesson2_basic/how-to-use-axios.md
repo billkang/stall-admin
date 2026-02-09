@@ -19,6 +19,7 @@
 ### 3.拦截器与请求/响应拦截
 
 拦截器是 Axios 提供的强大功能之一，它允许在请求发送前和响应接收后对请求和响应进行拦截和修改。通过封装 Axios，可以充分利用拦截器来实现一些通用的功能，如：
+
 - **请求拦截**：在请求发送前添加通用的请求头信息（如认证 token），对请求数据进行序列化或加密，或者对请求参数进行统一处理。
 - **响应拦截**：在响应接收后对响应数据进行解析和适配，提取出业务需要的数据结构，或者对响应状态码进行统一判断，自动处理服务端返回的错误信息。
 - **错误拦截**：对请求过程中发生的错误进行统一处理和记录，可以根据错误类型进行重试、提示用户或者记录日志。
@@ -80,7 +81,7 @@ service.interceptors.request.use(
   (error) => {
     // 请求错误处理
     Promise.reject(error);
-  }
+  },
 );
 
 // 响应拦截器
@@ -88,7 +89,8 @@ service.interceptors.response.use(
   (response) => {
     // 对响应数据进行处理
     const res = response.data;
-    if (res.code !== 0) { // 假设后端返回的错误状态码为非零值
+    if (res.code !== 0) {
+      // 假设后端返回的错误状态码为非零值
       Message.error(res.message); // 使用消息提示组件显示错误信息
       return Promise.reject(new Error(res.message));
     } else {
@@ -118,7 +120,7 @@ service.interceptors.response.use(
       Message.error('网络异常，请检查网络连接');
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 // 导出封装后的 Axios 实例
@@ -133,7 +135,7 @@ export default service;
 // 请求重试插件
 const retryPlugin = {
   requestRetry: (config, times = 3, delay = 1000) => {
-    const REIfExists = req => !req.__RE__;
+    const REIfExists = (req) => !req.__RE__;
     let retryCount = 1;
     return (error) => {
       const { config, response } = error;
@@ -167,7 +169,7 @@ service.interceptors.request.use(
     return config;
   },
 
-  retryPlugin.requestRetry
+  retryPlugin.requestRetry,
 );
 ```
 
@@ -203,11 +205,12 @@ export const uploadFile = async (file: File, apiUrl: string): Promise<string> =>
 ```javascript
 import service from '@/utils/axios/axios.js';
 
-service.get('/api/users', { params: { page: 1, limit: 10 } })
-  .then(response => {
+service
+  .get('/api/users', { params: { page: 1, limit: 10 } })
+  .then((response) => {
     console.log('用户数据:', response);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('请求失败:', error);
   });
 ```
@@ -222,11 +225,12 @@ const userData = {
   email: 'john.doe@example.com',
 };
 
-service.post('/api/users', userData)
-  .then(response => {
+service
+  .post('/api/users', userData)
+  .then((response) => {
     console.log('用户创建成功:', response);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('请求失败:', error);
   });
 ```

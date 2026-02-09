@@ -83,37 +83,37 @@ RBAC（Role-Based Access Control，基于角色的访问控制）是一种常见
 
 - **用户表**
 
-  | id | username | password | email          |
-  |----|----------|----------|----------------|
-  | 1  | admin    | ...      | <admin@example.com> |
-  | 2  | editor   | ...      | <editor@example.com> |
+  | id  | username | password | email                |
+  | --- | -------- | -------- | -------------------- |
+  | 1   | admin    | ...      | <admin@example.com>  |
+  | 2   | editor   | ...      | <editor@example.com> |
 
 - **角色表**
 
-  | id | name     | description       |
-  |----|----------|-------------------|
-  | 1  | admin    | 系统管理员        |
-  | 2  | editor   | 内容编辑          |
+  | id  | name   | description |
+  | --- | ------ | ----------- |
+  | 1   | admin  | 系统管理员  |
+  | 2   | editor | 内容编辑    |
 
 - **权限表**
 
-  | id | name          | description       |
-  |----|---------------|-------------------|
-  | 1  | view_dashboard | 查看仪表盘        |
-  | 2  | edit_content  | 编辑内容          |
-  | 3  | manage_users  | 管理用户          |
+  | id  | name           | description |
+  | --- | -------------- | ----------- |
+  | 1   | view_dashboard | 查看仪表盘  |
+  | 2   | edit_content   | 编辑内容    |
+  | 3   | manage_users   | 管理用户    |
 
 - **用户-角色关联表**
 
   | user_id | role_id |
-  |---------|---------|
+  | ------- | ------- |
   | 1       | 1       |
   | 2       | 2       |
 
 - **角色-权限关联表**
 
   | role_id | permission_id |
-  |---------|---------------|
+  | ------- | ------------- |
   | 1       | 1             |
   | 1       | 2             |
   | 1       | 3             |
@@ -147,15 +147,15 @@ async function login(req, res) {
   // 获取用户的角色和权限
   const roles = await user.getRoles();
   const permissions = await Promise.all(
-    roles.map(role => role.getPermissions())
+    roles.map((role) => role.getPermissions()),
   );
-  const permissionNames = permissions.flat().map(p => p.name);
+  const permissionNames = permissions.flat().map((p) => p.name);
 
   // 生成JWT
   const token = jwt.sign(
     { userId: user.id, permissions: permissionNames },
     process.env.JWT_SECRET,
-    { expiresIn: '1h' }
+    { expiresIn: '1h' },
   );
 
   res.json({ token });
@@ -209,7 +209,7 @@ import { defineStore } from 'pinia';
 export const useUserStore = defineStore('user', {
   state: () => ({
     token: '',
-    permissions: []
+    permissions: [],
   }),
   actions: {
     setToken(token) {
@@ -222,8 +222,8 @@ export const useUserStore = defineStore('user', {
     },
     hasPermission(permission) {
       return this.permissions.includes(permission);
-    }
-  }
+    },
+  },
 });
 ```
 
@@ -243,15 +243,15 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: () => import('@/views/Dashboard.vue'),
-      meta: { requiresPermission: 'view_dashboard' }
+      meta: { requiresPermission: 'view_dashboard' },
     },
     {
       path: '/edit',
       name: 'edit',
       component: () => import('@/views/Edit.vue'),
-      meta: { requiresPermission: 'edit_content' }
-    }
-  ]
+      meta: { requiresPermission: 'edit_content' },
+    },
+  ],
 });
 
 router.beforeEach((to, from, next) => {
@@ -278,33 +278,39 @@ import axios from 'axios';
 import { useUserStore } from '@/stores/user';
 
 const api = axios.create({
-  baseURL: '/api'
+  baseURL: '/api',
 });
 
 // 请求拦截器
-api.interceptors.request.use(config => {
-  const userStore = useUserStore();
-  const token = userStore.token;
+api.interceptors.request.use(
+  (config) => {
+    const userStore = useUserStore();
+    const token = userStore.token;
 
-  // 添加Authorization头
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+    // 添加Authorization头
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-  return config;
-}, error => {
-  return Promise.reject(error);
-});
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
 
 // 响应拦截器
-api.interceptors.response.use(response => {
-  return response;
-}, error => {
-  if (error.response.status === 403) {
-    alert('无权访问此资源');
-  }
-  return Promise.reject(error);
-});
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response.status === 403) {
+      alert('无权访问此资源');
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default api;
 ```
@@ -325,8 +331,8 @@ export default {
       : [binding.value];
 
     // 检查是否具有至少一个权限
-    const hasPermission = requiredPermissions.some(permission =>
-      userStore.hasPermission(permission)
+    const hasPermission = requiredPermissions.some((permission) =>
+      userStore.hasPermission(permission),
     );
 
     if (!hasPermission) {
@@ -335,7 +341,7 @@ export default {
   },
   updated(el, binding) {
     this.mounted(el, binding);
-  }
+  },
 };
 
 // 在主应用中注册指令

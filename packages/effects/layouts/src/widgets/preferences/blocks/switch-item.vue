@@ -3,7 +3,7 @@ import { useSlots } from 'vue';
 
 import { CircleHelp } from '@stall/icons';
 
-import { Switch, StallTooltip } from '@stall-core/shadcn-ui';
+import { StallTooltip, Switch } from '@stall-core/shadcn-ui';
 
 defineOptions({
   name: 'PreferenceSwitchItem',

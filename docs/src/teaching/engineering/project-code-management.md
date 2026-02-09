@@ -74,9 +74,7 @@ packages:
 {
   "name": "my-monorepo",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ]
+  "workspaces": ["packages/*"]
 }
 ```
 

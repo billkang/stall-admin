@@ -3,17 +3,20 @@ import type {
   TableColumnData,
   TableData,
 } from '@arco-design/web-vue';
-import { ref, createVNode, watch } from 'vue';
-import { Modal, Message } from '@arco-design/web-vue';
+
+import { createVNode, ref, watch } from 'vue';
+
+import { Message, Modal } from '@arco-design/web-vue';
 import { IconQuestionCircle } from '@arco-design/web-vue/es/icon';
+
 import { isValidValue } from '../utils';
 
-export type RowKey = string | number;
+export type RowKey = number | string;
 
 function flatten(data: any[]) {
   const ret: any[] = [];
 
-  data.forEach(d => {
+  data.forEach((d) => {
     ret.push(d);
 
     if (d?.children?.length > 0) {
@@ -28,16 +31,16 @@ export function useTable({
   props,
   emit,
 }: {
-  props: Record<string, any>;
   emit: any;
+  props: Record<string, any>;
 }) {
   let formData: Record<string, string> = {};
   const selectedRowKeys = ref<RowKey[]>(props.defaultSelectedKeys || []);
   const openSetting = ref<boolean>(false);
   const focusedFilter = ref<string>('');
 
-  const pagination = ref<PaginationProps | boolean>(
-    !!props.pagination
+  const pagination = ref<boolean | PaginationProps>(
+    props.pagination
       ? props.pagePosition === 'br'
         ? {
             current: 1,
@@ -58,7 +61,7 @@ export function useTable({
 
   watch(
     () => props.pagination,
-    val => {
+    (val) => {
       if (val) {
         (pagination.value as PaginationProps).showTotal = val.showTotal;
         (pagination.value as PaginationProps).total = val.total;
@@ -75,10 +78,12 @@ export function useTable({
   // 监听 defaultSelectedKeys 的变化，刷新内部 selectedRowKeys
   watch(
     () => props.defaultSelectedKeys,
-    keys => {
+    (keys) => {
       if (keys?.length > 0) {
-        const dataKeys = flatten(props.dataSource).map((col: TableData) => col[props.rowKey]);
-        selectedRowKeys.value = [...keys.filter((key: any) => dataKeys.includes(key))];
+        const dataKeys = new Set(
+          flatten(props.dataSource).map((col: TableData) => col[props.rowKey]),
+        );
+        selectedRowKeys.value = keys.filter((key: any) => dataKeys.has(key));
       }
     },
   );
@@ -87,7 +92,7 @@ export function useTable({
     openSetting.value = true;
   };
 
-  const handleSearch = (data: Record<string, string> | null) => {
+  const handleSearch = (data: null | Record<string, string>) => {
     if (data) {
       Object.keys(data).forEach((key: string) => {
         const val = data[key];
@@ -103,7 +108,7 @@ export function useTable({
 
     const extraData: Record<string, any> = {};
     (props.columns as TableColumnData[])
-      .filter(col => !!col.extra)
+      .filter((col) => !!col.extra)
       .forEach(({ dataIndex, extra }) => {
         extraData[dataIndex!] = extra;
       });
@@ -160,7 +165,11 @@ export function useTable({
     });
   };
 
-  const handleSelect = (rowKeys: RowKey[], rowKey: string | number, record: TableData) => {
+  const handleSelect = (
+    rowKeys: RowKey[],
+    rowKey: number | string,
+    record: TableData,
+  ) => {
     emit('select', rowKeys, rowKey, record);
   };
 
@@ -231,7 +240,9 @@ export function useTable({
         },
       });
     } else {
-      selectedRowKeys.value = selectedRowKeys.value.filter(key => key !== record[props.rowKey]);
+      selectedRowKeys.value = selectedRowKeys.value.filter(
+        (key) => key !== record[props.rowKey],
+      );
 
       emit('delete', record);
     }
