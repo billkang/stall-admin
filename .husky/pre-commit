@@ -1,6 +1,7 @@
-pnpm vsh code-workspace --auto-commit
+# 更新 .code-workspace 文件（失败不阻塞提交，如文件被占用或权限不足时跳过）
+pnpm vsh code-workspace --auto-commit || echo "Warning: code-workspace update skipped."
 
-# Format and submit code according to lintstagedrc.js configuration
+# 按 .lintstagedrc.mjs 做格式检查与修复
 pnpm exec lint-staged
 
 echo Run pre-commit hook done.
